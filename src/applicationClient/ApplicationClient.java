@@ -5,6 +5,7 @@
  */
 package applicationClient;
 
+
 import controllers.InicioAdministradorProveedorController;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -12,6 +13,7 @@ import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+
 import javafx.stage.Stage;
 
 /**
@@ -24,6 +26,7 @@ public class ApplicationClient extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+
         try {
             LOG.log(Level.INFO, "Iniciando la ventana");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/inicioAdministrador_proveedor.fxml"));
@@ -36,6 +39,7 @@ public class ApplicationClient extends Application {
             controller.initStage(root);
         } catch (IOException ex) {
             LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
+
         }
     }
 
