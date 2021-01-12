@@ -5,9 +5,14 @@
  */
 package applicationClient;
 
+import controllers.InicioAdministradorVendedorController;
+import java.io.IOException;
+import java.util.logging.Level;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
@@ -21,24 +26,18 @@ public class ApplicationClient extends Application {
     
     @Override
     public void start(Stage primaryStage) {
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
-            }
-        });
+        try{
+        //LOG.log(Level.INFO, "Iniciando Ventana Administrador Vendedor");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/InicioAdministrador_vendedor.fxml"));
         
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
+        Parent root = (Parent) loader.load();
         
-        Scene scene = new Scene(root, 300, 250);
-        
-        primaryStage.setTitle("Hello World!");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        InicioAdministradorVendedorController controller = ((InicioAdministradorVendedorController) loader.getController());
+            controller.setStage(primaryStage);
+            controller.initStage(root);
+            } catch (IOException e) {
+           //LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
+        }
     }
 
     /**
