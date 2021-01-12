@@ -5,17 +5,15 @@
  */
 package applicationClient;
 
-import controllers.InicioAdministradorVendedorController;
+
+import controllers.InicioAdministradorProveedorController;
 import java.io.IOException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
+
 import javafx.stage.Stage;
 
 /**
@@ -23,20 +21,25 @@ import javafx.stage.Stage;
  * @author Lorena
  */
 public class ApplicationClient extends Application {
-    
+
+    private static final Logger LOG = Logger.getLogger(ApplicationClient.class.getName());
+
     @Override
     public void start(Stage primaryStage) {
-        try{
-        //LOG.log(Level.INFO, "Iniciando Ventana Administrador Vendedor");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/InicioAdministrador_vendedor.fxml"));
-        
-        Parent root = (Parent) loader.load();
-        
-        InicioAdministradorVendedorController controller = ((InicioAdministradorVendedorController) loader.getController());
+
+        try {
+            LOG.log(Level.INFO, "Iniciando la ventana");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/inicioAdministrador_proveedor.fxml"));
+            LOG.log(Level.INFO, "Cargando Parent");
+            Parent root = (Parent) loader.load();
+            LOG.log(Level.INFO, "Cargando controller");
+            InicioAdministradorProveedorController controller = ((InicioAdministradorProveedorController) loader.getController());
+            LOG.log(Level.INFO, "Iniciando controller");
             controller.setStage(primaryStage);
             controller.initStage(root);
-            } catch (IOException e) {
-           //LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
+
         }
     }
 
@@ -46,5 +49,5 @@ public class ApplicationClient extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    
+
 }

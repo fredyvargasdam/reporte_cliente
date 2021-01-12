@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<Pane fx:id="pnInicioAdminProv" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1253.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.InicioAdministradorProveedorController">
+   <children>
+      <Label fx:id="lblProveedor" alignment="CENTER" layoutX="19.0" layoutY="54.0" prefHeight="36.0" prefWidth="1253.0" text="FlyShoes Proveedores">
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Label>
+      <VBox fx:id="Vbox" layoutX="1024.0" layoutY="32.0" prefHeight="668.0" prefWidth="229.0">
+         <children>
+            <Button fx:id="btnAltaProveedor" mnemonicParsing="false" prefHeight="31.0" prefWidth="165.0" text="Nuevo ">
+               <VBox.margin>
+                  <Insets left="35.0" top="150.0" />
+               </VBox.margin>
+            </Button>
+            <Button fx:id="btnBorrarProveedor" mnemonicParsing="false" prefHeight="31.0" prefWidth="165.0" text="Borrar ">
+               <VBox.margin>
+                  <Insets left="35.0" top="150.0" />
+               </VBox.margin>
+            </Button>
+            <Button fx:id="btnActualizarProveedor" mnemonicParsing="false" prefHeight="31.0" prefWidth="165.0" text="Actualizar ">
+               <VBox.margin>
+                  <Insets left="35.0" top="150.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+      </VBox>
+      <TableView fx:id="tbProveedor" layoutX="31.0" layoutY="121.0" prefHeight="541.0" prefWidth="962.0">
+        <columns>
+          <TableColumn fx:id="tcId" prefWidth="120.0" text="Id" />
+          <TableColumn fx:id="tcNombre" prefWidth="120.0" text="Nombre" />
+            <TableColumn fx:id="tcTipo" prefWidth="120.0" text="Tipo" />
+            <TableColumn fx:id="tcEmpresa" prefWidth="120.0" text="Empresa" />
+            <TableColumn fx:id="tcEmail" prefWidth="120.0" text="Email" />
+            <TableColumn fx:id="tcTelefono" prefWidth="120.0" text="Telefono" />
+            <TableColumn fx:id="tcDescripcion" prefWidth="120.0" text="Descripción" />
+            <TableColumn fx:id="tcAdmin" prefWidth="120.0" text="Admin" />
+        </columns>
+      </TableView>
+      <HBox fx:id="Hbox" prefHeight="31.0" prefWidth="1253.0">
+         <children>
+            <MenuBar fx:id="menuBar" prefHeight="32.0" prefWidth="1351.0">
+              <menus>
+                <Menu fx:id="menuPerfil" mnemonicParsing="false" text="Perfil">
+                  <items>
+                    <MenuItem fx:id="menuAdministrador" mnemonicParsing="false" onAction="#configMenuAdministrador" text="Administrador" />
+                        <MenuItem fx:id="menuSalir" mnemonicParsing="false" onAction="#configMenuSalir" text="Salir" />
+                  </items>
+                </Menu>
+                  <Menu fx:id="menuVendedor" mnemonicParsing="false" text="Vendedor">
+                     <items>
+                        <MenuItem fx:id="menuVendedores" mnemonicParsing="false" onAction="#configMenuVendedores" text="Lista de vendedores" />
+                     </items>
+                  </Menu>
+              </menus>
+            </MenuBar>
+         </children>
+      </HBox>
+   </children>
+</Pane>

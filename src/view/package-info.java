@@ -1,4 +1,4 @@
 /*
  * Vistas de la aplicación cliente
  */
-package views;
+package view;
