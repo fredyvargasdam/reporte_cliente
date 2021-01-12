@@ -17,6 +17,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -41,6 +42,24 @@ public class InicioAdministradorVendedorController {
     private Pane pnInicioAdminVend;
     @FXML
     private TableView<?> tbVendedores;
+    @FXML
+    private TableColumn colUsuario;
+    @FXML
+    private TableColumn colEmail;
+    @FXML
+    private TableColumn colNombre;
+    @FXML
+    private TableColumn colEstado;
+    @FXML
+    private TableColumn colUltimoAcceso;
+    @FXML
+    private TableColumn colDni;
+    @FXML
+    private TableColumn colDireccion;
+    @FXML
+    private TableColumn colTienda;
+    @FXML
+    private TableColumn colSalario;
     @FXML
     private Label lblVendedor;
     @FXML
