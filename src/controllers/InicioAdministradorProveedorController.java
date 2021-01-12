@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -46,7 +48,7 @@ public class InicioAdministradorProveedorController {
 
     private static final Logger LOG = Logger.getLogger(InicioAdministradorProveedorController.class.getName());
 
-    private Stage stage = new Stage();
+    private Stage stage;
     @FXML
     private Pane pnInicioAdminProv;
     @FXML
@@ -93,6 +95,8 @@ public class InicioAdministradorProveedorController {
     private TableColumn<Administrador, Long> tcAdmin;
 
     private final List<Proveedor> proveedores = new ArrayList<>();
+
+    private Proveedor proveedor;
 
     /**
      * Recibe el escenario
@@ -166,74 +170,8 @@ public class InicioAdministradorProveedorController {
      */
     private void handleWindowShowing(WindowEvent event) {
         LOG.log(Level.INFO, "Beginning InicioAdministradorProveedorController::handleWindowShowing");
-        //btnActualizarProveedor.setDisable(true);
-        //btnBorrarProveedor.setDisable(true);
-
-    }
-
-    /**
-     * Nos permite redirigirnos hacia la ventana de SignUpProveedorView
-     *
-     * @param event ActionEvent
-     */
-    private void btnAltaProveedorClick(ActionEvent event) {
-        LOG.log(Level.INFO, "Ventana Alta Proveedor (SignUp_Proveedor)");
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SignUpProveedorView.fxml"));
-
-            Parent root = (Parent) loader.load();
-
-            /*SignUpProveedorController controller = ((SignUpProveedorController) loader.getController());
-            controller.initStage(root);*/
-            stage.hide();
-        } catch (IOException e) {
-            LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
-        }
-    }
-    
-    private List<Proveedor> getProveedores() {
-        Proveedor proveedor;
-        Administrador administrador;
-        for (int i = 0; i < 10; i++) {
-            proveedor = new Proveedor();
-            administrador = new Administrador();
-            //Administrador
-            administrador.setId_usuario(Long.valueOf(i));
-            //administrador.setId_usuario(Long.valueOf(1));
-            //Proveedor
-            proveedor.setIdProveedor(Long.valueOf(i));
-            proveedor.setNombre("Lucas");
-            proveedor.setTipo(ROPA);
-            proveedor.setEmpresa("Nike");
-            proveedor.setEmail("lucas@gmail.com");
-            proveedor.setTelefono("927500299");
-            proveedor.setDescripcion("Producto muy recomendado");
-            proveedor.setAdministrador(administrador);
-            //proveedor.setAdministrador(administrador.setId_usuario(Long.valueOf(i)));
-            proveedores.add(proveedor);
-        }
-
-        return proveedores;
-    }
-
-    /**
-     * Añade las imagenes de los botones
-     */
-    private void imagenBotones() {
-        //Creamos un objeto y en él guardaremos la ruta donde se encuentra las imagenes para los botones
-        URL linkAlta = getClass().getResource("/img/usuario.png");
-        URL linkBorrar = getClass().getResource("/img/eliminar.png");
-        URL linkActualizar = getClass().getResource("/img/refrescar.png");
-
-        //Instanciamos una imagen pasándole la ruta de las imagenes y las medidas del boton 
-        Image imageAlta = new Image(linkAlta.toString(), 32, 32, false, true);
-        Image imageBorrar = new Image(linkBorrar.toString(), 32, 32, false, true);
-        Image imageActualizar = new Image(linkActualizar.toString(), 32, 32, false, true);
-
-        //Añadimos la imagen a los botones que deban llevar icono
-        btnAltaProveedor.setGraphic(new ImageView(imageAlta));
-        btnBorrarProveedor.setGraphic(new ImageView(imageBorrar));
-        btnActualizarProveedor.setGraphic(new ImageView(imageActualizar));
+        btnActualizarProveedor.setDisable(true);
+        btnBorrarProveedor.setDisable(true);
 
     }
 
@@ -241,10 +179,12 @@ public class InicioAdministradorProveedorController {
      * Inicializa la tabla de proveedores
      */
     private void iniciarColumnasTabla() {
+        seleccionarProveedor();
         //Hacemos que la tabla sea editable
         tbProveedor.setEditable(true);
         //Rellenamos la tabla con los proveedores
-        proveedores.addAll(getProveedores());
+        //proveedores.addAll(getProveedores());
+        datosTabla();
         //Definimos las celdas de la tabla, incluyendo que algunas pueden ser editables
         //Id del proveedor
         tcId.setCellValueFactory(new PropertyValueFactory<>("idProveedor"));
@@ -298,7 +238,6 @@ public class InicioAdministradorProveedorController {
         });
         //Administrador asociado con el proveedor 
         tcAdmin.setCellValueFactory(new PropertyValueFactory<>("id_usuario"));
-
         //Añadimos las celdas dentro de la tabla de Proveedores (tbProveedor)
         proveedores.forEach((p) -> {
             tbProveedor.getItems().add(p);
@@ -306,8 +245,93 @@ public class InicioAdministradorProveedorController {
     }
 
     /**
+     * Nos permite seleccionar a un proveedor de la tabla y este controla que el
+     * botón BorrarProveedor y ActualizarProveedor esté habilitado o
+     * deshabilitado
+     */
+    private void seleccionarProveedor() {
+        tbProveedor.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    if (proveedor != null) {
+                        btnActualizarProveedor.setDisable(true);
+                        btnBorrarProveedor.setDisable(true);
+                    } else {
+                        btnActualizarProveedor.setDisable(false);
+                        btnBorrarProveedor.setDisable(false);
+                    }
+                });
+    }
+    //CONFIGURACIÓN DE LOS DATOS 
+
+    /**
+     *
+     */
+    private void datosTabla() {
+        //
+        Proveedor proveedor = new Proveedor();
+        Administrador administrador = new Administrador();
+        proveedor.setIdProveedor(Long.valueOf(1));
+        proveedor.setNombre("Lucas");
+        proveedor.setTipo(ROPA);
+        proveedor.setEmpresa("Nike");
+        proveedor.setEmail("lucas@gmail.com");
+        proveedor.setTelefono("927500299");
+        proveedor.setDescripcion("Producto muy recomendado");
+        proveedor.setAdministrador(administrador);
+
+        ObservableList<Proveedor> datos = FXCollections.observableArrayList(proveedor);
+        tbProveedor.setItems(datos);
+    }
+
+    /* private List<Proveedor> getProveedores() {
+        Proveedor proveedor;
+        Administrador administrador;
+        for (int i = 0; i < 10; i++) {
+            proveedor = new Proveedor();
+            administrador = new Administrador();
+            //Administrador
+            administrador.setId_usuario(Long.valueOf(i));
+            //administrador.setId_usuario(Long.valueOf(1));
+            //Proveedor
+            proveedor.setIdProveedor(Long.valueOf(i));
+            proveedor.setNombre("Lucas");
+            proveedor.setTipo(ROPA);
+            proveedor.setEmpresa("Nike");
+            proveedor.setEmail("lucas@gmail.com");
+            proveedor.setTelefono("927500299");
+            proveedor.setDescripcion("Producto muy recomendado");
+            proveedor.setAdministrador(administrador);
+            //proveedor.setAdministrador(administrador.setId_usuario(Long.valueOf(i)));
+            proveedores.add(proveedor);
+        }
+
+        return proveedores;
+    }*/
+    //CONFIGURACIÓN DE BOTONES
+    /**
+     * Nos permite redirigirnos hacia la ventana de SignUpProveedorView
+     *
+     * @param event ActionEvent
+     */
+    private void btnAltaProveedorClick(ActionEvent event) {
+        LOG.log(Level.INFO, "Ventana Alta Proveedor (SignUp_Proveedor)");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SignUpProveedorView.fxml"));
+
+            Parent root = (Parent) loader.load();
+
+            /*SignUpProveedorController controller = ((SignUpProveedorController) loader.getController());
+            controller.initStage(root);*/
+            stage.hide();
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
+        }
+    }
+
+    /**
      * Borra el proveedor seleccionado de la tabla de proveedores
-     * @param event 
+     *
+     * @param event
      */
     private void borrarProveedor(ActionEvent event) {
         LOG.log(Level.INFO, "Se ha borrado un proveedor");
@@ -315,13 +339,14 @@ public class InicioAdministradorProveedorController {
     }
 
     /**
-     * 
-     * @param event 
+     *
+     * @param event
      */
     private void actualizarProveedor(ActionEvent event) {
         LOG.log(Level.INFO, "Confirmación de guardado de cambios");
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setHeaderText(null);
+
         alert.setTitle("Administrador");
         alert.setContentText("¿Estas seguro de guardar los cambios?");
         Optional<ButtonType> respuesta = alert.showAndWait();
@@ -335,9 +360,11 @@ public class InicioAdministradorProveedorController {
         }
     }
 
+    //CONFIGURACIÓN DEL MENÚ
     /**
      * MenuItem que muestra un alerta informandonos de la conexión actual del
-     * usuario 
+     * usuario
+     *
      * @param event
      */
     @FXML
@@ -376,8 +403,9 @@ public class InicioAdministradorProveedorController {
     }
 
     /**
-     * MenuItem que nos redirige hacia la ventana de InicioAdministrador del lado 
-     * vendedor y cierra la ventana actual
+     * MenuItem que nos redirige hacia la ventana de InicioAdministrador del
+     * lado vendedor y cierra la ventana actual
+     *
      * @param event
      */
     @FXML
@@ -394,6 +422,28 @@ public class InicioAdministradorProveedorController {
         } catch (IOException e) {
             LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
         }
+    }
+
+    //CONFIGURACIÓN DE IMAGENES 
+    /**
+     * Añade las imagenes de los botones
+     */
+    private void imagenBotones() {
+        //Creamos un objeto y en él guardaremos la ruta donde se encuentra las imagenes para los botones
+        URL linkAlta = getClass().getResource("/img/usuario.png");
+        URL linkBorrar = getClass().getResource("/img/eliminar.png");
+        URL linkActualizar = getClass().getResource("/img/refrescar.png");
+
+        //Instanciamos una imagen pasándole la ruta de las imagenes y las medidas del boton 
+        Image imageAlta = new Image(linkAlta.toString(), 32, 32, false, true);
+        Image imageBorrar = new Image(linkBorrar.toString(), 32, 32, false, true);
+        Image imageActualizar = new Image(linkActualizar.toString(), 32, 32, false, true);
+
+        //Añadimos la imagen a los botones que deban llevar icono
+        btnAltaProveedor.setGraphic(new ImageView(imageAlta));
+        btnBorrarProveedor.setGraphic(new ImageView(imageBorrar));
+        btnActualizarProveedor.setGraphic(new ImageView(imageActualizar));
+
     }
 
 }

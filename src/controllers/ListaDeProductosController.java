@@ -42,7 +42,7 @@ public class ListaDeProductosController {
 
     private static final Logger LOG = Logger.getLogger(ListaDeProductosController.class.getName());
 
-    private Stage stage = new Stage();
+    private Stage stage;
 
     @FXML
     private AnchorPane apInicioProductos;
