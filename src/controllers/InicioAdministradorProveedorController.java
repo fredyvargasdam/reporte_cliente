@@ -63,8 +63,6 @@ public class InicioAdministradorProveedorController {
     @FXML
     private Button btnBorrarProveedor;
     @FXML
-    private Button btnActualizarProveedor;
-    @FXML
     private MenuBar menuBar;
     @FXML
     private Menu menuPerfil;
@@ -123,21 +121,24 @@ public class InicioAdministradorProveedorController {
      * @param root, clase parent
      */
     public void initStage(Parent root) {
+        //Indicamos las columnas que debe tener la tabla y como deben ser
         iniciarColumnasTabla();
         //Configuración de la ventana
         LOG.log(Level.INFO, "Ventana Inicio de Administrador (Proveedor)");
-
         Scene scene = new Scene(root);
-        //((HBox) scene.getRoot()).getChildren().addAll(menuBar);
         stage.setScene(scene);
         stage.setTitle("Administrador");
         stage.setResizable(false);
+        //Indicamos las imagenes de los botones
         imagenBotones();
+        //Indicamos el metodo que se encargara de la apariencia del stage cuando se cierre la ventana
         stage.setOnCloseRequest(this::handleWindowClose);
+        //Indicamos el metodo que se encargara de la apariencia del stage cuando se inicie la ventana
         stage.setOnShowing(this::handleWindowShowing);
+        //Indicamos las acciones de cada boton 
         btnAltaProveedor.setOnAction(this::btnAltaProveedorClick);
         btnBorrarProveedor.setOnAction(this::borrarProveedor);
-        btnActualizarProveedor.setOnAction(this::actualizarProveedor);
+        //Mostramos el stage
         stage.show();
 
     }
@@ -171,9 +172,8 @@ public class InicioAdministradorProveedorController {
      */
     private void handleWindowShowing(WindowEvent event) {
         LOG.log(Level.INFO, "Beginning InicioAdministradorProveedorController::handleWindowShowing");
-        btnActualizarProveedor.setDisable(true);
+        //Indicamos que el boton borrarProveedor tiene que estar desactivado
         btnBorrarProveedor.setDisable(true);
-
     }
 
     /**
@@ -254,16 +254,14 @@ public class InicioAdministradorProveedorController {
         tbProveedor.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     if (proveedor != null) {
-                        btnActualizarProveedor.setDisable(true);
                         btnBorrarProveedor.setDisable(true);
                     } else {
-                        btnActualizarProveedor.setDisable(false);
                         btnBorrarProveedor.setDisable(false);
                     }
                 });
     }
+    
     //CONFIGURACIÓN DE LOS DATOS 
-
     /**
      *
      */
@@ -338,29 +336,7 @@ public class InicioAdministradorProveedorController {
         LOG.log(Level.INFO, "Se ha borrado un proveedor");
         tbProveedor.getItems().removeAll(tbProveedor.getSelectionModel().getSelectedItem());
     }
-
-    /**
-     *
-     * @param event
-     */
-    private void actualizarProveedor(ActionEvent event) {
-        LOG.log(Level.INFO, "Confirmación de guardado de cambios");
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText(null);
-
-        alert.setTitle("Administrador");
-        alert.setContentText("¿Estas seguro de guardar los cambios?");
-        Optional<ButtonType> respuesta = alert.showAndWait();
-
-        if (respuesta.get() == ButtonType.OK) {
-            LOG.log(Level.INFO, "Has pulsado el boton Aceptar");
-            event.consume();
-        } else {
-            LOG.log(Level.INFO, "Has pulsado el boton Cancelar");
-            event.consume();
-        }
-    }
-
+    
     //CONFIGURACIÓN DEL MENÚ
     /**
      * MenuItem que muestra un alerta informandonos de la conexión actual del
@@ -375,7 +351,7 @@ public class InicioAdministradorProveedorController {
         alert.setTitle("Información del Administrador");
         alert.setHeaderText("Usuario: Administrador");
 
-        SimpleDateFormat sdf = new SimpleDateFormat("hh: mm dd-MMM-aaaa");
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm dd-MMM-aaaa");
         String fechaComoCadena = sdf.format(new Date());
         alert.setContentText(fechaComoCadena);
         alert.showAndWait();
@@ -433,17 +409,14 @@ public class InicioAdministradorProveedorController {
         //Creamos un objeto y en él guardaremos la ruta donde se encuentra las imagenes para los botones
         URL linkAlta = getClass().getResource("/img/usuario.png");
         URL linkBorrar = getClass().getResource("/img/eliminar.png");
-        URL linkActualizar = getClass().getResource("/img/refrescar.png");
 
         //Instanciamos una imagen pasándole la ruta de las imagenes y las medidas del boton 
         Image imageAlta = new Image(linkAlta.toString(), 32, 32, false, true);
         Image imageBorrar = new Image(linkBorrar.toString(), 32, 32, false, true);
-        Image imageActualizar = new Image(linkActualizar.toString(), 32, 32, false, true);
 
         //Añadimos la imagen a los botones que deban llevar icono
         btnAltaProveedor.setGraphic(new ImageView(imageAlta));
         btnBorrarProveedor.setGraphic(new ImageView(imageBorrar));
-        btnActualizarProveedor.setGraphic(new ImageView(imageActualizar));
 
     }
 
