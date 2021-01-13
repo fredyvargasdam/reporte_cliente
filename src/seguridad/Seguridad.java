@@ -1,34 +1,26 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package seguridad;
 
-import java.io.FileInputStream;
-import java.security.InvalidKeyException;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
-import java.security.spec.KeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 /**
  * Esta clase se encargará de la encriptación de datos.
+ *
  * @author Fredy
  */
 public class Seguridad {
 
     private static PublicKey publicKey;
-    private static  Cipher rsa;
+    private static Cipher cipher;
     private static final char[] HEXADECIMAL_ARRAY = "0123456789ABCDEF".toCharArray();
-    private static Logger LOGGER = Logger.getLogger(Seguridad.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Seguridad.class.getName());
 
     /**
      * Cargar clave pública
@@ -37,18 +29,15 @@ public class Seguridad {
      * @return clave publica
      * @throws Exception
      */
-   
-        private static PublicKey loadPublicKey(String fileName) throws Exception {
-        FileInputStream fis = new FileInputStream(fileName);
-        int numBtyes = fis.available();
-        byte[] bytes = new byte[numBtyes];
-        fis.read(bytes);
-        fis.close();
-
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        KeySpec keySpec = new X509EncodedKeySpec(bytes);
-        PublicKey keyFromBytes = keyFactory.generatePublic(keySpec);
-        return keyFromBytes;
+    private static byte[] fileReader(String path) {
+        byte ret[] = null;
+        File file = new File(path);
+        try {
+            ret = Files.readAllBytes(file.toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ret;
     }
 
     // Convierte Array de Bytes en hexadecimal
@@ -63,26 +52,28 @@ public class Seguridad {
     }
 
     /**
-     * Contraseña encriptada con clave pública y convertida a hexadecimal
+     * Contraseña cifrada con clave pública y convertida a hexadecimal
      *
      * @param contrasenia
      * @return contrasenia cifrada
      */
     public static String encriptarContrasenia(String contrasenia) {
         String pass = "";
+
         try {
-            rsa = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-            publicKey = loadPublicKey("publickey.dat");
-            rsa.init(Cipher.ENCRYPT_MODE, publicKey);
-            byte[] encriptado = rsa.doFinal(contrasenia.getBytes());
+            //Calve pública
+            byte fileKey[] = fileReader("Public.key");
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(fileKey);
+            publicKey = keyFactory.generatePublic(x509EncodedKeySpec);
+            cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            byte[] encriptado = cipher.doFinal(contrasenia.getBytes());
             pass = bytesToHexadecimal(encriptado);
-            
-        } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException ex) {
-            LOGGER.severe("Error al encriptar con clave pública");
+
         } catch (Exception ex) {
-            Logger.getLogger(Seguridad.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.severe("Error al encriptar con clave pública");
         }
         return pass;
     }
-
 }
