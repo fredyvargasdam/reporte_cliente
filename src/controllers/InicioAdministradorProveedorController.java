@@ -38,6 +38,7 @@ import modelo.Administrador;
 import modelo.Proveedor;
 import modelo.TipoProducto;
 import static modelo.TipoProducto.ROPA;
+import modelo.Usuario;
 
 /**
  * FXML Controller class
@@ -95,7 +96,7 @@ public class InicioAdministradorProveedorController {
     private TableColumn<Administrador, Long> tcAdmin;
 
     private final List<Proveedor> proveedores = new ArrayList<>();
-
+    private Usuario usuario;
     private Proveedor proveedor;
 
     /**

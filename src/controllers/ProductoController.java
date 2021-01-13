@@ -12,9 +12,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import modelo.Usuario;
 
@@ -23,20 +22,27 @@ import modelo.Usuario;
  *
  * @author essad
  */
-public class ReservaController  {
+public class ProductoController  {
 
     @FXML
-    private Pane pnReserva;
-    @FXML
-    private Label lblReservas;
-    @FXML
-    private TableView<?> tbReservas;
+    private ChoiceBox<?> cbTalla;
     @FXML
     private Button btnVolver;
+    @FXML
+    private Button btnReservar;
+    @FXML
+    private Label lblModelo;
+    @FXML
+    private Label lblPrecio;
+    @FXML
+    private Label lblStock;
+    @FXML
+    private Label lblDescipcion;
+
  private Usuario usuario;
     
     private Stage stage = new Stage();
-    private static final Logger LOG = Logger.getLogger("controllers.ReservasController");
+    private static final Logger LOG = Logger.getLogger("controllers.ProductoController");
 
     /**
      * Recibe el escenario
@@ -72,6 +78,6 @@ public class ReservaController  {
      */
     public void initStage(Parent root) {
 
-    }  
+    }   
     
 }

@@ -38,7 +38,12 @@ public class Reserva implements Serializable {
     //Fecha de reserva
 
     private Timestamp fechaReserva;
-
+    //Fecha de entrega prevista
+    
+    private Timestamp fechaEntrega;
+    
+    
+    
     /**
      * Devuelve la id de la reserva
      *
@@ -113,7 +118,7 @@ public class Reserva implements Serializable {
     }
 
     /**
-     * devuelve del producto
+     * Devuelve del producto
      *
      * @return producto
      */
@@ -123,7 +128,7 @@ public class Reserva implements Serializable {
     }
 
     /**
-     * inserta el producto a la reserva
+     * Inserta el producto a la reserva
      *
      * @param producto
      */
@@ -132,7 +137,7 @@ public class Reserva implements Serializable {
     }
 
     /**
-     * devuelve la cantidad del producto
+     * Devuelve la cantidad del producto
      *
      * @return cantidad
      */
@@ -141,7 +146,7 @@ public class Reserva implements Serializable {
     }
 
     /**
-     * inserta la cantidad del producto
+     * Inserta la cantidad del producto
      *
      * @param cantidad
      */
@@ -150,7 +155,7 @@ public class Reserva implements Serializable {
     }
 
     /**
-     * devuelve la fecha de la reserva
+     * Devuelve la fecha de la reserva
      *
      * @return
      */
@@ -159,11 +164,28 @@ public class Reserva implements Serializable {
     }
 
     /**
-     * inserta la fecha de reserva
+     * Inserta la fecha de reserva
      *
      * @param fechaReserva
      */
     public void setFechaReserva(Timestamp fechaReserva) {
         this.fechaReserva = fechaReserva;
+    }
+    /**
+     * Devuelve la fecha de la entrega prevista
+     *
+     * @return fechaEntrega
+     */
+    public Timestamp getFechaEntrega() {
+        return fechaEntrega;
+    }
+
+    /**
+     * Inserta la fecha de la entrega prevista
+     *
+     * @param fechaEntrega
+     */
+    public void setFechaEntrega(Timestamp fechaEntrega) {
+        this.fechaEntrega = fechaEntrega;
     }
 }

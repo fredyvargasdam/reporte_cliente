@@ -12,31 +12,37 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import modelo.Usuario;
 
 /**
  * FXML Controller class
  *
- * @author essad
+ * @author Fredy
  */
-public class ReservaController  {
+public class RegistrarClienteController  {
 
     @FXML
-    private Pane pnReserva;
+    private TextField tfCorreoElectronico;
     @FXML
-    private Label lblReservas;
+    private TextField tfNombre;
     @FXML
-    private TableView<?> tbReservas;
+    private TextField tfDirecion;
     @FXML
-    private Button btnVolver;
- private Usuario usuario;
+    private TextField tfTelefono;
+    @FXML
+    private Button btnCancelar;
+    @FXML
+    private Button btnRegistrar;
+    @FXML
+    private AnchorPane apRegistrarCliente;
+
+     private Usuario usuario;
     
     private Stage stage = new Stage();
-    private static final Logger LOG = Logger.getLogger("controllers.ReservasController");
+    private static final Logger LOG = Logger.getLogger("controllers.RegistrarClienteController");
 
     /**
      * Recibe el escenario

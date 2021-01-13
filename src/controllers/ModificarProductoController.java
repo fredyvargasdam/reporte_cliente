@@ -12,31 +12,52 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import modelo.Usuario;
 
 /**
  * FXML Controller class
  *
- * @author essad
+ * @author Fredy
  */
-public class ReservaController  {
+public class ModificarProductoController  {
 
     @FXML
-    private Pane pnReserva;
+    private Button btnModificar;
     @FXML
-    private Label lblReservas;
+    private Button btnGuardar;
     @FXML
-    private TableView<?> tbReservas;
+    private Button btnCambiar;
+    @FXML
+    private TextField tfModelo;
+    @FXML
+    private Label lblIdProducto;
+    @FXML
+    private TextField tfStock;
+    @FXML
+    private TextField tfPrecio;
+    @FXML
+    private ChoiceBox<?> cbTipo;
+    @FXML
+    private ChoiceBox<?> cbProveedor;
+    @FXML
+    private TextArea taDescripcion;
     @FXML
     private Button btnVolver;
- private Usuario usuario;
-    
+    @FXML
+    private AnchorPane apModificarProducto;
+    @FXML
+    private ChoiceBox<?> cbSeleccionaTalla;
+
+    private Usuario usuario;
+
     private Stage stage = new Stage();
-    private static final Logger LOG = Logger.getLogger("controllers.ReservasController");
+    private static final Logger LOG = Logger.getLogger("controllers.ModificarProductoController");
 
     /**
      * Recibe el escenario
@@ -72,6 +93,6 @@ public class ReservaController  {
      */
     public void initStage(Parent root) {
 
-    }  
-    
+    }
+
 }

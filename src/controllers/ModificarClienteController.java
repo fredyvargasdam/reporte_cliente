@@ -12,31 +12,45 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import modelo.Usuario;
 
 /**
  * FXML Controller class
  *
- * @author essad
+ * @author Fredy
  */
-public class ReservaController  {
+public class ModificarClienteController  {
 
     @FXML
-    private Pane pnReserva;
+    private TextField tfCorreoElectronico;
     @FXML
-    private Label lblReservas;
+    private TextField tfNombre;
     @FXML
-    private TableView<?> tbReservas;
+    private TextField tfDireccion;
     @FXML
-    private Button btnVolver;
- private Usuario usuario;
-    
+    private TextField tfTelefono;
+    @FXML
+    private PasswordField pfContrasenia;
+    @FXML
+    private PasswordField pfNuevaContrasenia;
+    @FXML
+    private PasswordField pfRepiteContrasenia;
+    @FXML
+    private Button btnCancelar;
+    @FXML
+    private Button btnGuardar;
+    @FXML
+    private AnchorPane apModificarCliente;
+    @FXML
+    private TextField tfUsuario;
+    private Usuario usuario;
+
     private Stage stage = new Stage();
-    private static final Logger LOG = Logger.getLogger("controllers.ReservasController");
+    private static final Logger LOG = Logger.getLogger("controllers.ModificarClienteController");
 
     /**
      * Recibe el escenario
@@ -72,6 +86,6 @@ public class ReservaController  {
      */
     public void initStage(Parent root) {
 
-    }  
-    
+    }
+
 }

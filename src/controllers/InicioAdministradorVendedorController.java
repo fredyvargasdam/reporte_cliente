@@ -27,6 +27,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+import modelo.Usuario;
 
 /**
  * FXML Controller class
@@ -83,6 +84,17 @@ public class InicioAdministradorVendedorController {
     @FXML
     private MenuItem menuSalir;
 
+    private Usuario usuario;
+
+    /**
+     * Establece un Usuario
+     *
+     * @param usuario Usuario
+     */
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
     /**
      * Recibe el escenario
      *
@@ -113,7 +125,7 @@ public class InicioAdministradorVendedorController {
         stage.setTitle("Administrador");
         stage.setResizable(false);
         opcionesMenu();
-        
+
         //Pane pane = new Pane();
         //MenuBar
         /*
@@ -154,7 +166,7 @@ public class InicioAdministradorVendedorController {
         menuPerfil.getItems().addAll(menuAdministrador, menuSalir);
         menuProveedor.getItems().add(menuProveedores);
         //pane.setTop(menuBar);
-        */
+         */
         imagenBotones();
         stage.setOnCloseRequest(this::handleWindowClose);
         stage.setOnShowing(this::handleWindowShowing);
@@ -247,7 +259,7 @@ public class InicioAdministradorVendedorController {
 
         return menuBar;*/
 
-       /* //BorderPane root = new BorderPane();
+ /* //BorderPane root = new BorderPane();
         //MenuBar
         MenuBar menuBar = new MenuBar();
         //Menus 
@@ -291,7 +303,7 @@ public class InicioAdministradorVendedorController {
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
-*/
+         */
     }
 
 }

@@ -9,6 +9,6 @@ package modelo;
  *
  * @author pocoy
  */
-enum PrivilegioUsuario {
+public enum PrivilegioUsuario {
     ADMINISTRADOR, CLIENTE, VENDEDOR;
 }
