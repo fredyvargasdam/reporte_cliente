@@ -30,16 +30,6 @@ public class SignUpController {
     @FXML
     private Button btnRegistrarse;
     @FXML
-    private TextField tfUsuario;
-    @FXML
-    private TextField tfCorreoElectronico;
-    @FXML
-    private TextField tfNombre;
-    @FXML
-    private TextField tfDireccion;
-    @FXML
-    private TextField tfTelefono;
-    @FXML
     private PasswordField pfContrasenia;
     @FXML
     private PasswordField pfConfirmarContrasenia;

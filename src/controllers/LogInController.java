@@ -1,10 +1,6 @@
 package controllers;
 
 import client.UsuarioRESTClient;
-import exceptions.AutenticacionFallidaException;
-import exceptions.ErrorBDException;
-import exceptions.ErrorServerException;
-import exceptions.UsuarioNoEncontradoException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,7 +11,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
@@ -25,9 +20,12 @@ import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import factory.UsuarioFactory;
+import java.net.URL;
 import java.util.Optional;
-import javafx.event.EventHandler;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import manager.UsuarioManager;
 import modelo.Usuario;
 import seguridad.Seguridad;
@@ -53,13 +51,17 @@ public class LogInController {
     private Button btnIniciar;
     @FXML
     private Hyperlink hlRegistrarse;
-    @FXML
-    private Label lblerrorusuario;
-    @FXML
-    private Label lblErrorContrasena;
 
     private Stage stage = new Stage();
     private Usuario usuario;
+    @FXML
+    private Pane pnPrincipal;
+    @FXML
+    private Label lblUsuario;
+    @FXML
+    private Label lblContrasena;
+    @FXML
+    private ImageView ivLogo;
 
     public LogInController() {
 
@@ -89,10 +91,12 @@ public class LogInController {
      * @param root, clase parent
      */
     public void initStage(Parent root) {
+        //Añadimos la imagen del logo de la aplicacion
+        ivLogo.setImage(new Image("/img/logo.png"));
         LOG.log(Level.INFO, "Ventana LOGIN");
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        stage.setTitle("Inicio");
+        stage.setTitle("¡Bienvenido a Flyshoes!");
         stage.setResizable(false);
         stage.setOnCloseRequest(this::handleWindowClose);
         stage.setOnShowing(this::handleWindowShowing);
@@ -134,7 +138,6 @@ public class LogInController {
      */
     private void handleWindowShowing(WindowEvent event) {
         btnIniciar.setDisable(true);
-        lblerrorusuario.setVisible(false);
         LOG.log(Level.INFO, "Beginning LoginController::handleWindowShowing");
 
     }
@@ -147,12 +150,11 @@ public class LogInController {
      * @param newValue Valor nuevo
      */
     private void txtChanged(ObservableValue observable, String oldValue, String newValue) {
-        Validar.addTextLimiter(txtUsuario, treinta);
+        /*Validar.addTextLimiter(txtUsuario, treinta);
         Validar.addTextLimiterPass(txtContrasena, treinta);
         if (!txtUsuario.getText().trim().equals("") && !txtContrasena.getText().trim().equals("")) {
-            boolean isValidUsuario = Validar.isValid(txtUsuario, lblerrorusuario, "Usuario invalido", "");
-            lblerrorusuario.setVisible(true);
-
+           // boolean isValidUsuario = Validar.isValid(txtUsuario, lblerrorusuario, "Usuario invalido", "");
+           
           //  lblErrorContrasena.setVisible(false);
             txtContrasena.setStyle("-fx-focus-color: #039ED3; -fx-faint-focus-color: #039ED322;");
 
@@ -167,7 +169,7 @@ public class LogInController {
 
             btnIniciar.setDisable(true);
 
-        }
+        }*/
     }
 
     /**
@@ -184,7 +186,7 @@ public class LogInController {
         Alert alert;
         try {
             //usuario = usuarioM.ClusuarioByLogin(Usuario.class, usuario.getLogin(), Seguridad.encriptarContrasenia(usuario.getPassword()));
-            UsuarioRESTClient usuarioR=(UsuarioRESTClient) usuarioM;
+            UsuarioRESTClient usuarioR = (UsuarioRESTClient) usuarioM;
             usuario = usuarioR.usuarioByLogin(Usuario.class, usuario.getLogin(), Seguridad.encriptarContrasenia(usuario.getPassword()));
             FXMLLoader loader = null;
             Parent root = null;
