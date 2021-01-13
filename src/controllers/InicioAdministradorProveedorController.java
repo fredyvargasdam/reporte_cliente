@@ -24,7 +24,9 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.ChoiceBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
@@ -191,10 +193,34 @@ public class InicioAdministradorProveedorController {
         tcId.setCellValueFactory(new PropertyValueFactory<>("idProveedor"));
         //Nombre del proveedor
         tcNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        tcNombre.setCellFactory(TextFieldTableCell.forTableColumn());
+        tcNombre.setOnEditCommit((TableColumn.CellEditEvent<Proveedor, String> data) -> {
+            LOG.log(Level.INFO, "Nuevo Nombre: {0}", data.getNewValue());
+            LOG.log(Level.INFO, "Antiguo Nombre: {0}", data.getOldValue());
+            //Devuelve el dato de la celda
+            Proveedor p = data.getRowValue();
+            //Añadimos el nuevo valor a la celda
+            p.setNombre(data.getNewValue());
+        });
         //Tipo de producto 
         tcTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+        /*tcTipo.setCellFactory(ChoiceBoxTableCell.
+                forTableColumn(TipoProducto.ROPA, TipoProducto.ZAPATILLAS));
+        tcTipo.addEventHandler(TableColumn.<Proveedor, TipoProducto>editCommitEvent(),
+                event -> actualizarTipoProducto(event));
+        // tvReservas.getSelectionModel().selectedItemProperty().addListener(this::handleReservaTableSelectionChanged);
+        tbProveedor.setItems((ObservableList<Proveedor>) proveedores);*/
         //Empresa del proveedor
         tcEmpresa.setCellValueFactory(new PropertyValueFactory<>("empresa"));
+        tcEmpresa.setCellFactory(TextFieldTableCell.forTableColumn());
+        tcEmpresa.setOnEditCommit((TableColumn.CellEditEvent<Proveedor, String> data) -> {
+            LOG.log(Level.INFO, "Nuevo Empresa: {0}", data.getNewValue());
+            LOG.log(Level.INFO, "Antigua Empresa: {0}", data.getOldValue());
+            //Devuelve el dato de la celda
+            Proveedor p = data.getRowValue();
+            //Añadimos el nuevo valor a la celda
+            p.setEmpresa(data.getNewValue());
+        });
         //Email del proveedor
         tcEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         //Indicamos que la celda puede cambiar a un TextField
@@ -260,7 +286,7 @@ public class InicioAdministradorProveedorController {
                     }
                 });
     }
-    
+
     //CONFIGURACIÓN DE LOS DATOS 
     /**
      *
@@ -313,18 +339,17 @@ public class InicioAdministradorProveedorController {
      * @param event ActionEvent
      */
     private void btnAltaProveedorClick(ActionEvent event) {
-        LOG.log(Level.INFO, "Ventana Alta Proveedor (SignUp_Proveedor)");
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SignUpProveedorView.fxml"));
+        //Posicion actual
+        TablePosition pos = tbProveedor.getFocusModel().getFocusedCell();
+        //
+        tbProveedor.getSelectionModel().clearSelection();
 
-            Parent root = (Parent) loader.load();
+        Proveedor nuevoProveedor = new Proveedor();
+        tbProveedor.getItems().add(nuevoProveedor);
 
-            /*SignUpProveedorController controller = ((SignUpProveedorController) loader.getController());
-            controller.initStage(root);*/
-            stage.hide();
-        } catch (IOException e) {
-            LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
-        }
+        int row = tbProveedor.getItems().size() - 1;
+        tbProveedor.getSelectionModel().select(row, pos.getTableColumn());
+        tbProveedor.scrollTo(nuevoProveedor);
     }
 
     /**
@@ -336,7 +361,7 @@ public class InicioAdministradorProveedorController {
         LOG.log(Level.INFO, "Se ha borrado un proveedor");
         tbProveedor.getItems().removeAll(tbProveedor.getSelectionModel().getSelectedItem());
     }
-    
+
     //CONFIGURACIÓN DEL MENÚ
     /**
      * MenuItem que muestra un alerta informandonos de la conexión actual del
@@ -418,6 +443,12 @@ public class InicioAdministradorProveedorController {
         btnAltaProveedor.setGraphic(new ImageView(imageAlta));
         btnBorrarProveedor.setGraphic(new ImageView(imageBorrar));
 
+    }
+
+    private void actualizarTipoProducto(TableColumn.CellEditEvent<Proveedor, TipoProducto> event) {
+        Proveedor proveedor = event.getRowValue();
+        TipoProducto tipo = event.getNewValue();
+        proveedor.setTipo(event.getNewValue());
     }
 
 }
