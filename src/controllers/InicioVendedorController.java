@@ -81,7 +81,7 @@ public class InicioVendedorController implements Initializable {
     private Label lblVendedor;
 
     private Usuario usuario;
-    
+
     private Stage stage = new Stage();
     private static final Logger LOG = Logger.getLogger("controllers.InicioVendedorController");
 
@@ -118,7 +118,7 @@ public class InicioVendedorController implements Initializable {
      * @param root Clase Parent
      */
     public void initStage(Parent root) {
-
+        stage.show();
     }
 
     private List<Producto> getProductos() throws IOException {

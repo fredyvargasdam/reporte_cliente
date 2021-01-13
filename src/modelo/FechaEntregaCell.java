@@ -5,11 +5,12 @@
  */
 package modelo;
 
-import java.sql.Timestamp;
+
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.Date;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableCell;
 
@@ -17,7 +18,7 @@ import javafx.scene.control.TableCell;
  *
  * @author Fredy
  */
-public class FechaEntregaCell extends TableCell<Reserva, Timestamp> {
+public class FechaEntregaCell extends TableCell<Reserva, Date> {
 
     private DatePicker fecha;
     
@@ -43,7 +44,7 @@ public class FechaEntregaCell extends TableCell<Reserva, Timestamp> {
     }
 
     @Override
-    public void updateItem(Timestamp item, boolean empty) {
+    public void updateItem(Date item, boolean empty) {
         super.updateItem(item, empty);
      //   fecha.setDisable(empty || item.toLocalDateTime().toLocalDate().isBefore(LocalDate.now()));
     //    fecha.setEditable(false);
@@ -84,7 +85,7 @@ public class FechaEntregaCell extends TableCell<Reserva, Timestamp> {
         fecha = new DatePicker(getDate());
         fecha.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
         fecha.setOnAction((value) -> {
-            commitEdit(Timestamp.from(fecha.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            commitEdit(Date.from(fecha.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
         });
     }
 

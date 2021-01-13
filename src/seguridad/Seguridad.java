@@ -37,26 +37,7 @@ public class Seguridad {
      * @return clave publica
      * @throws Exception
      */
-    /*
-    private static PublicKey loadPublicKey(String fileName) {
-        FileInputStream fis = null;
-        PublicKey keyFromBytes = null;
-        System.out.println("Aqui estoy buscando: " + System.getProperty("user.dir"));
-        try {
-            new FileInputStream(fileName);
-            int numBtyes = fis.available();
-            byte[] bytes = new byte[numBtyes];
-            fis.read(bytes);
-            fis.close();
-            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            KeySpec keySpec = new X509EncodedKeySpec(bytes);
-            keyFromBytes = keyFactory.generatePublic(keySpec);
-
-        } catch (Exception e) {
-            LOGGER.severe("Error al cargar la clave pública " + e.getMessage());
-        }
-        return keyFromBytes;
-    }*/
+   
         private static PublicKey loadPublicKey(String fileName) throws Exception {
         FileInputStream fis = new FileInputStream(fileName);
         int numBtyes = fis.available();
@@ -95,7 +76,7 @@ public class Seguridad {
             rsa.init(Cipher.ENCRYPT_MODE, publicKey);
             byte[] encriptado = rsa.doFinal(contrasenia.getBytes());
             pass = bytesToHexadecimal(encriptado);
-            System.out.println(pass);
+            
         } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException ex) {
             LOGGER.severe("Error al encriptar con clave pública");
         } catch (Exception ex) {

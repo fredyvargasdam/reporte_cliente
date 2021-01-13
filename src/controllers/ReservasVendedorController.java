@@ -12,20 +12,18 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -71,11 +69,11 @@ public class ReservasVendedorController implements Initializable {
     @FXML
     private TableColumn<Reserva, String> tcDescripcion;
     @FXML
-    private TableColumn<Reserva, Timestamp> tcFecha;
+    private TableColumn<Reserva, Date> tcFecha;
     @FXML
-    private TableColumn<Reserva, Timestamp> tcRealizada;
+    private TableColumn<Reserva, Date> tcRealizada;
     @FXML
-    private TableColumn<Reserva, Timestamp> tcEntrega;
+    private TableColumn<Reserva, Date> tcEntrega;
     //  private TableColumn<BirthdayEvent, Timestamp> tcEntrega;
     @FXML
     private TableColumn<EstadoReserva, EstadoReserva> tcEstado;
@@ -186,9 +184,9 @@ public class ReservasVendedorController implements Initializable {
             });
             tcRealizada.setCellValueFactory(new PropertyValueFactory<>("fechaReserva"));
             tcEntrega.setCellValueFactory(new PropertyValueFactory<>("fechaEntrega"));
-            tcEntrega.setCellFactory(new Callback<TableColumn<Reserva, Timestamp>, TableCell<Reserva, Timestamp>>() {
+            tcEntrega.setCellFactory(new Callback<TableColumn<Reserva, Date>, TableCell<Reserva, Date>>() {
                 @Override
-                public TableCell<Reserva, Timestamp> call(TableColumn<Reserva, Timestamp> arg0) {      
+                public TableCell<Reserva, Date> call(TableColumn<Reserva, Date> arg0) {      
                     return new FechaEntregaCell();
                 }
             });

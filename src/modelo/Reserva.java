@@ -2,9 +2,11 @@ package modelo;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Date;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * Esta clase se encargará sobre la gestión de reservas
@@ -36,11 +38,11 @@ public class Reserva implements Serializable {
 
     private Integer cantidad;
     //Fecha de reserva
-
-    private Timestamp fechaReserva;
+    
+    private Date fechaReserva;
     //Fecha de entrega prevista
     
-    private Timestamp fechaEntrega;
+    private Date fechaEntrega;
     
     
     
@@ -159,7 +161,7 @@ public class Reserva implements Serializable {
      *
      * @return
      */
-    public Timestamp getFechaReserva() {
+    public Date getFechaReserva() {
         return fechaReserva;
     }
 
@@ -168,7 +170,7 @@ public class Reserva implements Serializable {
      *
      * @param fechaReserva
      */
-    public void setFechaReserva(Timestamp fechaReserva) {
+    public void setFechaReserva(Date fechaReserva) {
         this.fechaReserva = fechaReserva;
     }
     /**
@@ -176,7 +178,7 @@ public class Reserva implements Serializable {
      *
      * @return fechaEntrega
      */
-    public Timestamp getFechaEntrega() {
+    public Date getFechaEntrega() {
         return fechaEntrega;
     }
 
@@ -185,7 +187,7 @@ public class Reserva implements Serializable {
      *
      * @param fechaEntrega
      */
-    public void setFechaEntrega(Timestamp fechaEntrega) {
+    public void setFechaEntrega(Date fechaEntrega) {
         this.fechaEntrega = fechaEntrega;
     }
 }

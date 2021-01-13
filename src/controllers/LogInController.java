@@ -1,10 +1,6 @@
 package controllers;
 
 import client.UsuarioRESTClient;
-import exceptions.AutenticacionFallidaException;
-import exceptions.ErrorBDException;
-import exceptions.ErrorServerException;
-import exceptions.UsuarioNoEncontradoException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,7 +11,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
@@ -26,7 +21,6 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import factory.UsuarioFactory;
 import java.util.Optional;
-import javafx.event.EventHandler;
 import javafx.scene.control.ButtonType;
 import manager.UsuarioManager;
 import modelo.Usuario;
@@ -186,6 +180,7 @@ public class LogInController {
             //usuario = usuarioM.ClusuarioByLogin(Usuario.class, usuario.getLogin(), Seguridad.encriptarContrasenia(usuario.getPassword()));
             UsuarioRESTClient usuarioR=(UsuarioRESTClient) usuarioM;
             usuario = usuarioR.usuarioByLogin(Usuario.class, usuario.getLogin(), Seguridad.encriptarContrasenia(usuario.getPassword()));
+            System.out.println(usuario.getLastAccess());
             FXMLLoader loader = null;
             Parent root = null;
             switch (usuario.getPrivilege()) {
