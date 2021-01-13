@@ -12,31 +12,44 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import modelo.Usuario;
 
 /**
  * FXML Controller class
  *
- * @author essad
+ * @author Fredy
  */
-public class ReservaController  {
+public class SignUpController {
 
     @FXML
-    private Pane pnReserva;
+    private Button btnCancelar;
     @FXML
-    private Label lblReservas;
+    private Button btnRegistrarse;
     @FXML
-    private TableView<?> tbReservas;
+    private TextField tfUsuario;
     @FXML
-    private Button btnVolver;
- private Usuario usuario;
-    
+    private TextField tfCorreoElectronico;
+    @FXML
+    private TextField tfNombre;
+    @FXML
+    private TextField tfDireccion;
+    @FXML
+    private TextField tfTelefono;
+    @FXML
+    private PasswordField pfContrasenia;
+    @FXML
+    private PasswordField pfConfirmarContrasenia;
+    @FXML
+    private AnchorPane apSignUp;
+
+    private Usuario usuario;
+
     private Stage stage = new Stage();
-    private static final Logger LOG = Logger.getLogger("controllers.ReservasController");
+    private static final Logger LOG = Logger.getLogger("controllers.SignUpController");
 
     /**
      * Recibe el escenario
@@ -71,7 +84,7 @@ public class ReservaController  {
      * @param root Clase Parent
      */
     public void initStage(Parent root) {
+      stage.show();
+    }
 
-    }  
-    
 }

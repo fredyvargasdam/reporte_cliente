@@ -2,9 +2,11 @@ package modelo;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Date;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * Esta clase se encargará sobre la gestión de reservas
@@ -36,9 +38,14 @@ public class Reserva implements Serializable {
 
     private Integer cantidad;
     //Fecha de reserva
-
-    private Timestamp fechaReserva;
-
+    
+    private Date fechaReserva;
+    //Fecha de entrega prevista
+    
+    private Date fechaEntrega;
+    
+    
+    
     /**
      * Devuelve la id de la reserva
      *
@@ -113,7 +120,7 @@ public class Reserva implements Serializable {
     }
 
     /**
-     * devuelve del producto
+     * Devuelve del producto
      *
      * @return producto
      */
@@ -123,7 +130,7 @@ public class Reserva implements Serializable {
     }
 
     /**
-     * inserta el producto a la reserva
+     * Inserta el producto a la reserva
      *
      * @param producto
      */
@@ -132,7 +139,7 @@ public class Reserva implements Serializable {
     }
 
     /**
-     * devuelve la cantidad del producto
+     * Devuelve la cantidad del producto
      *
      * @return cantidad
      */
@@ -141,7 +148,7 @@ public class Reserva implements Serializable {
     }
 
     /**
-     * inserta la cantidad del producto
+     * Inserta la cantidad del producto
      *
      * @param cantidad
      */
@@ -150,20 +157,37 @@ public class Reserva implements Serializable {
     }
 
     /**
-     * devuelve la fecha de la reserva
+     * Devuelve la fecha de la reserva
      *
      * @return
      */
-    public Timestamp getFechaReserva() {
+    public Date getFechaReserva() {
         return fechaReserva;
     }
 
     /**
-     * inserta la fecha de reserva
+     * Inserta la fecha de reserva
      *
      * @param fechaReserva
      */
-    public void setFechaReserva(Timestamp fechaReserva) {
+    public void setFechaReserva(Date fechaReserva) {
         this.fechaReserva = fechaReserva;
+    }
+    /**
+     * Devuelve la fecha de la entrega prevista
+     *
+     * @return fechaEntrega
+     */
+    public Date getFechaEntrega() {
+        return fechaEntrega;
+    }
+
+    /**
+     * Inserta la fecha de la entrega prevista
+     *
+     * @param fechaEntrega
+     */
+    public void setFechaEntrega(Date fechaEntrega) {
+        this.fechaEntrega = fechaEntrega;
     }
 }

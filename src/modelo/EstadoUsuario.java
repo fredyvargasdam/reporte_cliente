@@ -9,6 +9,6 @@ package modelo;
  *
  * @author pocoy
  */
-enum EstadoUsuario {
+public enum EstadoUsuario {
     ENABLED, DISABLED;
 }

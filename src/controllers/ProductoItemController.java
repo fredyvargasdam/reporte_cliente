@@ -10,22 +10,26 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import modelo.Producto;
+import modelo.Usuario;
 
 /**
  * FXML Controller class
  *
  * @author Fredy
  */
-public class ProductoItemController implements Initializable {
+public class ProductoItemController  {
 
     @FXML
     private ImageView ivImagen;
@@ -38,6 +42,45 @@ public class ProductoItemController implements Initializable {
     private static final String MONEDA = "€";
     @FXML
     private AnchorPane apProductoItem;
+    
+     private Usuario usuario;
+    
+    private Stage stage = new Stage();
+    private static final Logger LOG = Logger.getLogger("controllers.ProductoItemController");
+
+    /**
+     * Recibe el escenario
+     *
+     * @return stage
+     */
+    public Stage getStage() {
+        return this.stage;
+    }
+
+    /**
+     * Establece el escenario.
+     *
+     * @param stage
+     */
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    /**
+     * Establece un Usuario
+     *
+     * @param usuario Usuario
+     */
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    /**
+     * Inicia el escenario
+     *
+     * @param root Clase Parent
+     */
+    
 
     public void setData(Producto producto) throws IOException {
         this.producto = producto;
@@ -53,12 +96,6 @@ public class ProductoItemController implements Initializable {
 
     }
 
-    /**
-     * Initializes the controller class.
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }
+    
 
 }

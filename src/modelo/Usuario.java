@@ -6,7 +6,7 @@
 package modelo;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -62,7 +62,8 @@ public class Usuario implements Serializable {
     /*
     * Ultimo acceso del usuario
      */
-    private Timestamp lastAccess;
+    
+    private Date lastAccess;
 
     /*
     * Ultimo cambio de contraseña del usuario
@@ -210,7 +211,7 @@ public class Usuario implements Serializable {
      * Devuelve el valor de lastaccess para Usuario
      * @return el valor de lastaccess
      */
-    public Timestamp getLastAccess() {
+    public Date getLastAccess() {
         return lastAccess;
     }
 
@@ -218,7 +219,7 @@ public class Usuario implements Serializable {
      * Establece el valor de lastaccess para Usuario
      * @param de lastaccess del valor lastaccess
      */
-    public void setLastAccess(Timestamp lastAccess) {
+    public void setLastAccess(Date lastAccess) {
         this.lastAccess = lastAccess;
     }
 

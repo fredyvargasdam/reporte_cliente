@@ -32,6 +32,7 @@ import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import modelo.Producto;
+import modelo.Usuario;
 
 /**
  * FXML Controller class
@@ -71,6 +72,17 @@ public class ListaDeProductosController {
 
     private List<Producto> productos = new ArrayList<>();
 
+    private Usuario usuario;
+
+    /**
+     * Establece un Usuario
+     *
+     * @param usuario Usuario
+     */
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
     /**
      * Recibe el escenario
      *
@@ -106,9 +118,10 @@ public class ListaDeProductosController {
 
     /**
      * Método para extraer los bytes de una imagen y poder mostrarla
+     *
      * @param path
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     public byte[] extractBytes(String path) throws IOException {
         // abrimos la imagen
