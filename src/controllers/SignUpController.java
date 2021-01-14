@@ -5,15 +5,13 @@
  */
 package controllers;
 
-import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import modelo.Usuario;
@@ -29,16 +27,6 @@ public class SignUpController {
     private Button btnCancelar;
     @FXML
     private Button btnRegistrarse;
-    @FXML
-    private TextField tfUsuario;
-    @FXML
-    private TextField tfCorreoElectronico;
-    @FXML
-    private TextField tfNombre;
-    @FXML
-    private TextField tfDireccion;
-    @FXML
-    private TextField tfTelefono;
     @FXML
     private PasswordField pfContrasenia;
     @FXML
@@ -84,7 +72,12 @@ public class SignUpController {
      * @param root Clase Parent
      */
     public void initStage(Parent root) {
-      stage.show();
+        LOG.log(Level.INFO, "Ventana SignUP");
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("¡Bienvenido a Flyshoes!");
+        stage.setResizable(false);
+        stage.show();
     }
 
 }
