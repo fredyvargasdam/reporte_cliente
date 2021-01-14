@@ -10,6 +10,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
+
 <Pane fx:id="pnPrincipal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="489.0" prefWidth="404.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LogInController">
     <children>
         <Label fx:id="lblUsuario" layoutX="61.0" layoutY="173.0" prefHeight="17.0" prefWidth="149.0" text="Usuario" />

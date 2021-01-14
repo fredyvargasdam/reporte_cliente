@@ -31,6 +31,7 @@ import validar.Validar;
 
 /**
  * FXML Controller class
+ * 
  *
  * @author Moroni Collazos Fiestas
  */
