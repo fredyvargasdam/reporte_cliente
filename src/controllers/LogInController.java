@@ -31,12 +31,10 @@ import validar.Validar;
 
 /**
  * FXML Controller class
- * 
+ *
  *
  * @author Moroni Collazos Fiestas
  */
-
-
 public class LogInController {
 
     private static final Logger LOG = Logger.getLogger("controllers.LogInController");
@@ -54,7 +52,7 @@ public class LogInController {
     private Hyperlink hlRegistrarse;
     @FXML
     private ImageView ivLogo;
-    
+
     private Stage stage = new Stage();
     private Usuario usuario;
 
@@ -148,9 +146,7 @@ public class LogInController {
         Validar.addTextLimiter(txtUsuario, treinta);
         Validar.addTextLimiterPass(txtContrasena, treinta);
         if (!txtUsuario.getText().trim().equals("") && !txtContrasena.getText().trim().equals("")) {
-            boolean isValidUsuario = Validar.isValid(txtUsuario);
-
-            txtContrasena.setStyle("-fx-focus-color: #039ED3; -fx-faint-focus-color: #039ED322;");
+            boolean isValidUsuario = Validar.isValidUsuario(txtUsuario);
 
             if (isValidUsuario) {
                 btnIniciar.setDisable(false);
