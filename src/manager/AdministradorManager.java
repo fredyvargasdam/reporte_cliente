@@ -5,8 +5,11 @@
  */
 package manager;
 
+import java.util.List;
 import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
+import modelo.Administrador;
+import modelo.Proveedor;
 
 /**
  *
@@ -18,7 +21,7 @@ public interface AdministradorManager {
 
     public void edit(Object requestEntity) throws ClientErrorException;
 
-    public <T> T getProveedores(Class<T> responseType) throws ClientErrorException;
+    public List <Proveedor> getProveedores(GenericType responseType) throws ClientErrorException;
 
     public <T> T find(Class<T> responseType, String id) throws ClientErrorException;
 
