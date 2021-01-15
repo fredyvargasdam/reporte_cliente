@@ -171,7 +171,9 @@ public class ReservasVendedorController implements Initializable {
             reservas = FXCollections.observableArrayList(getReservas());
             tcIdReserva.setCellValueFactory(new PropertyValueFactory<>("id"));
             tcUsuario.setCellValueFactory(new PropertyValueFactory<>("user"));
+            
             tcProducto.setCellValueFactory((TableColumn.CellDataFeatures<Reserva, Long> param) -> new SimpleObjectProperty<>(param.getValue().getProducto().getId()));
+           
             tcCantidad.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
             tcDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
             tcDescripcion.setCellFactory(TextFieldTableCell.forTableColumn());

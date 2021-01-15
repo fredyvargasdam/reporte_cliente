@@ -6,7 +6,6 @@
 package manager;
 
 import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.client.WebTarget;
 
 /**
  *
@@ -19,6 +18,10 @@ public interface UsuarioManager {
     public <T> T find(Class<T> responseType, String id) throws ClientErrorException;
 
     public <T> T usuarioByLogin(Class<T> responseType, String login, String pass) throws ClientErrorException;
+
+    public void enviarMensajeEmail(Object requestEntity) throws ClientErrorException;
+
+    public <T> T usuarioLogin(Class<T> responseType, String login) throws ClientErrorException;
 
     public void create(Object requestEntity) throws ClientErrorException;
 

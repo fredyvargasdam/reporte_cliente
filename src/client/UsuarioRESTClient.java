@@ -26,9 +26,9 @@ import manager.UsuarioManager;
  */
 public class UsuarioRESTClient implements UsuarioManager {
 
-    private WebTarget webTarget;
-    private Client client;
-    private ResourceBundle rb = ResourceBundle.getBundle("config.parametros");
+    private final WebTarget webTarget;
+    private final Client client;
+    private final ResourceBundle rb = ResourceBundle.getBundle("config.parametros");
     private final String BASE_URI = rb.getString("RESTful.baseURI");
 
     public UsuarioRESTClient() {
@@ -36,30 +36,45 @@ public class UsuarioRESTClient implements UsuarioManager {
         webTarget = client.target(BASE_URI).path("usuario");
     }
 
+    @Override
     public void edit(Object requestEntity) throws ClientErrorException {
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
+    @Override
     public <T> T find(Class<T> responseType, String id) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{id}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
+    @Override
     public <T> T usuarioByLogin(Class<T> responseType, String login, String pass) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("usuarioByLogin/{0}/{1}", new Object[]{login, pass}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
+        public <T> T usuarioLogin(Class<T> responseType, String login) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("UsuarioLogin/{0}", new Object[]{login}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
 
+    @Override
     public void create(Object requestEntity) throws ClientErrorException {
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
+    @Override
     public void remove(String id) throws ClientErrorException {
         webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request().delete();
     }
+    @Override
+     public void enviarMensajeEmail(Object requestEntity) throws ClientErrorException {
+        webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
+    }
 
+    @Override
     public void close() {
         client.close();
     }

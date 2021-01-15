@@ -24,6 +24,7 @@ import java.util.Optional;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import manager.UsuarioManager;
 import modelo.Usuario;
 import seguridad.Seguridad;
@@ -31,12 +32,10 @@ import validar.Validar;
 
 /**
  * FXML Controller class
- * 
+ *
  *
  * @author Moroni Collazos Fiestas
  */
-
-
 public class LogInController {
 
     private static final Logger LOG = Logger.getLogger("controllers.LogInController");
@@ -54,9 +53,17 @@ public class LogInController {
     private Hyperlink hlRegistrarse;
     @FXML
     private ImageView ivLogo;
-    
+
     private Stage stage = new Stage();
     private Usuario usuario;
+    @FXML
+    private Pane pnPrincipal;
+    @FXML
+    private Label lblUsuario;
+    @FXML
+    private Label lblContrasena;
+    @FXML
+    private Hyperlink hlContraseniaOlvidada;
 
     public LogInController() {
 
@@ -101,6 +108,7 @@ public class LogInController {
         txtUsuario.textProperty().addListener(this::txtChanged);
         txtContrasena.textProperty().addListener(this::txtChanged);
         hlRegistrarse.setOnAction(this::hlRegistrarseClick);
+        hlContraseniaOlvidada.setOnAction(this::hlContraseniaOlvidadClick);
         stage.show();
 
     }
@@ -259,9 +267,24 @@ public class LogInController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SignUp.fxml"));
 
             Parent root = (Parent) loader.load();
-
             SignUpController controller = ((SignUpController) loader.getController());
             controller.initStage(root);
+            stage.hide();
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
+        }
+    }
+
+    private void hlContraseniaOlvidadClick(ActionEvent event) {
+        LOG.log(Level.INFO, "Ventana Contaseña Olvidada");
+        usuario = new Usuario();
+        usuario.setFullname(txtUsuario.getText());
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/RecuperaContrasenia.fxml"));
+            Parent root = (Parent) loader.load();
+            RecuperarContraseniaController recuperarContraseniaC = ((RecuperarContraseniaController) loader.getController());
+            recuperarContraseniaC.setUsuario(usuario);
+            recuperarContraseniaC.initStage(root);
             stage.hide();
         } catch (IOException e) {
             LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
