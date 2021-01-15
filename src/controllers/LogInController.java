@@ -190,18 +190,18 @@ public class LogInController {
                     administradorC.initStage(root);
                     break;
                 case VENDEDOR:
-                    loader = new FXMLLoader(getClass().getResource("/view/InicioVendedor.fxml"));
+                    loader = new FXMLLoader(getClass().getResource("/view/ReservasVendedor.fxml"));
                     root = (Parent) loader.load();
-                    InicioVendedorController vendedorC = ((InicioVendedorController) loader.getController());
+                    ReservasVendedorController vendedorC = ((ReservasVendedorController) loader.getController());
                     vendedorC.setUsuario(usuario);
                     vendedorC.initStage(root);
                     break;
                 case CLIENTE:
-                    loader = new FXMLLoader(getClass().getResource("/view/ListaDeProductos.fxml"));
+                    loader = new FXMLLoader(getClass().getResource("/view/Reserva.fxml"));
                     root = (Parent) loader.load();
-                    ListaDeProductosController listaDeProductosC = ((ListaDeProductosController) loader.getController());
-                    listaDeProductosC.setUsuario(usuario);
-                    listaDeProductosC.initStage(root);
+                    ReservaController reservaC = ((ReservaController) loader.getController());
+                    //reservaC.setUsuario(usuario);
+                    reservaC.initStage(root);
             }
 
             stage.hide();
