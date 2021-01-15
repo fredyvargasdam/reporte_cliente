@@ -1,11 +1,14 @@
-
 package seguridad;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.logging.Logger;
 import javax.crypto.Cipher;
@@ -21,6 +24,7 @@ public class Seguridad {
     private static Cipher cipher;
     private static final char[] HEXADECIMAL_ARRAY = "0123456789ABCDEF".toCharArray();
     private static final Logger LOGGER = Logger.getLogger(Seguridad.class.getName());
+    private static final String CARACTERES = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
     /**
      * Cargar clave pública
@@ -70,10 +74,44 @@ public class Seguridad {
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             byte[] encriptado = cipher.doFinal(contrasenia.getBytes());
             pass = bytesToHexadecimal(encriptado);
-
+            //Aqui he escrito el email y la contraseña
+            escribirFichero(pass);
         } catch (Exception ex) {
             LOGGER.severe("Error al encriptar con clave pública");
         }
         return pass;
     }
+
+    /**
+     * Genera contraseña alfanumérica de longitud 10
+     *
+     * @return contrasenia
+     */
+    public static String generarContrasenia() {
+        SecureRandom rnd = new SecureRandom();
+        StringBuilder sb = new StringBuilder(10);
+        for (int i = 0; i < 10; i++) {
+            sb.append(CARACTERES.charAt(rnd.nextInt(CARACTERES.length())));
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Escribir fichero Email/pass
+     *
+     * @param fich
+     */
+    private static void escribirFichero(String fich) {
+
+        FileWriter fichero = null;
+        try {
+            fichero = new FileWriter("EmailPass.dat");
+            // Escribimos linea a linea en el fichero
+            fichero.write(fich);
+            fichero.close();
+        } catch (IOException ex) {
+            LOGGER.severe("Error al escribir fichero");
+        }
+    }
+
 }
