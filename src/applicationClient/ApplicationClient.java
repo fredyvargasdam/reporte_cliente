@@ -5,7 +5,8 @@
  */
 package applicationClient;
 
-import controllers.LogInController;
+import controllers.InicioAdministradorProveedorController;
+import factory.AdministradorFactory;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,6 +15,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
 import javafx.stage.Stage;
+import manager.AdministradorManager;
 
 /**
  *
@@ -28,11 +30,14 @@ public class ApplicationClient extends Application {
 
         try {
             LOG.log(Level.INFO, "Iniciando la ventana");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LogIn.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/inicioAdministrador_proveedor.fxml"));
             LOG.log(Level.INFO, "Cargando Parent");
             Parent root = (Parent) loader.load();
             LOG.log(Level.INFO, "Cargando controller");
-            LogInController controller = ((LogInController) loader.getController());
+            InicioAdministradorProveedorController controller = ((InicioAdministradorProveedorController) loader.getController());
+            AdministradorFactory administradorFactory = new AdministradorFactory();
+            AdministradorManager admin = administradorFactory.getAdministradorRESTClient();
+            controller.setAdministradorRESTClient(admin);
             LOG.log(Level.INFO, "Iniciando controller");
             controller.setStage(primaryStage);
             controller.initStage(root);

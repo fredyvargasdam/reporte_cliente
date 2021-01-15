@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -38,6 +39,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javax.persistence.EntityManager;
+import javax.ws.rs.core.GenericType;
+import manager.AdministradorManager;
 import modelo.Administrador;
 import modelo.Proveedor;
 import modelo.TipoProducto;
@@ -95,9 +98,8 @@ public class InicioAdministradorProveedorController {
     private TableColumn<Proveedor, String> tcDescripcion;
     @FXML
     private TableColumn<Administrador, Long> tcAdmin;
-
-    private EntityManager entityManager;
-    private List<Proveedor> proveedores = new ArrayList<>();
+    private AdministradorManager administradorManager;
+    private ObservableList <Proveedor> listProveedores = FXCollections.observableArrayList();
     private Usuario usuario;
     private Proveedor proveedor;
     @FXML
@@ -145,7 +147,7 @@ public class InicioAdministradorProveedorController {
         stage.setOnShowing(this::handleWindowShowing);
         //Indicamos las acciones de cada boton 
         btnAltaProveedor.setOnAction(this::btnAltaProveedorClick);
-        btnBorrarProveedor.setOnAction(this::borrarProveedor);
+        btnBorrarProveedor.setOnAction(this::btnBorrarProveedorClick);
         //Mostramos el stage
         stage.show();
 
@@ -184,17 +186,10 @@ public class InicioAdministradorProveedorController {
         btnBorrarProveedor.setDisable(true);
     }
 
-    private int incrementarID() {
-        int proveedorID = tbProveedor.getSelectionModel().getSelectedIndex();
-        proveedorID++;
-        return proveedorID;
-    }
-
     /**
      * Inicializa la tabla de proveedores
      */
     private void iniciarColumnasTabla() {
-        int id = incrementarID();
         seleccionarProveedor();
         //Hacemos que la tabla sea editable
         tbProveedor.setEditable(true);
@@ -279,9 +274,20 @@ public class InicioAdministradorProveedorController {
         //Administrador asociado con el proveedor 
         tcAdmin.setCellValueFactory(new PropertyValueFactory<>("id_usuario"));
         //Añadimos las celdas dentro de la tabla de Proveedores (tbProveedor)
-        proveedores.forEach((p) -> {
+        /*proveedores.forEach((p) -> {
             tbProveedor.getItems().add(p);
-        });
+        });*/
+    }
+
+    /**
+     * Nos permite actualizar/cambiar el tipo de producto dentro de la tabla
+     * editable
+     *
+     * @param event
+     */
+    private void actualizarTipoProducto(TableColumn.CellEditEvent<Proveedor, TipoProducto> event) {
+        Proveedor tipoProducto = event.getRowValue();
+        tipoProducto.setTipo(event.getNewValue());
     }
 
     /**
@@ -305,57 +311,10 @@ public class InicioAdministradorProveedorController {
      *
      */
     private void datosTabla() {
-        /*
-        Proveedor proveedor = new Proveedor();
-        Administrador administrador = new Administrador();
-        proveedor.setIdProveedor(Long.valueOf(1));
-        proveedor.setNombre("Lucas");
-        proveedor.setTipo(ROPA);
-        proveedor.setEmpresa("Nike");
-        proveedor.setEmail("lucas@gmail.com");
-        proveedor.setTelefono("927500299");
-        proveedor.setDescripcion("Producto muy recomendado");
-        proveedor.setAdministrador(administrador);
-
-        ObservableList<Proveedor> datos = FXCollections.observableArrayList(proveedor);
-        tbProveedor.setItems(datos);*/
-        
-        //Query queryPersonaFindAll = entityManager.createNamedQuery("Proveedor.find");
-        //proveedores = queryPersonaFindAll.getResultList();
-        tbProveedor.setItems(FXCollections.observableArrayList(proveedores));
-        //tbProveedor.getSelectionModel().selectedIndexProperty().addListener(this::mostrarDatosTabla);
+     this.listProveedores = FXCollections.observableArrayList(getAdministradorRESTClient().getProveedores(new GenericType<List<Proveedor>>(){}));
 
     }
-    
 
-    public void setEntityManager(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
-
-    /* private List<Proveedor> getProveedores() {
-        Proveedor proveedor;
-        Administrador administrador;
-        for (int i = 0; i < 10; i++) {
-            proveedor = new Proveedor();
-            administrador = new Administrador();
-            //Administrador
-            administrador.setId_usuario(Long.valueOf(i));
-            //administrador.setId_usuario(Long.valueOf(1));
-            //Proveedor
-            proveedor.setIdProveedor(Long.valueOf(i));
-            proveedor.setNombre("Lucas");
-            proveedor.setTipo(ROPA);
-            proveedor.setEmpresa("Nike");
-            proveedor.setEmail("lucas@gmail.com");
-            proveedor.setTelefono("927500299");
-            proveedor.setDescripcion("Producto muy recomendado");
-            proveedor.setAdministrador(administrador);
-            //proveedor.setAdministrador(administrador.setId_usuario(Long.valueOf(i)));
-            proveedores.add(proveedor);
-        }
-
-        return proveedores;
-    }*/
     //CONFIGURACIÓN DE BOTONES
     /**
      * Nos permite redirigirnos hacia la ventana de SignUpProveedorView
@@ -381,7 +340,7 @@ public class InicioAdministradorProveedorController {
      *
      * @param event
      */
-    private void borrarProveedor(ActionEvent event) {
+    private void btnBorrarProveedorClick(ActionEvent event) {
         //Capturamos el indice del proveedor seleccionado y borro su item asociado de la tabla
         int proveedorSeleccionado = tbProveedor.getSelectionModel().getSelectedIndex();
         if (proveedorSeleccionado >= 0) {
@@ -402,7 +361,7 @@ public class InicioAdministradorProveedorController {
 
     //CONFIGURACIÓN DEL MENÚ
     /**
-     * MenuItem que muestra un alerta informandonos de la conexión actual del
+     * MenuItem que muestra un alerta informandonos de la última conexión del
      * usuario
      *
      * @param event
@@ -483,10 +442,12 @@ public class InicioAdministradorProveedorController {
 
     }
 
-    private void actualizarTipoProducto(TableColumn.CellEditEvent<Proveedor, TipoProducto> event) {
-        Proveedor proveedor = event.getRowValue();
-        TipoProducto tipo = event.getNewValue();
-        proveedor.setTipo(event.getNewValue());
+    public void setAdministradorRESTClient(AdministradorManager administrador) {
+        this.administradorManager = administrador;
+    }
+
+    public AdministradorManager getAdministradorRESTClient() {
+        return this.administradorManager;
     }
 
 }
