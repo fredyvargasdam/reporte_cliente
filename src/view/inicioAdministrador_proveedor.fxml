@@ -39,16 +39,15 @@
             </Button>
          </children>
       </VBox>
-      <TableView fx:id="tbProveedor" layoutX="31.0" layoutY="121.0" prefHeight="541.0" prefWidth="962.0">
+      <TableView fx:id="tbProveedor" layoutX="31.0" layoutY="121.0" prefHeight="541.0" prefWidth="977.0">
         <columns>
-          <TableColumn fx:id="tcId" prefWidth="120.0" text="Id" />
-          <TableColumn fx:id="tcNombre" prefWidth="120.0" text="Nombre" />
-            <TableColumn fx:id="tcTipo" prefWidth="120.0" text="Tipo" />
-            <TableColumn fx:id="tcEmpresa" prefWidth="120.0" text="Empresa" />
-            <TableColumn fx:id="tcEmail" prefWidth="120.0" text="Email" />
-            <TableColumn fx:id="tcTelefono" prefWidth="120.0" text="Telefono" />
-            <TableColumn fx:id="tcDescripcion" prefWidth="120.0" text="Descripción" />
-            <TableColumn fx:id="tcAdmin" prefWidth="120.0" text="Admin" />
+          <TableColumn fx:id="tcNombre" prefWidth="140.0" text="Nombre" />
+            <TableColumn fx:id="tcTipo" prefWidth="140.0" text="Tipo" />
+            <TableColumn fx:id="tcEmpresa" prefWidth="140.0" text="Empresa" />
+            <TableColumn fx:id="tcEmail" prefWidth="140.0" text="Email" />
+            <TableColumn fx:id="tcTelefono" prefWidth="140.0" text="Telefono" />
+            <TableColumn fx:id="tcDescripcion" prefWidth="140.0" text="Descripción" />
+            <TableColumn fx:id="tcAdmin" prefWidth="140.0" text="Admin" />
         </columns>
       </TableView>
       <HBox fx:id="Hbox" prefHeight="31.0" prefWidth="1253.0">

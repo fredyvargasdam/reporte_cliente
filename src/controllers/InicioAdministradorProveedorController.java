@@ -3,7 +3,6 @@ package controllers;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -38,10 +37,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javax.persistence.EntityManager;
 import javax.ws.rs.core.GenericType;
 import manager.AdministradorManager;
-import modelo.Administrador;
 import modelo.Proveedor;
 import modelo.TipoProducto;
 import modelo.Usuario;
@@ -83,8 +80,6 @@ public class InicioAdministradorProveedorController {
     @FXML
     private TableView<Proveedor> tbProveedor;
     @FXML
-    private TableColumn<Proveedor, Long> tcId;
-    @FXML
     private TableColumn<Proveedor, String> tcNombre;
     @FXML
     private TableColumn<TipoProducto, TipoProducto> tcTipo;
@@ -97,9 +92,10 @@ public class InicioAdministradorProveedorController {
     @FXML
     private TableColumn<Proveedor, String> tcDescripcion;
     @FXML
-    private TableColumn<Administrador, Long> tcAdmin;
+    private TableColumn<Proveedor, Long> tcAdmin;
+
     private AdministradorManager administradorManager;
-    private ObservableList <Proveedor> listProveedores = FXCollections.observableArrayList();
+    private ObservableList<Proveedor> listProveedores = FXCollections.observableArrayList();
     private Usuario usuario;
     private Proveedor proveedor;
     @FXML
@@ -148,6 +144,7 @@ public class InicioAdministradorProveedorController {
         //Indicamos las acciones de cada boton 
         btnAltaProveedor.setOnAction(this::btnAltaProveedorClick);
         btnBorrarProveedor.setOnAction(this::btnBorrarProveedorClick);
+        btnBuscar.setOnAction(this::btnBuscarClick);
         //Mostramos el stage
         stage.show();
 
@@ -184,6 +181,7 @@ public class InicioAdministradorProveedorController {
         LOG.log(Level.INFO, "Beginning InicioAdministradorProveedorController::handleWindowShowing");
         //Indicamos que el boton borrarProveedor tiene que estar desactivado
         btnBorrarProveedor.setDisable(true);
+        btnBuscar.setDisable(true);
     }
 
     /**
@@ -194,13 +192,8 @@ public class InicioAdministradorProveedorController {
         //Hacemos que la tabla sea editable
         tbProveedor.setEditable(true);
         //Rellenamos la tabla con los proveedores
-        //proveedores.addAll(getProveedores());
         datosTabla();
         //Definimos las celdas de la tabla, incluyendo que algunas pueden ser editables
-        //Id del proveedor
-        tcId.setCellValueFactory(new PropertyValueFactory<>("idProveedor"));
-        //tcId.setEditable(false);
-        //tcId.setId(Long.valueOf(id));
         //Nombre del proveedor
         tcNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         tcNombre.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -272,11 +265,8 @@ public class InicioAdministradorProveedorController {
 
         });
         //Administrador asociado con el proveedor 
-        tcAdmin.setCellValueFactory(new PropertyValueFactory<>("id_usuario"));
-        //Añadimos las celdas dentro de la tabla de Proveedores (tbProveedor)
-        /*proveedores.forEach((p) -> {
-            tbProveedor.getItems().add(p);
-        });*/
+        // tcAdmin.setCellValueFactory(TableColumn.CellDataFeatures<Proveedor, Long> param) -> new SimpleObjectProperty<>(param.);
+
     }
 
     /**
@@ -311,8 +301,12 @@ public class InicioAdministradorProveedorController {
      *
      */
     private void datosTabla() {
-     this.listProveedores = FXCollections.observableArrayList(getAdministradorRESTClient().getProveedores(new GenericType<List<Proveedor>>(){}));
-
+        this.listProveedores = FXCollections.observableArrayList(getAdministradorRESTClient().getProveedores(new GenericType<List<Proveedor>>() {
+        }));
+        for (Proveedor p : listProveedores) {
+            LOG.log(Level.INFO, "Lista de Proveedores: {0}", listProveedores);
+        }
+        tbProveedor.setItems(listProveedores);
     }
 
     //CONFIGURACIÓN DE BOTONES
@@ -341,22 +335,54 @@ public class InicioAdministradorProveedorController {
      * @param event
      */
     private void btnBorrarProveedorClick(ActionEvent event) {
-        //Capturamos el indice del proveedor seleccionado y borro su item asociado de la tabla
-        int proveedorSeleccionado = tbProveedor.getSelectionModel().getSelectedIndex();
-        if (proveedorSeleccionado >= 0) {
-            //Borramos el proveedor
-            LOG.log(Level.INFO, "Se ha borrado un proveedor");
-            tbProveedor.getItems().remove(proveedorSeleccionado);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText(null);
+        alert.setTitle("Borrado de Proveedor");
+        alert.setContentText("¿Estas seguro de borrar este proveedor?");
+        Optional<ButtonType> respuesta = alert.showAndWait();
 
+        if (respuesta.get() == ButtonType.OK) {
+
+            LOG.log(Level.INFO, "Has pulsado el boton Aceptar");
+            //Capturamos el indice del proveedor seleccionado y borro su item asociado de la tabla
+            int proveedorIndex = tbProveedor.getSelectionModel().getSelectedIndex();
+            Proveedor proveedorSeleccionado = tbProveedor.getSelectionModel().getSelectedItem();
+            if (proveedorIndex >= 0) {
+                //Borramos el proveedor
+                LOG.log(Level.INFO, "Se ha borrado un proveedor");
+                tbProveedor.getItems().remove(proveedorSeleccionado);
+
+                Proveedor p = (Proveedor) tbProveedor.getSelectionModel().getSelectedItem();
+                listProveedores.remove(p);
+                /*
+                ObservableList<Proveedor> allProveedores, proveedorSeleccionado;
+                allProveedores = tbProveedor.getItems();
+                proveedorSeleccionado = tbProveedor.getSelectionModel().getSelectedItems();
+                LOG.log(Level.INFO, "Se ha borrado un proveedor");
+                proveedorSeleccionado.forEach(listProveedores::remove);
+                LOG.log(Level.INFO, "refresh");
+                tbProveedor.refresh();*/
+
+            } else {
+                //En el caso de no seleccionar un proveedor. Saldrá un alerta
+                Alert alerta = new Alert(AlertType.WARNING);
+                alerta.setTitle("Atención");
+                alerta.setHeaderText("Proveedor no seleccionado");
+                alerta.setContentText("Por favor, selecciona un proveedor de la tabla");
+                alerta.showAndWait();
+            }
         } else {
-            //En el caso de no seleccionar un proveedor. Saldrá un alerta
-            Alert alerta = new Alert(AlertType.WARNING);
-            alerta.setTitle("Atención");
-            alerta.setHeaderText("Proveedor no seleccionado");
-            alerta.setContentText("Por favor, selecciona un proveedor de la tabla");
-            alerta.showAndWait();
-
+            LOG.log(Level.INFO, "Has pulsado el boton Cancelar");
+            event.consume();
         }
+    }
+
+    /**
+     *
+     * @param event
+     */
+    private void btnBuscarClick(ActionEvent event) {
+
     }
 
     //CONFIGURACIÓN DEL MENÚ
@@ -387,18 +413,32 @@ public class InicioAdministradorProveedorController {
      */
     @FXML
     private void configMenuSalir(ActionEvent event) {
-        LOG.log(Level.INFO, "Ventana Login");
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LogIn.fxml"));
+        LOG.log(Level.INFO, "Beginning InicioAdministradorProveedorController::handleWindowClose");
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText(null);
+        alert.setTitle("Administrador");
+        alert.setContentText("¿Estas seguro de confirmar la acción?");
+        Optional<ButtonType> respuesta = alert.showAndWait();
 
-            Parent root = (Parent) loader.load();
+        if (respuesta.get() == ButtonType.OK) {
+            LOG.log(Level.INFO, "Has pulsado el boton Aceptar");
+            LOG.log(Level.INFO, "Ventana Login");
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/LogIn.fxml"));
 
-            LogInController controller = ((LogInController) loader.getController());
-            controller.initStage(root);
-            stage.hide();
-        } catch (IOException e) {
-            LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
+                Parent root = (Parent) loader.load();
+
+                LogInController controller = ((LogInController) loader.getController());
+                controller.initStage(root);
+                stage.hide();
+            } catch (IOException e) {
+                LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
+            }
+        } else {
+            LOG.log(Level.INFO, "Has pulsado el boton Cancelar");
+            event.consume();
         }
+
     }
 
     /**
