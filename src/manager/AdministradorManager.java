@@ -5,10 +5,15 @@
  */
 package manager;
 
+import exceptions.DeleteException;
+import exceptions.ErrorBDException;
+import exceptions.ErrorServerException;
+import exceptions.InsertException;
+import exceptions.ProveedorNotFoundException;
+import exceptions.SelectException;
+import exceptions.UpdateException;
 import java.util.List;
 import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.core.GenericType;
-import modelo.Administrador;
 import modelo.Proveedor;
 
 /**
@@ -19,15 +24,15 @@ public interface AdministradorManager {
 
     public <T> T getVendedores(Class<T> responseType) throws ClientErrorException;
 
-    public void edit(Object requestEntity) throws ClientErrorException;
+    public void edit(Object requestEntity) throws ClientErrorException, UpdateException, ErrorBDException, ErrorServerException;
 
-    public List <Proveedor> getProveedores(GenericType responseType) throws ClientErrorException;
+    public List<Proveedor> getProveedores() throws ClientErrorException, ErrorBDException, ErrorServerException;
 
-    public <T> T find(Class<T> responseType, String id) throws ClientErrorException;
+    public <T> T find(Class<T> responseType, String id) throws ClientErrorException, SelectException, ErrorBDException, ErrorServerException;
 
-    public void create(Object requestEntity) throws ClientErrorException;
+    public void create(Object requestEntity) throws ClientErrorException, InsertException, ErrorBDException, ErrorServerException;
 
-    public void remove(String id) throws ClientErrorException;
+    public void remove(String id) throws ClientErrorException, ProveedorNotFoundException, DeleteException, ErrorBDException, ErrorServerException;
 
     public void close();
 

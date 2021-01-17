@@ -227,4 +227,14 @@ public class Proveedor implements Serializable {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
+    public Date getFechaAlta() {
+        return fechaAlta;
+    }
+
+    public void setFechaAlta(Date fechaAlta) {
+        this.fechaAlta = fechaAlta;
+    }
+    
+    
 }

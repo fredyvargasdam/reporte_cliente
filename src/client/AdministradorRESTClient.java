@@ -28,7 +28,7 @@ import modelo.Proveedor;
  *
  * @author Fredy
  */
-public class AdministradorRESTClient implements AdministradorManager {
+public class AdministradorRESTClient  {
 
     private WebTarget webTarget;
     private Client client;
@@ -50,10 +50,10 @@ public class AdministradorRESTClient implements AdministradorManager {
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
-    public List<Proveedor> getProveedores(GenericType responseType) throws ClientErrorException {
+    public <T> T getProveedores(GenericType<T> responseType) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path("proveedores");
-        return (List <Proveedor>) resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
     public <T> T find(Class<T> responseType, String id) throws ClientErrorException {

@@ -6,7 +6,6 @@
 package applicationClient;
 
 import controllers.InicioAdministradorProveedorController;
-import factory.AdministradorFactory;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,7 +14,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
 import javafx.stage.Stage;
-import manager.AdministradorManager;
 
 /**
  *
@@ -35,9 +33,6 @@ public class ApplicationClient extends Application {
             Parent root = (Parent) loader.load();
             LOG.log(Level.INFO, "Cargando controller");
             InicioAdministradorProveedorController controller = ((InicioAdministradorProveedorController) loader.getController());
-            AdministradorFactory administradorFactory = new AdministradorFactory();
-            AdministradorManager admin = administradorFactory.getAdministradorRESTClient();
-            controller.setAdministradorRESTClient(admin);
             LOG.log(Level.INFO, "Iniciando controller");
             controller.setStage(primaryStage);
             controller.initStage(root);

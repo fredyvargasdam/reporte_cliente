@@ -6,7 +6,11 @@
 package validar;
 
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
+import javafx.util.Callback;
+import modelo.Proveedor;
 
 /**
  *
@@ -51,7 +55,7 @@ public class Validar {
      *
      * @param txtContrasena Contraseña recibido
      * @param txtConfirmarContrasena Contraseña recibido
-     * @return b 
+     * @return b
      */
     public static boolean isValidContrasena(PasswordField txtContrasena, PasswordField txtConfirmarContrasena) {
         boolean b = true;
@@ -125,9 +129,10 @@ public class Validar {
         }
         return b;
     }
-    
+
     /**
      * Validar que el texto es alfanumerico
+     *
      * @param txtNombre Texto recibido
      * @return b true correcto, false incorrecto
      */
@@ -139,6 +144,33 @@ public class Validar {
             txtNombre.setStyle("-fx-border-color:rgb(189 189 189);");
         } else {
             txtNombre.setStyle("-fx-border-color:red; -fx-border-width:2px;");
+        }
+        return b;
+    }
+
+    public static boolean isValidColumnString(TableColumn<Proveedor, String> tc) {
+        boolean b = false;
+        final String pattern = "^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ]+$";
+        if (tc.getText().matches(pattern)) {
+            b = true;
+        }
+        return b;
+    }
+
+    public static boolean isValidColumnEmail(TableColumn<Proveedor, String> tc) {
+        boolean b = false;
+        String pattern = "\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*";
+        if (tc.getText().matches(pattern)) {
+            b = true;
+        }
+        return b;
+    }
+
+    public static boolean isValidColumnTelefono(TableColumn<Proveedor, String> tc) {
+        boolean b = false;
+        final String pattern = "^\\+([0-9\\-]?){9,11}[0-9]$";
+        if (tc.getText().matches(pattern)) {
+            b = true;
         }
         return b;
     }

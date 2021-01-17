@@ -1,6 +1,9 @@
 package controllers;
 
 import client.UsuarioRESTClient;
+import exceptions.AutenticacionFallidaException;
+import exceptions.ErrorBDException;
+import exceptions.ErrorServerException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,7 +16,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -21,6 +23,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import factory.UsuarioFactory;
 import java.util.Optional;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -207,14 +210,13 @@ public class LogInController {
             stage.hide();
         } catch (IOException e) {
             LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
-
-            /* } catch (AutenticacionFallidaException ex) {
+            /*
+             } catch (AutenticacionFallidaException ex) {
             alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("Contraseña Incorrecta");
             alert.showAndWait();
-            lblErrorContrasena.setText("Contraseña Incorrecta");
-            lblErrorContrasena.setVisible(true);
+          
             txtContrasena.setStyle("-fx-faint-focus-color: transparent; -fx-focus-color:rgba(255,0,0,1);");
             txtContrasena.setText("");
             txtContrasena.requestFocus();
@@ -237,9 +239,9 @@ public class LogInController {
             alert.showAndWait();
             txtUsuario.setText("");
             txtContrasena.setText("");
+          
              */
         }
-
     }
 
     /**

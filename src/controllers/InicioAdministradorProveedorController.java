@@ -1,5 +1,13 @@
 package controllers;
 
+import client.AdministradorRESTClient;
+import client.ProveedorRESTClient;
+import exceptions.DeleteException;
+import exceptions.ErrorBDException;
+import exceptions.ErrorServerException;
+import exceptions.ProveedorNotFoundException;
+import implementation.AdministradorManagerImplementation;
+import implementation.ProveedorManagerImplementation;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -8,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -23,6 +32,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
@@ -37,11 +47,16 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Callback;
+import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;
 import manager.AdministradorManager;
+import manager.ProveedorManager;
+import modelo.FechaAltaCell;
 import modelo.Proveedor;
 import modelo.TipoProducto;
 import modelo.Usuario;
+import validar.Validar;
 
 /**
  * FXML Controller class
@@ -92,11 +107,10 @@ public class InicioAdministradorProveedorController {
     @FXML
     private TableColumn<Proveedor, String> tcDescripcion;
     @FXML
-    private TableColumn<Proveedor, Long> tcAdmin;
-
+    private TableColumn<Proveedor, Date> tcFechaAlta;
+    private ProveedorManager proveedorManager;
     private AdministradorManager administradorManager;
     private ObservableList<Proveedor> listProveedores = FXCollections.observableArrayList();
-    private Usuario usuario;
     private Proveedor proveedor;
     @FXML
     private TextField tfBuscar;
@@ -151,6 +165,32 @@ public class InicioAdministradorProveedorController {
     }
 
     /**
+     * Valida los textos introducidos
+     *
+     * @param observable Observa los cambios
+     * @param oldValue Valor antiguo
+     * @param newValue Valor nuevo
+     */
+    private void txtChanged(ObservableValue observable, String oldValue, String newValue) {
+        if (tcNombre.getText().trim().equals("") && tcEmpresa.getText().trim().equals("") && tcEmail.getText().trim().equals("")
+                && tcTelefono.getText().trim().equals("") && tcDescripcion.getText().trim().equals("")) {
+            Alert alerta = new Alert(AlertType.ERROR);
+            alerta.setTitle("Error");
+            alerta.setHeaderText("Datos no introducidos");
+            alerta.setContentText("Por favor, introduzca datos para completar el alta");
+            alerta.showAndWait();
+
+        } else {
+            boolean isValidNombre = Validar.isValidColumnString(tcNombre);
+            boolean isValidEmpresa = Validar.isValidColumnString(tcEmpresa);
+            boolean isValidEmail = Validar.isValidColumnEmail(tcEmail);
+            boolean isValidTelefono = Validar.isValidColumnTelefono(tcTelefono);
+            boolean isValidDescripcion = Validar.isValidColumnString(tcDescripcion);
+
+        }
+    }
+
+    /**
      * Al cerrar la ventana, saldrá un mensaje de confirmacion
      *
      * @param event, WindowEvent
@@ -198,75 +238,143 @@ public class InicioAdministradorProveedorController {
         tcNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         tcNombre.setCellFactory(TextFieldTableCell.forTableColumn());
         tcNombre.setOnEditCommit((TableColumn.CellEditEvent<Proveedor, String> data) -> {
-            LOG.log(Level.INFO, "Nuevo Nombre: {0}", data.getNewValue());
-            LOG.log(Level.INFO, "Antiguo Nombre: {0}", data.getOldValue());
-            //Devuelve el dato de la celda
-            Proveedor p = data.getRowValue();
-            //Añadimos el nuevo valor a la celda
-            p.setNombre(data.getNewValue());
+            /* boolean isValidNombre = Validar.isValidColumnString(tcNombre);
+            if (isValidNombre) {
+                LOG.log(Level.INFO, "Nuevo Nombre: {0}", data.getNewValue());
+                LOG.log(Level.INFO, "Antiguo Nombre: {0}", data.getOldValue());
+                //Devuelve el dato de la celda
+                Proveedor p = data.getRowValue();
+                //Añadimos el nuevo valor a la celda
+                p.setNombre(data.getNewValue());
+            } else {
+                Alert alerta = new Alert(AlertType.ERROR);
+                alerta.setTitle("Error");
+                alerta.setHeaderText("Error al introducir valor");
+                alerta.setContentText("Por favor, introduzca un valor permitido");
+                alerta.showAndWait();
+            }*/
+
         });
+
         //Tipo de producto 
         tcTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
         tcTipo.setCellFactory(ChoiceBoxTableCell.
-                forTableColumn(TipoProducto.ROPA, TipoProducto.ZAPATILLAS));
+                forTableColumn(TipoProducto.ROPA, TipoProducto.ZAPATILLAS, TipoProducto.AMBAS));
         tcTipo.addEventHandler(TableColumn.<Proveedor, TipoProducto>editCommitEvent(),
                 event -> actualizarTipoProducto(event));
+
         //Empresa del proveedor
         tcEmpresa.setCellValueFactory(new PropertyValueFactory<>("empresa"));
+        //Indicamos que la celda puede cambiar a un TextField
         tcEmpresa.setCellFactory(TextFieldTableCell.forTableColumn());
+        //Aceptamos la edición de la celda de la columna empresa 
         tcEmpresa.setOnEditCommit((TableColumn.CellEditEvent<Proveedor, String> data) -> {
-            LOG.log(Level.INFO, "Nuevo Empresa: {0}", data.getNewValue());
-            LOG.log(Level.INFO, "Antigua Empresa: {0}", data.getOldValue());
-            //Devuelve el dato de la celda
-            Proveedor p = data.getRowValue();
-            //Añadimos el nuevo valor a la celda
-            p.setEmpresa(data.getNewValue());
+            /* boolean isValidEmpresa = Validar.isValidColumnString(tcEmpresa);
+            if (isValidEmpresa) {
+                LOG.log(Level.INFO, "Nuevo Empresa: {0}", data.getNewValue());
+                LOG.log(Level.INFO, "Antigua Empresa: {0}", data.getOldValue());
+                //Devuelve el dato de la celda
+                Proveedor p = data.getRowValue();
+                //Añadimos el nuevo valor a la celda
+                p.setEmpresa(data.getNewValue());
+            } else {
+                Alert alerta = new Alert(AlertType.ERROR);
+                alerta.setTitle("Error");
+                alerta.setHeaderText("Error al introducir valor");
+                alerta.setContentText("Por favor, introduzca un valor permitido");
+                alerta.showAndWait();
+            }*/
         });
+
         //Email del proveedor
         tcEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         //Indicamos que la celda puede cambiar a un TextField
         tcEmail.setCellFactory(TextFieldTableCell.forTableColumn());
         //Aceptamos la edición de la celda de la columna email 
         tcEmail.setOnEditCommit((TableColumn.CellEditEvent<Proveedor, String> data) -> {
-            LOG.log(Level.INFO, "Nuevo Email: {0}", data.getNewValue());
-            LOG.log(Level.INFO, "Antiguo Email: {0}", data.getOldValue());
-            //Devuelve el dato de la celda
-            Proveedor p = data.getRowValue();
-            //Añadimos el nuevo valor a la celda
-            p.setEmail(data.getNewValue());
-
+            /* boolean isValidEmail = Validar.isValidColumnEmail(tcEmail);
+            if (isValidEmail) {
+                LOG.log(Level.INFO, "Nuevo Email: {0}", data.getNewValue());
+                LOG.log(Level.INFO, "Antiguo Email: {0}", data.getOldValue());
+                //Devuelve el dato de la celda
+                Proveedor p = data.getRowValue();
+                //Añadimos el nuevo valor a la celda
+                p.setEmail(data.getNewValue());
+            } else {
+                Alert alerta = new Alert(AlertType.ERROR);
+                alerta.setTitle("Error");
+                alerta.setHeaderText("Error al introducir valor");
+                alerta.setContentText("Por favor, introduzca un valor permitido");
+                alerta.showAndWait();
+            }
+             */
         });
+
         //Teléfono del proveedor
         tcTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
         //Indicamos que la celda puede cambiar a un TextField
         tcTelefono.setCellFactory(TextFieldTableCell.forTableColumn());
         //Aceptamos la edición de la celda de la columna teléfono 
         tcTelefono.setOnEditCommit((TableColumn.CellEditEvent<Proveedor, String> data) -> {
-            LOG.log(Level.INFO, "Nuevo Telefono: {0}", data.getNewValue());
-            LOG.log(Level.INFO, "Antiguo Telefono: {0}", data.getOldValue());
-            //Devuelve el dato de la celda
-            Proveedor p = data.getRowValue();
-            //Añadimos el nuevo valor a la celda
-            p.setTelefono(data.getNewValue());
+            /*  boolean isValidTelefono = Validar.isValidColumnTelefono(tcTelefono);
+            if (isValidTelefono) {
+                LOG.log(Level.INFO, "Nuevo Telefono: {0}", data.getNewValue());
+                LOG.log(Level.INFO, "Antiguo Telefono: {0}", data.getOldValue());
+                //Devuelve el dato de la celda
+                Proveedor p = data.getRowValue();
+                //Añadimos el nuevo valor a la celda
+                p.setTelefono(data.getNewValue());
 
+            } else {
+                Alert alerta = new Alert(AlertType.ERROR);
+                alerta.setTitle("Error");
+                alerta.setHeaderText("Error al introducir valor");
+                alerta.setContentText("Por favor, introduzca un valor permitido");
+                alerta.showAndWait();
+            }
+**/
         });
+
         //Descripción del proveedor
         tcDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
         //Indicamos que la celda puede cambiar a un TextField
         tcDescripcion.setCellFactory(TextFieldTableCell.forTableColumn());
         //Aceptamos la edición de la celda de la columna descripción 
         tcDescripcion.setOnEditCommit((TableColumn.CellEditEvent<Proveedor, String> data) -> {
-            LOG.log(Level.INFO, "Nueva Descripción: {0}", data.getNewValue());
-            LOG.log(Level.INFO, "Antiguo Descripción: {0}", data.getOldValue());
-            //Devuelve el dato de la celda
-            Proveedor p = data.getRowValue();
-            //Añadimos el nuevo valor a la celda
-            p.setDescripcion(data.getNewValue());
+            /*   boolean isValidDescripcion = Validar.isValidColumnString(tcDescripcion);
+            if (isValidDescripcion) {
+                LOG.log(Level.INFO, "Nueva Descripción: {0}", data.getNewValue());
+                LOG.log(Level.INFO, "Antiguo Descripción: {0}", data.getOldValue());
+                //Devuelve el dato de la celda
+                Proveedor p = data.getRowValue();
+                //Añadimos el nuevo valor a la celda
+                p.setDescripcion(data.getNewValue());
+            } else {
+                Alert alerta = new Alert(AlertType.ERROR);
+                alerta.setTitle("Error");
+                alerta.setHeaderText("Error al introducir valor");
+                alerta.setContentText("Por favor, introduzca un valor permitido");
+                alerta.showAndWait();
+            }
+             */
+        });
+        //Fecha de alta del proveedor
+        tcFechaAlta.setCellValueFactory(new PropertyValueFactory<>("fechaAlta"));
+        //Indicamos que la celda puede cambiar a una TableCell
+        tcFechaAlta.setCellFactory(new Callback<TableColumn<Proveedor, Date>, TableCell<Proveedor, Date>>() {
+            //Este método indica que la TableCell incluye un DatePicker
+            @Override
+            public TableCell<Proveedor, Date> call(TableColumn<Proveedor, Date> arg0) {
+                return new FechaAltaCell();
+            }
+        });
+        //Aceptamos la edición de la celda de la columna fechaAlta 
+        tcFechaAlta.setOnEditCommit(value -> {
+            LOG.log(Level.INFO, "Nueva Fecha : {0}", value.getNewValue());
+            LOG.log(Level.INFO, "Anterior Fecha : {0}", value.getOldValue());
+            Proveedor p = value.getRowValue();
 
         });
-        //Administrador asociado con el proveedor 
-        // tcAdmin.setCellValueFactory(TableColumn.CellDataFeatures<Proveedor, Long> param) -> new SimpleObjectProperty<>(param.);
-
     }
 
     /**
@@ -301,12 +409,34 @@ public class InicioAdministradorProveedorController {
      *
      */
     private void datosTabla() {
-        this.listProveedores = FXCollections.observableArrayList(getAdministradorRESTClient().getProveedores(new GenericType<List<Proveedor>>() {
-        }));
-        for (Proveedor p : listProveedores) {
-            LOG.log(Level.INFO, "Lista de Proveedores: {0}", listProveedores);
+        try {
+            administradorManager = (AdministradorManagerImplementation) new factory.AdministradorFactory().getAdministradorManagerImplementation();
+            listProveedores = FXCollections.observableArrayList(administradorManager.getProveedores());
+            tbProveedor.setItems(listProveedores);
+
+            for (Proveedor p : listProveedores) {
+                LOG.log(Level.INFO, "Lista de Proveedores: {0}", listProveedores);
+            }
+            tbProveedor.setItems(listProveedores);
+        } catch (ClientErrorException ex) {
+            LOG.log(Level.INFO, "ClientErrorException");
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Administrador");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
+        } catch (ErrorBDException ex) {
+            LOG.log(Level.INFO, "ErrorBDException");
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Administrador");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
+        } catch (ErrorServerException ex) {
+            LOG.log(Level.INFO, "ErrorServerException");
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Administrador");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
         }
-        tbProveedor.setItems(listProveedores);
     }
 
     //CONFIGURACIÓN DE BOTONES
@@ -335,45 +465,65 @@ public class InicioAdministradorProveedorController {
      * @param event
      */
     private void btnBorrarProveedorClick(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText(null);
-        alert.setTitle("Borrado de Proveedor");
-        alert.setContentText("¿Estas seguro de borrar este proveedor?");
-        Optional<ButtonType> respuesta = alert.showAndWait();
-
-        if (respuesta.get() == ButtonType.OK) {
-
+        try {
+            /*Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setHeaderText(null);
+            alert.setTitle("Borrado de Proveedor");
+            alert.setContentText("¿Estas seguro de borrar este proveedor?");
+            Optional<ButtonType> respuesta = alert.showAndWait();
+            
+            if (respuesta.get() == ButtonType.OK) {
             LOG.log(Level.INFO, "Has pulsado el boton Aceptar");
             //Capturamos el indice del proveedor seleccionado y borro su item asociado de la tabla
             int proveedorIndex = tbProveedor.getSelectionModel().getSelectedIndex();
-            Proveedor proveedorSeleccionado = tbProveedor.getSelectionModel().getSelectedItem();
             if (proveedorIndex >= 0) {
-                //Borramos el proveedor
-                LOG.log(Level.INFO, "Se ha borrado un proveedor");
-                tbProveedor.getItems().remove(proveedorSeleccionado);
-
-                Proveedor p = (Proveedor) tbProveedor.getSelectionModel().getSelectedItem();
-                listProveedores.remove(p);
-                /*
-                ObservableList<Proveedor> allProveedores, proveedorSeleccionado;
-                allProveedores = tbProveedor.getItems();
-                proveedorSeleccionado = tbProveedor.getSelectionModel().getSelectedItems();
-                LOG.log(Level.INFO, "Se ha borrado un proveedor");
-                proveedorSeleccionado.forEach(listProveedores::remove);
-                LOG.log(Level.INFO, "refresh");
-                tbProveedor.refresh();*/
-
-            } else {
-                //En el caso de no seleccionar un proveedor. Saldrá un alerta
-                Alert alerta = new Alert(AlertType.WARNING);
-                alerta.setTitle("Atención");
-                alerta.setHeaderText("Proveedor no seleccionado");
-                alerta.setContentText("Por favor, selecciona un proveedor de la tabla");
-                alerta.showAndWait();
+            try {
+            //Borramos el proveedor
+            
+            LOG.log(Level.INFO, "Se ha borrado un proveedor");
+            } catch (ClientErrorException ex) {
+            LOG.log(Level.INFO, "ClientErrorException");
+            /*Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Administrador");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
+            } catch (ProveedorNotFoundException ex) {
+            Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (DeleteException ex) {
+            Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ErrorBDException ex) {
+            Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ErrorServerException ex) {
+            Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } else {
+            
+            } else {
+            //En el caso de no seleccionar un proveedor. Saldrá un alerta
+            Alert alerta = new Alert(AlertType.WARNING);
+            alerta.setTitle("Atención");
+            alerta.setHeaderText("Proveedor no seleccionado");
+            alerta.setContentText("Por favor, selecciona un proveedor de la tabla");
+            alerta.showAndWait();
+            }
+            } else {
             LOG.log(Level.INFO, "Has pulsado el boton Cancelar");
             event.consume();
+            }
+             */
+            
+            proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
+            proveedorManager.remove(tbProveedor.getSelectionModel().getSelectedItem().getIdProveedor().toString());
+            datosTabla();
+        } catch (ClientErrorException ex) {
+            Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ProveedorNotFoundException ex) {
+            Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DeleteException ex) {
+            Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ErrorBDException ex) {
+            Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ErrorServerException ex) {
+            Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

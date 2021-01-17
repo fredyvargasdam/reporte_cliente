@@ -47,7 +47,7 @@
             <TableColumn fx:id="tcEmail" prefWidth="140.0" text="Email" />
             <TableColumn fx:id="tcTelefono" prefWidth="140.0" text="Telefono" />
             <TableColumn fx:id="tcDescripcion" prefWidth="140.0" text="Descripción" />
-            <TableColumn fx:id="tcAdmin" prefWidth="140.0" text="Admin" />
+            <TableColumn fx:id="tcFechaAlta" prefWidth="140.0" text="Fecha Alta" />
         </columns>
       </TableView>
       <HBox fx:id="Hbox" prefHeight="31.0" prefWidth="1253.0">
