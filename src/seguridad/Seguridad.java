@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.SecureRandom;
@@ -65,7 +63,7 @@ public class Seguridad {
         String pass = "";
 
         try {
-            //Calve pública
+            //Clave pública
             byte fileKey[] = fileReader("Public.key");
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(fileKey);
@@ -74,8 +72,9 @@ public class Seguridad {
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             byte[] encriptado = cipher.doFinal(contrasenia.getBytes());
             pass = bytesToHexadecimal(encriptado);
+
             //Aqui he escrito el email y la contraseña
-            escribirFichero(pass);
+            // escribirFichero(pass);
         } catch (Exception ex) {
             LOGGER.severe("Error al encriptar con clave pública");
         }
@@ -90,7 +89,7 @@ public class Seguridad {
     public static String generarContrasenia() {
         SecureRandom rnd = new SecureRandom();
         StringBuilder sb = new StringBuilder(10);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 3; i++) {
             sb.append(CARACTERES.charAt(rnd.nextInt(CARACTERES.length())));
         }
         return sb.toString();
@@ -113,5 +112,4 @@ public class Seguridad {
             LOGGER.severe("Error al escribir fichero");
         }
     }
-
 }

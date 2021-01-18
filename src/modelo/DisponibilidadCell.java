@@ -18,11 +18,11 @@ import javafx.scene.control.TableCell;
  *
  * @author Fredy
  */
-public class FechaEntregaCell extends TableCell<Reserva, Date> {
+public class DisponibilidadCell extends TableCell<Producto, Date> {
 
     private DatePicker fecha;
     
-    public FechaEntregaCell() {
+    public DisponibilidadCell() {
 
     }
 
