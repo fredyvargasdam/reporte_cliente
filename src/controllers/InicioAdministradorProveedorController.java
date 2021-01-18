@@ -1,18 +1,16 @@
 package controllers;
 
-import client.AdministradorRESTClient;
-import client.ProveedorRESTClient;
 import exceptions.DeleteException;
 import exceptions.ErrorBDException;
 import exceptions.ErrorServerException;
 import exceptions.ProveedorNotFoundException;
+import exceptions.UpdateException;
 import implementation.AdministradorManagerImplementation;
 import implementation.ProveedorManagerImplementation;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,13 +47,11 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.core.GenericType;
 import manager.AdministradorManager;
 import manager.ProveedorManager;
 import modelo.FechaAltaCell;
 import modelo.Proveedor;
 import modelo.TipoProducto;
-import modelo.Usuario;
 import validar.Validar;
 
 /**
@@ -108,14 +104,14 @@ public class InicioAdministradorProveedorController {
     private TableColumn<Proveedor, String> tcDescripcion;
     @FXML
     private TableColumn<Proveedor, Date> tcFechaAlta;
+
     private ProveedorManager proveedorManager;
     private AdministradorManager administradorManager;
+
     private ObservableList<Proveedor> listProveedores = FXCollections.observableArrayList();
     private Proveedor proveedor;
     @FXML
     private TextField tfBuscar;
-    @FXML
-    private Button btnBuscar;
 
     /**
      * Recibe el escenario
@@ -158,7 +154,8 @@ public class InicioAdministradorProveedorController {
         //Indicamos las acciones de cada boton 
         btnAltaProveedor.setOnAction(this::btnAltaProveedorClick);
         btnBorrarProveedor.setOnAction(this::btnBorrarProveedorClick);
-        btnBuscar.setOnAction(this::btnBuscarClick);
+        //Indicamos que el textField va a tener un metodo asociado
+        tfBuscar.textProperty().addListener(this::txtChanged);
         //Mostramos el stage
         stage.show();
 
@@ -172,22 +169,7 @@ public class InicioAdministradorProveedorController {
      * @param newValue Valor nuevo
      */
     private void txtChanged(ObservableValue observable, String oldValue, String newValue) {
-        if (tcNombre.getText().trim().equals("") && tcEmpresa.getText().trim().equals("") && tcEmail.getText().trim().equals("")
-                && tcTelefono.getText().trim().equals("") && tcDescripcion.getText().trim().equals("")) {
-            Alert alerta = new Alert(AlertType.ERROR);
-            alerta.setTitle("Error");
-            alerta.setHeaderText("Datos no introducidos");
-            alerta.setContentText("Por favor, introduzca datos para completar el alta");
-            alerta.showAndWait();
 
-        } else {
-            boolean isValidNombre = Validar.isValidColumnString(tcNombre);
-            boolean isValidEmpresa = Validar.isValidColumnString(tcEmpresa);
-            boolean isValidEmail = Validar.isValidColumnEmail(tcEmail);
-            boolean isValidTelefono = Validar.isValidColumnTelefono(tcTelefono);
-            boolean isValidDescripcion = Validar.isValidColumnString(tcDescripcion);
-
-        }
     }
 
     /**
@@ -221,7 +203,6 @@ public class InicioAdministradorProveedorController {
         LOG.log(Level.INFO, "Beginning InicioAdministradorProveedorController::handleWindowShowing");
         //Indicamos que el boton borrarProveedor tiene que estar desactivado
         btnBorrarProveedor.setDisable(true);
-        btnBuscar.setDisable(true);
     }
 
     /**
@@ -284,6 +265,7 @@ public class InicioAdministradorProveedorController {
                 alerta.setContentText("Por favor, introduzca un valor permitido");
                 alerta.showAndWait();
             }*/
+
         });
 
         //Email del proveedor
@@ -316,23 +298,37 @@ public class InicioAdministradorProveedorController {
         tcTelefono.setCellFactory(TextFieldTableCell.forTableColumn());
         //Aceptamos la edición de la celda de la columna teléfono 
         tcTelefono.setOnEditCommit((TableColumn.CellEditEvent<Proveedor, String> data) -> {
-            /*  boolean isValidTelefono = Validar.isValidColumnTelefono(tcTelefono);
-            if (isValidTelefono) {
+            try {
+                proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
+                proveedorManager.edit(data.getRowValue());
+                datosTabla();
+                /*  boolean isValidTelefono = Validar.isValidColumnTelefono(tcTelefono);
+                if (isValidTelefono) {
                 LOG.log(Level.INFO, "Nuevo Telefono: {0}", data.getNewValue());
                 LOG.log(Level.INFO, "Antiguo Telefono: {0}", data.getOldValue());
                 //Devuelve el dato de la celda
                 Proveedor p = data.getRowValue();
                 //Añadimos el nuevo valor a la celda
                 p.setTelefono(data.getNewValue());
-
-            } else {
+                
+                } else {
                 Alert alerta = new Alert(AlertType.ERROR);
                 alerta.setTitle("Error");
                 alerta.setHeaderText("Error al introducir valor");
                 alerta.setContentText("Por favor, introduzca un valor permitido");
                 alerta.showAndWait();
+                }
+            **/  } catch (ClientErrorException ex) {
+                Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (UpdateException ex) {
+                Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ErrorBDException ex) {
+                Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ErrorServerException ex) {
+                Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ProveedorNotFoundException ex) {
+                Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
             }
-**/
         });
 
         //Descripción del proveedor
@@ -384,14 +380,12 @@ public class InicioAdministradorProveedorController {
      * @param event
      */
     private void actualizarTipoProducto(TableColumn.CellEditEvent<Proveedor, TipoProducto> event) {
-        Proveedor tipoProducto = event.getRowValue();
-        tipoProducto.setTipo(event.getNewValue());
+
     }
 
     /**
      * Nos permite seleccionar a un proveedor de la tabla y este controla que el
-     * botón BorrarProveedor y ActualizarProveedor esté habilitado o
-     * deshabilitado
+     * botón BorrarProveedor esté habilitado o deshabilitado
      */
     private void seleccionarProveedor() {
         tbProveedor.getSelectionModel().selectedItemProperty().addListener(
@@ -406,7 +400,7 @@ public class InicioAdministradorProveedorController {
 
     //CONFIGURACIÓN DE LOS DATOS 
     /**
-     *
+     * Muestra los datos de la base de datos en la TableView
      */
     private void datosTabla() {
         try {
@@ -439,9 +433,13 @@ public class InicioAdministradorProveedorController {
         }
     }
 
+    private void buscarProveedor(ActionEvent event) {
+
+    }
+
     //CONFIGURACIÓN DE BOTONES
     /**
-     * Nos permite redirigirnos hacia la ventana de SignUpProveedorView
+     *
      *
      * @param event ActionEvent
      */
@@ -465,74 +463,46 @@ public class InicioAdministradorProveedorController {
      * @param event
      */
     private void btnBorrarProveedorClick(ActionEvent event) {
-        try {
-            /*Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setHeaderText(null);
-            alert.setTitle("Borrado de Proveedor");
-            alert.setContentText("¿Estas seguro de borrar este proveedor?");
-            Optional<ButtonType> respuesta = alert.showAndWait();
-            
-            if (respuesta.get() == ButtonType.OK) {
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText(null);
+        alert.setTitle("Borrado de Proveedor");
+        alert.setContentText("¿Estas seguro de borrar este proveedor?");
+        Optional<ButtonType> respuesta = alert.showAndWait();
+
+        if (respuesta.get() == ButtonType.OK) {
             LOG.log(Level.INFO, "Has pulsado el boton Aceptar");
             //Capturamos el indice del proveedor seleccionado y borro su item asociado de la tabla
             int proveedorIndex = tbProveedor.getSelectionModel().getSelectedIndex();
             if (proveedorIndex >= 0) {
-            try {
-            //Borramos el proveedor
-            
-            LOG.log(Level.INFO, "Se ha borrado un proveedor");
-            } catch (ClientErrorException ex) {
-            LOG.log(Level.INFO, "ClientErrorException");
-            /*Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Administrador");
-            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-            alert.showAndWait();
-            } catch (ProveedorNotFoundException ex) {
-            Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (DeleteException ex) {
-            Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ErrorBDException ex) {
-            Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ErrorServerException ex) {
-            Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
+                try {
+                    proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
+                    proveedorManager.remove(tbProveedor.getSelectionModel().getSelectedItem().getIdProveedor().toString());
+                    datosTabla();
+                    LOG.log(Level.INFO, "Se ha borrado un proveedor");
+                } catch (ClientErrorException ex) {
+                    Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ProveedorNotFoundException ex) {
+                    Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (DeleteException ex) {
+                    Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ErrorBDException ex) {
+                    Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ErrorServerException ex) {
+                    Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
+                }
             } else {
-            //En el caso de no seleccionar un proveedor. Saldrá un alerta
-            Alert alerta = new Alert(AlertType.WARNING);
-            alerta.setTitle("Atención");
-            alerta.setHeaderText("Proveedor no seleccionado");
-            alerta.setContentText("Por favor, selecciona un proveedor de la tabla");
-            alerta.showAndWait();
+                //En el caso de no seleccionar un proveedor. Saldrá un alerta
+                Alert alerta = new Alert(AlertType.WARNING);
+                alerta.setTitle("Atención");
+                alerta.setHeaderText("Proveedor no seleccionado");
+                alerta.setContentText("Por favor, selecciona un proveedor de la tabla");
+                alerta.showAndWait();
             }
-            } else {
+        } else {
             LOG.log(Level.INFO, "Has pulsado el boton Cancelar");
             event.consume();
-            }
-             */
-            
-            proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
-            proveedorManager.remove(tbProveedor.getSelectionModel().getSelectedItem().getIdProveedor().toString());
-            datosTabla();
-        } catch (ClientErrorException ex) {
-            Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ProveedorNotFoundException ex) {
-            Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (DeleteException ex) {
-            Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ErrorBDException ex) {
-            Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ErrorServerException ex) {
-            Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    /**
-     *
-     * @param event
-     */
-    private void btnBuscarClick(ActionEvent event) {
-
     }
 
     //CONFIGURACIÓN DEL MENÚ

@@ -5,7 +5,6 @@
  */
 package implementation;
 
-import client.AdministradorRESTClient;
 import client.ProveedorRESTClient;
 import exceptions.ErrorBDException;
 import exceptions.ErrorServerException;
@@ -26,31 +25,32 @@ import modelo.Proveedor;
  * @author Lorena
  */
 public class ProveedorManagerImplementation implements ProveedorManager {
-
+    
     private static final Logger LOG = Logger.getLogger(ProveedorManagerImplementation.class.getName());
-
+    
     private ProveedorRESTClient webClient;
-
+    
     @Override
     public void remove(String id) throws ClientErrorException {
         try {
-            //webClient.remove(id);
-         
+            webClient = new ProveedorRESTClient();
+            webClient.remove(id);
         } catch (Exception e) {
-            LOG.log(Level.SEVERE, "find: Excepcion de ClientError");
+            LOG.log(Level.SEVERE, "ClientErrorException");
         }
     }
-
+    
     @Override
     public void close() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public void edit(Proveedor proveedor) throws ClientErrorException, UpdateException, ErrorBDException, ErrorServerException, ProveedorNotFoundException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      webClient = new ProveedorRESTClient();
+      webClient.edit(proveedor);
     }
-
+    
     @Override
     public Proveedor find(Proveedor proveedor, String id) throws ClientErrorException, SelectException, ProveedorNotFoundException, ErrorBDException, ErrorServerException {
         proveedor = null;
@@ -59,18 +59,18 @@ public class ProveedorManagerImplementation implements ProveedorManager {
         } catch (Exception e) {
             LOG.log(Level.INFO, "");
         }
-
+        
         return proveedor;
     }
-
+    
     @Override
     public Proveedor getProductos(Proveedor proveedor, String id) throws ErrorBDException, ErrorServerException, ProductoNotFoundException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public void create(Proveedor proveedor) throws ClientErrorException, InsertException, ProveedorYaExisteException, ErrorBDException, ErrorServerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
 }
