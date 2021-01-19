@@ -11,7 +11,6 @@ import exceptions.ErrorBDException;
 import exceptions.ErrorServerException;
 import exceptions.InsertException;
 import exceptions.ProveedorNotFoundException;
-import exceptions.ProveedorYaExisteException;
 import exceptions.SelectException;
 import exceptions.UpdateException;
 import java.util.List;
@@ -24,7 +23,7 @@ import modelo.Proveedor;
 
 /**
  *
- * @author Lorena
+ * @author Lorena Cáceres Manuel
  */
 public class AdministradorManagerImplementation implements AdministradorManager {
 

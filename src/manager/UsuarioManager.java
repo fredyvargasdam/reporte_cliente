@@ -5,22 +5,27 @@
  */
 package manager;
 
+import exceptions.AutenticacionFallidaException;
+import exceptions.ErrorBDException;
+import exceptions.ErrorServerException;
+import exceptions.SelectException;
+import exceptions.UsuarioNotFoundException;
 import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.client.WebTarget;
+import modelo.Usuario;
 
 /**
  *
- * @author 2dam
+ * @author Lorena Cáceres Manuel
  */
 public interface UsuarioManager {
 
     public void edit(Object requestEntity) throws ClientErrorException;
 
-    public <T> T find(Class<T> responseType, String id) throws ClientErrorException;
+    public Usuario find(Usuario usuario, String id) throws ClientErrorException;
 
-    public <T> T usuarioByLogin(Class<T> responseType, String login, String pass) throws ClientErrorException;
+    public Usuario usuarioByLogin(Usuario usuario, String login, String pass) throws ClientErrorException, AutenticacionFallidaException, UsuarioNotFoundException, ErrorBDException, ErrorServerException, SelectException;
 
-    public void create(Object requestEntity) throws ClientErrorException;
+    public void create(Usuario usuario) throws ClientErrorException;
 
     public void remove(String id) throws ClientErrorException;
 

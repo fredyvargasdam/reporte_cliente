@@ -138,7 +138,7 @@ public class Validar {
      */
     public static boolean isValidNombre(TextField txtNombre) {
         boolean b = false;
-        String pattern = "^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ]+$";
+        String pattern = "^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\\s]+$";
         if (txtNombre.getText().matches(pattern)) {
             b = true;
             txtNombre.setStyle("-fx-border-color:rgb(189 189 189);");
@@ -148,7 +148,7 @@ public class Validar {
         return b;
     }
 
-    public static boolean isValidColumnString(TableColumn<Proveedor, String> tc) {
+   /* public static boolean isValidColumnString(TableColumn<Proveedor, String> tc) {
         boolean b = false;
         final String pattern = "^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ]+$";
         if (tc.getText().matches(pattern)) {
@@ -173,6 +173,6 @@ public class Validar {
             b = true;
         }
         return b;
-    }
+    }*/
 
 }

@@ -24,7 +24,7 @@ import manager.UsuarioManager;
  *
  * @author Fredy
  */
-public class UsuarioRESTClient implements UsuarioManager {
+public class UsuarioRESTClient  {
 
     private WebTarget webTarget;
     private Client client;

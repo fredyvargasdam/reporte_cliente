@@ -4,6 +4,8 @@ import client.UsuarioRESTClient;
 import exceptions.AutenticacionFallidaException;
 import exceptions.ErrorBDException;
 import exceptions.ErrorServerException;
+import exceptions.SelectException;
+import exceptions.UsuarioNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,11 +24,13 @@ import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import factory.UsuarioFactory;
+import implementation.UsuarioManagerImplementation;
 import java.util.Optional;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javax.ws.rs.ClientErrorException;
 import manager.UsuarioManager;
 import modelo.Usuario;
 import seguridad.Seguridad;
@@ -58,6 +62,7 @@ public class LogInController {
 
     private Stage stage = new Stage();
     private Usuario usuario;
+    private UsuarioManager usuarioManager;
 
     public LogInController() {
 
@@ -171,17 +176,17 @@ public class LogInController {
      * @param event ActionEvent
      */
     private void btnIniciarClick(ActionEvent event) {
+
         LOG.log(Level.INFO, "Ventana ");
         usuario = new Usuario();
         usuario.setLogin(txtUsuario.getText());
         usuario.setPassword(txtContrasena.getText());
-        UsuarioManager usuarioM = new UsuarioFactory().getUsuarioRESTClient();
+        //UsuarioManager usuarioM = new UsuarioFactory().getUsuarioRESTClient();
         Alert alert;
+        usuarioManager = (UsuarioManagerImplementation) new factory.UsuarioFactory().getUsuarioManagerImplementation();
         try {
-            //usuario = usuarioM.ClusuarioByLogin(Usuario.class, usuario.getLogin(), Seguridad.encriptarContrasenia(usuario.getPassword()));
-            UsuarioRESTClient usuarioR = (UsuarioRESTClient) usuarioM;
-            usuario = usuarioR.usuarioByLogin(Usuario.class, usuario.getLogin(), Seguridad.encriptarContrasenia(usuario.getPassword()));
-            System.out.println(usuario.getLastAccess());
+            usuarioManager.usuarioByLogin(usuario, usuario.getLogin(), usuario.getPassword());
+
             FXMLLoader loader = null;
             Parent root = null;
             switch (usuario.getPrivilege()) {
@@ -210,37 +215,43 @@ public class LogInController {
             stage.hide();
         } catch (IOException e) {
             LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
-            /*
-             } catch (AutenticacionFallidaException ex) {
+
+        } catch (AutenticacionFallidaException ex) {
             alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error");
+            alert.setTitle("Login ERROR");
             alert.setHeaderText("Contraseña Incorrecta");
             alert.showAndWait();
-          
+
             txtContrasena.setStyle("-fx-faint-focus-color: transparent; -fx-focus-color:rgba(255,0,0,1);");
             txtContrasena.setText("");
             txtContrasena.requestFocus();
-            //setStyle("-fx-focus-color: -fx-control-inner-background ; -fx-faint-focus-color: -fx-control-inner-background ;");
-
         } catch (ErrorBDException ex) {
-            alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("LOGIN");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Login ERROR");
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
         } catch (ErrorServerException ex) {
-            alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("LOGIN");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Login ERROR");
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
-        } catch (UsuarioNoEncontradoException ex) {
+        } catch (ClientErrorException ex) {
             alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error");
+            alert.setTitle("Login ERROR");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
+        } catch (UsuarioNotFoundException ex) {
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Login ERROR");
             alert.setHeaderText("No se ha encontrado el usuario introducido");
             alert.showAndWait();
             txtUsuario.setText("");
             txtContrasena.setText("");
-          
-             */
+        } catch (SelectException ex) {
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Login ERROR");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
         }
     }
 

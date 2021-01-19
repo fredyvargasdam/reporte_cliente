@@ -11,6 +11,8 @@ import implementation.AdministradorManagerImplementation;
 import implementation.ProveedorManagerImplementation;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -84,8 +86,6 @@ public class InicioAdministradorProveedorController {
     private MenuBar menuBar;
     @FXML
     private Menu menuPerfil;
-    @FXML
-    private MenuItem menuAdministrador;
     @FXML
     private Menu menuVendedor;
     @FXML
@@ -210,11 +210,14 @@ public class InicioAdministradorProveedorController {
         //Rellenamos la tabla con los proveedores
         datosTabla();
         //Definimos las celdas de la tabla, incluyendo que algunas pueden ser editables
+
         //Nombre del proveedor
         tcNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         tcNombre.setCellFactory(TextFieldTableCell.forTableColumn());
         tcNombre.setOnEditCommit((TableColumn.CellEditEvent<Proveedor, String> data) -> {
-            if (!Pattern.matches("^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ]+$", data.getNewValue())) {
+            //Establecemos que el dato que se introduzca en la celda debe cumplir un patrón
+            if (!Pattern.matches("^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\\s]+$", data.getNewValue())) {
+                //En el caso de que no se cumpla el patrón. Saldrá un alerta informandonos del error
                 alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Proveedor");
                 alert.setHeaderText("Error al introducir el nombre del proveedor");
@@ -226,12 +229,15 @@ public class InicioAdministradorProveedorController {
                 try {
                     LOG.log(Level.INFO, "Nuevo Nombre: {0}", data.getNewValue());
                     LOG.log(Level.INFO, "Antiguo Nombre: {0}", data.getOldValue());
+                    //Implementacion del ProveedorRESTClient
                     proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
                     //Devuelve el dato de la fila
                     Proveedor p = data.getRowValue();
                     //Añadimos el nuevo valor a la fila
                     p.setNombre(data.getNewValue());
+                    //Llamamos al método edit para asi poder modificar el nombre del proveedor
                     proveedorManager.edit(p);
+                    //Mostramos los datos actualizados en la TableView
                     datosTabla();
                 } catch (ClientErrorException ex) {
                     LOG.log(Level.SEVERE, "ClientErrorException");
@@ -270,8 +276,10 @@ public class InicioAdministradorProveedorController {
 
         //Tipo de producto 
         tcTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+        //Indicamos que la celda puede cambiar a un ChoiceBox
         tcTipo.setCellFactory(ChoiceBoxTableCell.
                 forTableColumn(TipoProducto.ROPA, TipoProducto.ZAPATILLAS, TipoProducto.AMBAS));
+        //Le añadimos un evento y le indicamos que se realizará en ActualizarTipoProducto 
         tcTipo.addEventHandler(TableColumn.<Proveedor, TipoProducto>editCommitEvent(),
                 event -> actualizarTipoProducto(event));
 
@@ -281,7 +289,9 @@ public class InicioAdministradorProveedorController {
         tcEmpresa.setCellFactory(TextFieldTableCell.forTableColumn());
         //Aceptamos la edición de la celda de la columna empresa 
         tcEmpresa.setOnEditCommit((TableColumn.CellEditEvent<Proveedor, String> data) -> {
-            if (!Pattern.matches("^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ]+$", data.getNewValue())) {
+            //Establecemos que el dato que se introduzca en la celda debe cumplir un patrón
+            if (!Pattern.matches("^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\\s]+$", data.getNewValue())) {
+                //En el caso de que no se cumpla el patrón. Saldrá un alerta informandonos del error
                 alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Proveedor");
                 alert.setHeaderText("Error al introducir la empresa");
@@ -293,12 +303,15 @@ public class InicioAdministradorProveedorController {
                 try {
                     LOG.log(Level.INFO, "Nueva Empresa: {0}", data.getNewValue());
                     LOG.log(Level.INFO, "Antigua Empresa: {0}", data.getOldValue());
+                    //Implementacion del ProveedorRESTClient
                     proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
                     //Devuelve el dato de la fila
                     Proveedor p = data.getRowValue();
                     //Añadimos el nuevo valor a la fila
                     p.setEmpresa(data.getNewValue());
+                    //Llamamos al método edit para asi poder modificar la empresa del proveedor
                     proveedorManager.edit(p);
+                    //Mostramos los datos actualizados en la TableView
                     datosTabla();
                 } catch (ClientErrorException ex) {
                     LOG.log(Level.SEVERE, "ClientErrorException");
@@ -340,7 +353,9 @@ public class InicioAdministradorProveedorController {
         tcEmail.setCellFactory(TextFieldTableCell.forTableColumn());
         //Aceptamos la edición de la celda de la columna email 
         tcEmail.setOnEditCommit((TableColumn.CellEditEvent<Proveedor, String> data) -> {
+            //Establecemos que el dato que se introduzca en la celda debe cumplir un patrón
             if (!Pattern.matches("\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*", data.getNewValue())) {
+                //En el caso de que no se cumpla el patrón. Saldrá un alerta informandonos del error
                 alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Proveedor");
                 alert.setHeaderText("Error al introducir el email");
@@ -352,12 +367,15 @@ public class InicioAdministradorProveedorController {
                 try {
                     LOG.log(Level.INFO, "Nuevo Email: {0}", data.getNewValue());
                     LOG.log(Level.INFO, "Antiguo Email: {0}", data.getOldValue());
+                    //Implementación del ProveedorRESTClient
                     proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
                     //Devuelve el dato de la fila
                     Proveedor p = data.getRowValue();
                     //Añadimos el nuevo valor a la fila
                     p.setEmail(data.getNewValue());
+                    //Llamamos al método edit para asi poder modificar el email del proveedor
                     proveedorManager.edit(p);
+                    //Mostramos los datos actualizados en la TableView
                     datosTabla();
                 } catch (ClientErrorException ex) {
                     LOG.log(Level.SEVERE, "ClientErrorException");
@@ -399,7 +417,9 @@ public class InicioAdministradorProveedorController {
         tcTelefono.setCellFactory(TextFieldTableCell.forTableColumn());
         //Aceptamos la edición de la celda de la columna teléfono 
         tcTelefono.setOnEditCommit((TableColumn.CellEditEvent<Proveedor, String> data) -> {
-            if (!Pattern.matches("^\\+([0-9\\-]?){9,11}[0-9]$", data.getNewValue())) {
+            //Establecemos que el dato que se introduzca en la celda debe cumplir un patrón
+            if (!Pattern.matches("\\d{9,11}", data.getNewValue())) {
+                //En el caso de que no se cumpla el patrón. Saldrá un alerta informandonos del error
                 alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Proveedor");
                 alert.setHeaderText("Error al introducir el teléfono");
@@ -411,12 +431,15 @@ public class InicioAdministradorProveedorController {
                 try {
                     LOG.log(Level.INFO, "Nuevo Teléfono: {0}", data.getNewValue());
                     LOG.log(Level.INFO, "Antiguo Teléfono: {0}", data.getOldValue());
+                    //Implementación del ProveedorRESTClient
                     proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
                     //Devuelve el dato de la fila
                     Proveedor p = data.getRowValue();
                     //Añadimos el nuevo valor a la fila
                     p.setTelefono(data.getNewValue());
+                    //Llamamos al método edit para asi poder modificar el teléfono del proveedor
                     proveedorManager.edit(p);
+                    //Mostramos los datos actualizados en la TableView
                     datosTabla();
                 } catch (ClientErrorException ex) {
                     LOG.log(Level.SEVERE, "ClientErrorException");
@@ -462,7 +485,9 @@ public class InicioAdministradorProveedorController {
         //Aceptamos la edición de la celda de la columna descripción 
         tcDescripcion.setOnEditCommit(
                 (TableColumn.CellEditEvent<Proveedor, String> data) -> {
-                    if (!Pattern.matches("^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ]+$", data.getNewValue())) {
+                    //Establecemos que el dato que se introduzca en la celda debe cumplir un patrón
+                    if (!Pattern.matches("^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\\s]+$", data.getNewValue())) {
+                        //En el caso de que no se cumpla el patrón. Saldrá un alerta informandonos del error
                         alert = new Alert(AlertType.ERROR);
                         alert.setTitle("Proveedor");
                         alert.setHeaderText("Error al introducir la descripción");
@@ -474,12 +499,15 @@ public class InicioAdministradorProveedorController {
                         try {
                             LOG.log(Level.INFO, "Nueva Descripción: {0}", data.getNewValue());
                             LOG.log(Level.INFO, "Antigua Descripción: {0}", data.getOldValue());
+                            //Implementación del ProveedorRESTClient
                             proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
                             //Devuelve el dato de la fila
                             Proveedor p = data.getRowValue();
                             //Añadimos el nuevo valor a la fila
                             p.setDescripcion(data.getNewValue());
+                            //Llamamos al método edit para asi poder modificar la descripción del proveedor
                             proveedorManager.edit(p);
+                            //Mostramos los datos actualizados en la TableView
                             datosTabla();
                         } catch (ClientErrorException ex) {
                             LOG.log(Level.SEVERE, "ClientErrorException");
@@ -536,12 +564,15 @@ public class InicioAdministradorProveedorController {
             try {
                 LOG.log(Level.INFO, "Nueva FechaAlta: {0}", data.getNewValue());
                 LOG.log(Level.INFO, "Antigua FechaAlta: {0}", data.getOldValue());
+                //Implementación del ProveedorRESTClient
                 proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
                 //Devuelve el dato de la fila
                 Proveedor p = data.getRowValue();
                 //Añadimos el nuevo valor a la fila
                 p.setFechaAlta(data.getNewValue());
+                //Llamamos al método edit para asi poder modificar la fecha de alta del proveedor
                 proveedorManager.edit(p);
+                //Mostramos los datos actualizados en la TableView
                 datosTabla();
             } catch (ClientErrorException ex) {
                 LOG.log(Level.SEVERE, "ClientErrorException");
@@ -589,12 +620,15 @@ public class InicioAdministradorProveedorController {
         try {
             LOG.log(Level.INFO, "Nuevo Tipo de Producto: {0}", data.getNewValue());
             LOG.log(Level.INFO, "Antiguo Tipo de Producto: {0}", data.getOldValue());
+            //Implementación del ProveedorRESTClient
             proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
             //Devuelve el dato de la fila
             Proveedor p = data.getRowValue();
             //Añadimos el nuevo valor a la fila
             p.setTipo(data.getNewValue());
+            //Llamamos al método edit para asi poder modificar el tipo de producto que nos proporciona el proveedor
             proveedorManager.edit(p);
+            //Mostramos los datos actualizados en la TableView
             datosTabla();
         } catch (ClientErrorException ex) {
             LOG.log(Level.SEVERE, "ClientErrorException");
@@ -651,15 +685,18 @@ public class InicioAdministradorProveedorController {
      */
     private void datosTabla() {
         try {
+            //Implementación del AdministradorRESTClient
             administradorManager = (AdministradorManagerImplementation) new factory.AdministradorFactory().getAdministradorManagerImplementation();
+            //Llamamos al método getProveedores para asi poder llenar la tabla con los proveedores que hay dentro de la base de datos
             listProveedores = FXCollections.observableArrayList(administradorManager.getProveedores());
+            //Establecemos los datos del ObservableList dentro de la TableView
             tbProveedor.setItems(listProveedores);
             //Recorremos el ArrayList Observable de proveedores
             for (Proveedor p : listProveedores) {
                 LOG.log(Level.INFO, "Lista de Proveedores: {0}", listProveedores);
             }
             //Añadimos esos proveedores dentro de la TableView
-            tbProveedor.setItems(listProveedores);
+            //tbProveedor.setItems(listProveedores);
         } catch (ClientErrorException ex) {
             LOG.log(Level.SEVERE, "ClientErrorException");
             alert = new Alert(AlertType.ERROR);
@@ -689,15 +726,14 @@ public class InicioAdministradorProveedorController {
      */
     private void btnAltaProveedorClick(ActionEvent event) {
         try {
-            String id = "1";
-            Administrador admin = new Administrador();
-            admin.setId_usuario(Long.valueOf(id));
+            LocalDate fechaHoy = LocalDate.now();
+            ZoneId defaultZoneId = ZoneId.systemDefault();
+            Date date = Date.from(fechaHoy.atStartOfDay(defaultZoneId).toInstant());
 
-            // Creamos una nueva fila
-            //Instanciamos un nuevo proveedor
+            //Instanciamos un nuevo proveedor dandole valores por defecto
             Proveedor nuevoProveedor = new Proveedor();
-            //Añadimos por defecto que el administrador va a ser el número 1
-            nuevoProveedor.setAdministrador(admin);
+            //Añadimos por defecto que el administrador va a ser null
+            nuevoProveedor.setAdministrador(null);
             //Añadimos por defecto que la descripción está vacia
             nuevoProveedor.setDescripcion("");
             //Añadimos por defecto que  el email está vacio
@@ -710,7 +746,20 @@ public class InicioAdministradorProveedorController {
             nuevoProveedor.setTelefono("");
             //Añadimos por defecto que el tipo del producto va a ser ROPA
             nuevoProveedor.setTipo(ROPA);
+            //Añadimos por defecto que la fecha de alta será el dia de actual
+            nuevoProveedor.setFechaAlta(date);
             //Implementacion del ProveedorRESTClient
+            /*if (nuevoProveedor.getEmail().equalsIgnoreCase("") && nuevoProveedor.getDescripcion().equalsIgnoreCase("")
+                    && nuevoProveedor.getEmpresa().equalsIgnoreCase("") && nuevoProveedor.getTelefono().equalsIgnoreCase("")
+                    && nuevoProveedor.getNombre().equalsIgnoreCase("") && nuevoProveedor.getTipo()==null) {
+
+            LOG.log(Level.SEVERE, "Datos incompletos");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Proveedor");
+            alert.setHeaderText("Introduzca datos válidos");
+            alert.showAndWait();*/
+            //} else {
+            //Implementación del ProveedorRESTClient
             proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
             try {
                 //Llamamos al método create para asi poder crear un nuevo proveedor
@@ -748,10 +797,11 @@ public class InicioAdministradorProveedorController {
             tbProveedor.requestFocus();
             tbProveedor.getSelectionModel().select(row);
             tbProveedor.getFocusModel().focus(row);
+            //}
+
         } catch (ClientErrorException ex) {
             Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     /**
@@ -764,20 +814,24 @@ public class InicioAdministradorProveedorController {
      * @param event
      */
     private void btnBorrarProveedorClick(ActionEvent event) {
+        //Mensaje de confirmación para el borrado
         alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setHeaderText(null);
         alert.setTitle("Borrado de Proveedor");
         alert.setContentText("¿Estas seguro de borrar este proveedor?");
         Optional<ButtonType> respuesta = alert.showAndWait();
-
+        //En el caso de pulsar el boton Aceptar, borraremos el proveedor seleccionado
         if (respuesta.get() == ButtonType.OK) {
             LOG.log(Level.INFO, "Has pulsado el boton Aceptar");
             //Capturamos el indice del proveedor seleccionado y borro su item asociado de la tabla
             int proveedorIndex = tbProveedor.getSelectionModel().getSelectedIndex();
             if (proveedorIndex >= 0) {
                 try {
+                    //Implementación del ProveedorRESTClient
                     proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
+                    //Llamamos al método remove para asi poder eliminar el proveedor que está seleccionado
                     proveedorManager.remove(tbProveedor.getSelectionModel().getSelectedItem().getIdProveedor().toString());
+                    //Mostramos los datos actualizados en la tabla
                     datosTabla();
                     LOG.log(Level.INFO, "Se ha borrado un proveedor");
                 } catch (ClientErrorException ex) {
@@ -821,11 +875,12 @@ public class InicioAdministradorProveedorController {
             }
         } else {
             LOG.log(Level.INFO, "Has pulsado el boton Cancelar");
+            //Desaparece el alerta
             event.consume();
         }
     }
 
-    //CONFIGURACIÓN DEL TEXTFIELD DE BÚSQUEDA0
+    //CONFIGURACIÓN DEL TEXTFIELD DE BÚSQUEDA
     /**
      * Este método nos permite filtrar los proveedores a partir del nombre de la
      * empresa, para ello usaremos el textField 'tfBuscar'
@@ -860,24 +915,6 @@ public class InicioAdministradorProveedorController {
 
         // Añade los datos filtrados a la tabla
         tbProveedor.setItems(sortedData);
-    }
-
-    //CONFIGURACIÓN DEL MENÚ
-    /**
-     * MenuItem que muestra un alerta informandonos de la última conexión del
-     * usuario
-     *
-     * @param event
-     */
-    @FXML
-    private void configMenuAdministrador(ActionEvent event) {
-        /* Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText(null);
-        alert.setTitle("Información del Administrador");
-        alert.setHeaderText("Usuario: " + usuario.getLogin());
-        Date ultimaConexion = usuario.getLastAccess();
-        alert.setContentText(ultimaConexion.toString());
-        alert.showAndWait();*/
     }
 
     /**

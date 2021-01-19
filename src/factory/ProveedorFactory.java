@@ -9,7 +9,7 @@ import implementation.ProveedorManagerImplementation;
 
 /**
  *
- * @author 2dam
+ * @author Lorena Cáceres Manuel
  */
 public class ProveedorFactory {
     public ProveedorManagerImplementation getProveedorManagerImplementation (){
