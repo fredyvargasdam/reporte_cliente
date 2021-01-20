@@ -1,6 +1,8 @@
 package controllers;
 
-import client.UsuarioRESTClient;
+import exceptions.AutenticacionFallidaException;
+import exceptions.ErrorServerException;
+import exceptions.UsuarioNoEncontradoException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,11 +22,13 @@ import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import factory.UsuarioFactory;
+import implementation.UsuarioManagerImplementation;
 import java.util.Optional;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import manager.UsuarioManager;
+import javafx.scene.layout.Pane;
 import modelo.Usuario;
 import seguridad.Seguridad;
 import validar.Validar;
@@ -52,6 +56,13 @@ public class LogInController {
     private Hyperlink hlRegistrarse;
     @FXML
     private ImageView ivLogo;
+
+    @FXML
+    private Pane pnPrincipal;
+ 
+    @FXML
+    private Hyperlink hlContraseniaOlvidada;
+
 
     private Stage stage = new Stage();
     private Usuario usuario;
@@ -95,10 +106,10 @@ public class LogInController {
         stage.setOnShowing(this::handleWindowShowing);
         btnIniciar.setOnAction(this::btnIniciarClick);
         btnIniciar.setTooltip(new Tooltip("Pulse para iniciar sesion "));
-
         txtUsuario.textProperty().addListener(this::txtChanged);
         txtContrasena.textProperty().addListener(this::txtChanged);
         hlRegistrarse.setOnAction(this::hlRegistrarseClick);
+        hlContraseniaOlvidada.setOnAction(this::hlContraseniaOlvidadClick);
         stage.show();
 
     }
@@ -131,6 +142,7 @@ public class LogInController {
      */
     private void handleWindowShowing(WindowEvent event) {
         btnIniciar.setDisable(true);
+        hlContraseniaOlvidada.setVisible(false);
         LOG.log(Level.INFO, "Beginning LoginController::handleWindowShowing");
 
     }
@@ -145,8 +157,13 @@ public class LogInController {
     private void txtChanged(ObservableValue observable, String oldValue, String newValue) {
         Validar.addTextLimiter(txtUsuario, treinta);
         Validar.addTextLimiterPass(txtContrasena, treinta);
+        if (oldValue != newValue) {
+            hlContraseniaOlvidada.setVisible(false);
+        }
         if (!txtUsuario.getText().trim().equals("") && !txtContrasena.getText().trim().equals("")) {
-            boolean isValidUsuario = Validar.isValidUsuario(txtUsuario);
+
+            boolean isValidUsuario = Validar.isValid(txtUsuario);
+            txtContrasena.setStyle("-fx-focus-color: #039ED3; -fx-faint-focus-color: #039ED322;");
 
             if (isValidUsuario) {
                 btnIniciar.setDisable(false);
@@ -172,12 +189,15 @@ public class LogInController {
         usuario = new Usuario();
         usuario.setLogin(txtUsuario.getText());
         usuario.setPassword(txtContrasena.getText());
-        UsuarioManager usuarioM = new UsuarioFactory().getUsuarioRESTClient();
+        UsuarioManagerImplementation usuarioMi = (UsuarioManagerImplementation) new UsuarioFactory().getUsuarioManagerImplementation();
         Alert alert;
         try {
-            //usuario = usuarioM.ClusuarioByLogin(Usuario.class, usuario.getLogin(), Seguridad.encriptarContrasenia(usuario.getPassword()));
-            UsuarioRESTClient usuarioR = (UsuarioRESTClient) usuarioM;
-            usuario = usuarioR.usuarioByLogin(Usuario.class, usuario.getLogin(), Seguridad.encriptarContrasenia(usuario.getPassword()));
+            System.out.println(usuario.getPassword());
+            //El usuario(login) se encuentra en la base de datos
+            usuario = usuarioMi.usuarioLogin(usuario.getLogin());
+            System.out.println(usuario.getEmail());
+            //El usuario ya se encuentra en la base de datos ahora comprobamos su contraseña
+            usuarioMi.usuarioByLogin(usuario.getLogin(), Seguridad.encriptarContrasenia(txtContrasena.getText()));
             System.out.println(usuario.getLastAccess());
             FXMLLoader loader = null;
             Parent root = null;
@@ -190,12 +210,12 @@ public class LogInController {
                     administradorC.initStage(root);
                     break;
                 case VENDEDOR:
-                    loader = new FXMLLoader(getClass().getResource("/view/InicioVendedor.fxml"));
+                /*    loader = new FXMLLoader(getClass().getResource("/view/InicioVendedor.fxml"));
                     root = (Parent) loader.load();
                     InicioVendedorController vendedorC = ((InicioVendedorController) loader.getController());
                     vendedorC.setUsuario(usuario);
                     vendedorC.initStage(root);
-                    break;
+                    break;*/
                 case CLIENTE:
                     loader = new FXMLLoader(getClass().getResource("/view/ListaDeProductos.fxml"));
                     root = (Parent) loader.load();
@@ -238,6 +258,28 @@ public class LogInController {
             txtUsuario.setText("");
             txtContrasena.setText("");
              */
+        } catch (AutenticacionFallidaException ex) {
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Contraseña Incorrecta");
+            alert.showAndWait();
+            txtContrasena.setStyle("-fx-faint-focus-color: transparent; -fx-focus-color:rgba(255,0,0,1);");
+            txtContrasena.setText("");
+            txtContrasena.requestFocus();
+            hlContraseniaOlvidada.setVisible(true);
+        } catch (UsuarioNoEncontradoException ex) {
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("No se ha encontrado el usuario introducido");
+            alert.showAndWait();
+            txtUsuario.setText("");
+            txtContrasena.setText("");
+
+        } catch (ErrorServerException ex) {
+            alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("LOGIN");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
         }
 
     }
@@ -255,7 +297,6 @@ public class LogInController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/SignUp.fxml"));
 
             Parent root = (Parent) loader.load();
-
             SignUpController controller = ((SignUpController) loader.getController());
             controller.initStage(root);
             stage.hide();
@@ -263,5 +304,22 @@ public class LogInController {
             LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
         }
     }
+
+
+    private void hlContraseniaOlvidadClick(ActionEvent event) {
+        LOG.log(Level.INFO, "Ventana Contaseña Olvidada");
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/RecuperarContrasenia.fxml"));
+            Parent root = (Parent) loader.load();
+            RecuperarContraseniaController recuperarContraseniaC = ((RecuperarContraseniaController) loader.getController());
+            recuperarContraseniaC.setUsuario(usuario);
+            recuperarContraseniaC.initStage(root);
+            stage.hide();
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
+        }
+    }
+
 
 }

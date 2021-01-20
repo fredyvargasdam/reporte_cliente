@@ -6,14 +6,15 @@
 package factory;
 
 import manager.ProductoManager;
-import client.ProductoRESTClient;
+import implementation.ProductoManagerImplementation;
 
 /**
  *
  * @author 2dam
  */
 public class ProductoFactory {
-    public ProductoManager getProductoRESTClient (){
-        return new ProductoRESTClient();
+
+    public ProductoManager getProductoManagerImplementation() {
+        return new ProductoManagerImplementation();
     }
 }

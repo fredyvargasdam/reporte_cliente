@@ -5,6 +5,7 @@
  */
 package controllers;
 
+//import prueba.ProductoItemController;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -158,8 +159,8 @@ public class ListaDeProductosController {
                 fxmlLoader.setLocation(getClass().getResource("ProductoItem.fxml"));
                 AnchorPane anchorPane = fxmlLoader.load();
 
-                ProductoItemController productoItemController = fxmlLoader.getController();
-                productoItemController.setData(productos.get(i));
+                //           ProductoItemController productoItemController = fxmlLoader.getController();
+                //           productoItemController.setData(productos.get(i));
                 if (columna == 3) {
                     columna = 0;
                     fila++;

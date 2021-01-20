@@ -12,6 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import modelo.Usuario;
@@ -38,6 +39,16 @@ public class SignUpController {
 
     private Stage stage = new Stage();
     private static final Logger LOG = Logger.getLogger("controllers.SignUpController");
+    @FXML
+    private TextField tfUsuario;
+    @FXML
+    private TextField tfCorreoElectronico;
+    @FXML
+    private TextField tfNombre;
+    @FXML
+    private TextField tfDireccion;
+    @FXML
+    private TextField tfTelefono;
 
     /**
      * Recibe el escenario

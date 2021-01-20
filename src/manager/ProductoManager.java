@@ -5,8 +5,11 @@
  */
 package manager;
 
+import exceptions.ProductoExistenteException;
+import java.util.Collection;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.WebTarget;
+import modelo.Producto;
 
 /**
  *
@@ -14,19 +17,19 @@ import javax.ws.rs.client.WebTarget;
  */
 public interface ProductoManager {
 
-    public <T> T findAllRopa(Class<T> responseType) throws ClientErrorException;
+    public Collection<Producto> findAllRopa() throws ClientErrorException;
 
-    public void edit(Object requestEntity) throws ClientErrorException;
+    public void edit(Producto producto) throws ProductoExistenteException,ClientErrorException;
 
-    public <T> T findAllProductosAsc(Class<T> responseType) throws ClientErrorException;
+    public Collection<Producto> findAllProductosAsc() throws ClientErrorException;
 
-    public <T> T find(Class<T> responseType, String id) throws ClientErrorException;
+    public Producto find(String id) throws ClientErrorException;
 
-    public void create(Object requestEntity) throws ClientErrorException;
+    public void create(Producto producto) throws ProductoExistenteException,ClientErrorException;
 
-    public <T> T findAllProductosDesc(Class<T> responseType) throws ClientErrorException;
+    public Collection<Producto> findAllProductosDesc() throws ClientErrorException;
 
-    public <T> T findAllZapatillas(Class<T> responseType) throws ClientErrorException;
+    public Collection<Producto> findAllZapatillas() throws ClientErrorException;
 
     public void remove(String id) throws ClientErrorException;
 

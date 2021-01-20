@@ -5,22 +5,30 @@
  */
 package manager;
 
+import exceptions.AutenticacionFallidaException;
+import exceptions.ErrorEnviarEmailException;
+import exceptions.ErrorServerException;
+import exceptions.UsuarioNoEncontradoException;
 import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.client.WebTarget;
+import modelo.Usuario;
 
 /**
  *
- * @author 2dam
+ * @author Fredy
  */
 public interface UsuarioManager {
 
-    public void edit(Object requestEntity) throws ClientErrorException;
+    public void edit(Usuario usuario ) throws ClientErrorException;
 
-    public <T> T find(Class<T> responseType, String id) throws ClientErrorException;
+    public Usuario find(String id) throws ClientErrorException;
 
-    public <T> T usuarioByLogin(Class<T> responseType, String login, String pass) throws ClientErrorException;
+    public Usuario usuarioByLogin( String login, String pass) throws AutenticacionFallidaException;
 
-    public void create(Object requestEntity) throws ClientErrorException;
+   public Usuario enviarMensajeEmail( String email, String pass) throws ErrorEnviarEmailException;
+
+    public Usuario usuarioLogin( String login) throws UsuarioNoEncontradoException,ErrorServerException;
+
+    public void create(Usuario usuario) throws ClientErrorException;
 
     public void remove(String id) throws ClientErrorException;
 
