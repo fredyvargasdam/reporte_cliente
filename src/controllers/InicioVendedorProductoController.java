@@ -6,6 +6,11 @@
 package controllers;
 
 import implementation.ProductoManagerImplementation;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +26,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -33,6 +37,8 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.ChoiceBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -40,8 +46,10 @@ import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import javafx.util.converter.FloatStringConverter;
 import javafx.util.converter.IntegerStringConverter;
+import javax.imageio.ImageIO;
 import modelo.DisponibilidadCell;
 import modelo.Producto;
+import modelo.ProductoCell;
 import modelo.TipoProducto;
 import modelo.Usuario;
 
@@ -50,7 +58,7 @@ import modelo.Usuario;
  *
  * @author Fredy
  */
-public class InicioAdministradorProductoController {
+public class InicioVendedorProductoController {
 
     @FXML
     private AnchorPane apInicioVendedor;
@@ -69,13 +77,7 @@ public class InicioAdministradorProductoController {
     @FXML
     private MenuItem miVerReservas;
     @FXML
-    private Menu mCliente;
-    @FXML
-    private MenuItem miAltaCliente;
-    @FXML
     private TextField tfBuscar;
-    @FXML
-    private Button btnBuscar;
     @FXML
     private TableView<Producto> tvProductos;
     @FXML
@@ -89,7 +91,7 @@ public class InicioAdministradorProductoController {
     @FXML
     private TableColumn<TipoProducto, TipoProducto> tcTipo;
     @FXML
-    private TableColumn<Producto, ComboBox> tcTalla;
+    private TableColumn<Producto, String> tcTalla;
     @FXML
     private TableColumn<Producto, String> tcDescripcion;
     @FXML
@@ -149,7 +151,7 @@ public class InicioAdministradorProductoController {
         LOG.log(Level.INFO, "Ventana Gestión de Productos");
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        stage.setTitle("¡Productos!");
+        stage.setTitle("Flayshoes Productos");
         stage.setResizable(false);
         stage.setOnCloseRequest(this::handleWindowClose);
         stage.setOnShowing(this::handleWindowShowing);
@@ -157,6 +159,8 @@ public class InicioAdministradorProductoController {
         btnNuevo.setTooltip(new Tooltip("Pulse para dar de alta un nuevo producto "));
         btnBorrar.setOnAction(this::btnBorrarClick);
         btnBorrar.setTooltip(new Tooltip("Pulse para borrar el producto selecionado "));
+        //Indicamos las imagenes de los botones
+        imagenBotones();
         /* btnCancelar.setOnAction(this::btnCancelarClick);
         btnCancelar.setTooltip(new Tooltip("Pulse para cancelar "));
         btnVerificar.setOnAction(this::btnVerificarClick);
@@ -273,7 +277,7 @@ public class InicioAdministradorProductoController {
         productoMI = (ProductoManagerImplementation) new factory.ProductoFactory().getProductoManagerImplementation();
         ObservableList<Producto> productoServidor = null;
         try {
-            productoServidor = FXCollections.observableArrayList(productoMI.findAllProductosAsc());
+           productoServidor = FXCollections.observableArrayList(productoMI.findAllProductosAsc());
             System.out.println(productoServidor.size());
         } catch (Exception e) {
             LOG.severe("InicioAdministradorProductoController:getAllProductos");
@@ -288,9 +292,35 @@ public class InicioAdministradorProductoController {
     private void manejoTablaProducto() {
 
         productoMI = (ProductoManagerImplementation) new factory.ProductoFactory().getProductoManagerImplementation();
-        //Columnas      
-        tcImagen.setCellValueFactory(new PropertyValueFactory<>("imagen"));
+        //Columnas
+        //  ImageView uno = new ImageView(new Image(this.getClass().getResourceAsStream("nik.jpg")));
+        //  productos.forEach((p) -> {
+        //      p.setImagen(extractBytes("E:\\reto2\\ApplicationClient\\src\\controllers\\"));
+        //  });
+        /*
+        byte[] bytearray = producto.getImagen();
+        BufferedImage imag = ImageIO.read(new ByteArrayInputStream(bytearray));
 
+        Image i = SwingFXUtils.toFXImage(imag, null);
+        ivImagen.setImage(i);
+         */
+
+        tcImagen.setCellValueFactory(new PropertyValueFactory<>("imagen"));
+        tcImagen.setCellFactory(new Callback<TableColumn<Producto, byte[]>, TableCell<Producto, byte[]>>() {
+           @Override
+            public TableCell<Producto, byte[]> call(TableColumn<Producto, byte[]> param) {
+               return new ProductoCell(); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+
+        /*
+        tcDisponibilidad.setCellFactory(new Callback<TableColumn<Producto, Date>, TableCell<Producto, Date>>() {
+            @Override
+            public TableCell<Producto, Date> call(TableColumn<Producto, Date> arg0) {
+                return new DisponibilidadCell();
+            }
+        });
+         */
         tcProducto.setCellValueFactory(new PropertyValueFactory<>("modelo"));
         tcProducto.setCellFactory(TextFieldTableCell.forTableColumn());
         tcProducto.setOnEditCommit(valor -> {
@@ -330,7 +360,10 @@ public class InicioAdministradorProductoController {
 
         //choicebox
         tcTalla.setCellValueFactory(new PropertyValueFactory<>("talla"));
-        
+        tcTalla.setCellFactory(ChoiceBoxTableCell.
+                forTableColumn("36", "37", "38", "39", "40", "41", "42", "44", "45", "46", "XS", "S", "M", "L", "XL"));
+        tcTalla.addEventHandler(TableColumn.<Producto, String>editCommitEvent(),
+                event -> actualizarTalla(event));
         /*
         https://coderanch.com/t/703498/java/Tableview-show-combobox-edit
         setCellFactory(ComboBoxTableCell.forTableColumn(radioList));
@@ -338,7 +371,7 @@ public class InicioAdministradorProductoController {
             t.getRowValue().setRadiopharmaceutical(t.getNewValue());
             columnSupplier.getTableView().requestFocus();
             addTabl
-        */
+         */
 
         tcDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
         tcDescripcion.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -390,5 +423,50 @@ public class InicioAdministradorProductoController {
         //  System.out.println("Estado: " + estado.toString() + reserva.getId() + reserva.getDescripcion() + "Esto es de reserva: " + reserva.getEstado().toString());
         //  reserva.setEstado(event.getNewValue());
         //   System.out.println(reserva.getId() + reserva.getDescripcion() + "Esto es de reserva: " + reserva.getEstado().toString()+" fecha de entrega es "+reserva.getFechaEntrega());
+    }
+
+    private void actualizarTalla(TableColumn.CellEditEvent<Producto, String> event) {
+        System.out.println("Estoy aca la reserva es " + event);
+        System.out.println(event.getNewValue());
+        System.out.println(event.getOldValue());
+        //   Reserva reserva = event.getRowValue();
+        //  EstadoReserva estado = event.getNewValue();
+        //  System.out.println("Estado: " + estado.toString() + reserva.getId() + reserva.getDescripcion() + "Esto es de reserva: " + reserva.getEstado().toString());
+        //  reserva.setEstado(event.getNewValue());
+        //   System.out.println(reserva.getId() + reserva.getDescripcion() + "Esto es de reserva: " + reserva.getEstado().toString()+" fecha de entrega es "+reserva.getFechaEntrega());
+    }
+
+    public byte[] extractBytes(String path) {
+        // abrimos la imagen
+        File imgPath = new File(path);
+        ByteArrayOutputStream baos = null;
+        try {
+            BufferedImage img = ImageIO.read(new File(path, "n.png"));
+            ImageIO.write(img, "png", baos);
+            baos.flush();
+            //   String base64String = Base64.encode(baos.toByteArray());
+            baos.close();
+        } catch (IOException e) {
+        }
+        return (baos.toByteArray());
+    }
+    
+        //CONFIGURACIÓN DE IMAGENES 
+    /**
+     * Añade las imagenes de los botones
+     */
+    private void imagenBotones() {
+        //Creamos un objeto y en él guardaremos la ruta donde se encuentra las imagenes para los botones
+        URL linkAlta = getClass().getResource("/img/producto.png");
+        URL linkBorrar = getClass().getResource("/img/eliminar.png");
+
+        //Instanciamos una imagen pasándole la ruta de las imagenes y las medidas del boton 
+        Image imageNuevo = new Image(linkAlta.toString(), 32, 32, false, true);
+        Image imageBorrar = new Image(linkBorrar.toString(), 32, 32, false, true);
+
+        //Añadimos la imagen a los botones que deban llevar icono
+        btnNuevo.setGraphic(new ImageView(imageNuevo));
+        btnBorrar.setGraphic(new ImageView(imageBorrar));
+
     }
 }

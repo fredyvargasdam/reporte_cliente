@@ -26,9 +26,9 @@ import manager.AdministradorManager;
  */
 public class AdministradorRESTClient implements AdministradorManager {
 
-    private WebTarget webTarget;
-    private Client client;
-    private ResourceBundle rb = ResourceBundle.getBundle("config.parametros");
+    private final WebTarget webTarget;
+    private final Client client;
+    private final ResourceBundle rb = ResourceBundle.getBundle("config.parametros");
     private final String BASE_URI = rb.getString("RESTful.baseURI");
 
     public AdministradorRESTClient() {

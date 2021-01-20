@@ -1,8 +1,10 @@
 package seguridad;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.security.KeyFactory;
 import java.security.PublicKey;
@@ -64,7 +66,7 @@ public class Seguridad {
 
         try {
             //Clave pública
-            byte fileKey[] = fileReader("Public.key");
+            byte fileKey[] = fileReader("src/file/Public.key");
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(fileKey);
             publicKey = keyFactory.generatePublic(x509EncodedKeySpec);
@@ -112,4 +114,31 @@ public class Seguridad {
             LOGGER.severe("Error al escribir fichero");
         }
     }
+
+    /**
+     * Obtener clave pública
+     *
+     * @param path
+     * @return array de bytes
+     */
+
+    private static byte[] getFile(String path) {
+
+        InputStream keyfis = Seguridad.class.getClassLoader()
+                .getResourceAsStream(path);
+        ByteArrayOutputStream os = null;
+        byte[] buffer = new byte[1024];
+        try {
+            os = new ByteArrayOutputStream();
+            int len;
+            while ((len = keyfis.read(buffer)) != -1) {
+                os.write(buffer, 0, len);
+            }
+            keyfis.close();
+        } catch (IOException e) {
+
+        }
+        return os.toByteArray();
+    }
+
 }
