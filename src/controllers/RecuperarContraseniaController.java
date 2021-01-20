@@ -5,7 +5,6 @@
  */
 package controllers;
 
-import client.UsuarioRESTClient;
 import factory.UsuarioFactory;
 import implementation.UsuarioManagerImplementation;
 import java.io.IOException;
@@ -28,7 +27,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import manager.UsuarioManager;
 import modelo.Usuario;
 import seguridad.Seguridad;
 import validar.Validar;
@@ -305,25 +303,16 @@ public class RecuperarContraseniaController {
     private void pfContraseniaChanged(ObservableValue observable, String oldValue, String newValue) {
         Validar.addTextLimiter(pfNuevaContrasenia, 30);
         Validar.addTextLimiter(pfRepetirContrasenia, 30);
-        //  Validar.addTextLimiterPass(txtContrasena, treinta);
-        // if (!tfCodigoTemporal.getText().trim().equals("") && !tfCodigoTemporal.getText().trim().equals("")) {
         if (!pfNuevaContrasenia.getText().trim().equals("")) {
-            // boolean isValidNuevaContrasenia = Validar.isValid(tfCodigoTemporal);
-            pfNuevaContrasenia.setStyle("-fx-focus-color: #039ED3; -fx-faint-focus-color: #039ED322;");
             if (!pfRepetirContrasenia.getText().trim().equals("")) {
-                if (Validar.isValid(pfNuevaContrasenia) && (Validar.isValid(pfRepetirContrasenia))) {
+                if (Validar.isValidPatternContrasena(pfNuevaContrasenia) && (Validar.isValidPatternContrasena(pfRepetirContrasenia))) {
                     btnGuardar.setDisable(false);
                 } else {
                     btnGuardar.setDisable(true);
 
                 }
             }
-        }/*
-        if (txtUsuario.getText().trim().equals("") || txtContrasena.getText().trim().equals("")) {
-
-            btnIniciar.setDisable(true);
-
-        }*/
+        }
     }
 
     private void txtChanged(ObservableValue observable, String oldValue, String newValue) {
@@ -331,8 +320,7 @@ public class RecuperarContraseniaController {
         //  Validar.addTextLimiterPass(txtContrasena, treinta);
         // if (!tfCodigoTemporal.getText().trim().equals("") && !tfCodigoTemporal.getText().trim().equals("")) {
         if (!tfCodigoTemporal.getText().trim().equals("")) {
-            boolean isValidUsuario = Validar.isValid(tfCodigoTemporal);
-            tfCodigoTemporal.setStyle("-fx-focus-color: #039ED3; -fx-faint-focus-color: #039ED322;");
+            boolean isValidUsuario = Validar.isValidNombre(tfCodigoTemporal);
             if (isValidUsuario) {
                 btnVerificar.setDisable(false);
             } else {
