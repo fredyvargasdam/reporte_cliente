@@ -1,7 +1,6 @@
 package controllers;
 
 import exceptions.AutenticacionFallidaException;
-import exceptions.ErrorBDException;
 import exceptions.ErrorServerException;
 import exceptions.UsuarioNotFoundException;
 import java.io.IOException;
@@ -186,8 +185,7 @@ public class LogInController {
      * @param event ActionEvent
      */
     private void btnIniciarClick(ActionEvent event) {
-
-        LOG.log(Level.INFO, "Ventana ");
+        LOG.log(Level.INFO, "btnIniciarClick");
         usuario = new Usuario();
         usuario.setLogin(txtUsuario.getText());
         usuario.setPassword(txtContrasena.getText());

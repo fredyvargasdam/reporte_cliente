@@ -38,7 +38,9 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.ChoiceBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -234,7 +236,8 @@ public class InicioAdministradorProveedorController {
         tcNombre.setCellFactory(TextFieldTableCell.forTableColumn());
         tcNombre.setOnEditCommit((TableColumn.CellEditEvent<Proveedor, String> data) -> {
             //Establecemos que el dato que se introduzca en la celda debe cumplir un patrón
-            if (!Pattern.matches("^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\\s]+$", data.getNewValue())) {
+            if (!Pattern.matches("^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\\s]+$", data.getNewValue())
+                    || data.getNewValue().equalsIgnoreCase("")) {
                 //En el caso de que no se cumpla el patrón. Saldrá un alerta informandonos del error
                 alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Proveedor");
@@ -289,7 +292,6 @@ public class InicioAdministradorProveedorController {
                     alert.showAndWait();
                 }
             }
-
         });
 
         //Tipo de producto 
@@ -308,7 +310,8 @@ public class InicioAdministradorProveedorController {
         //Aceptamos la edición de la celda de la columna empresa 
         tcEmpresa.setOnEditCommit((TableColumn.CellEditEvent<Proveedor, String> data) -> {
             //Establecemos que el dato que se introduzca en la celda debe cumplir un patrón
-            if (!Pattern.matches("^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\\s]+$", data.getNewValue())) {
+            if (!Pattern.matches("^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\\s]+$", data.getNewValue())
+                    || data.getNewValue().equalsIgnoreCase("")) {
                 //En el caso de que no se cumpla el patrón. Saldrá un alerta informandonos del error
                 alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Proveedor");
@@ -372,7 +375,8 @@ public class InicioAdministradorProveedorController {
         //Aceptamos la edición de la celda de la columna email 
         tcEmail.setOnEditCommit((TableColumn.CellEditEvent<Proveedor, String> data) -> {
             //Establecemos que el dato que se introduzca en la celda debe cumplir un patrón
-            if (!Pattern.matches("\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*", data.getNewValue())) {
+            if (!Pattern.matches("\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*", data.getNewValue())
+                    || data.getNewValue().equalsIgnoreCase("")) {
                 //En el caso de que no se cumpla el patrón. Saldrá un alerta informandonos del error
                 alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Proveedor");
@@ -436,7 +440,8 @@ public class InicioAdministradorProveedorController {
         //Aceptamos la edición de la celda de la columna teléfono 
         tcTelefono.setOnEditCommit((TableColumn.CellEditEvent<Proveedor, String> data) -> {
             //Establecemos que el dato que se introduzca en la celda debe cumplir un patrón
-            if (!Pattern.matches("\\d{9,11}", data.getNewValue())) {
+            if (!Pattern.matches("\\d{9,11}", data.getNewValue())
+                    || data.getNewValue().equalsIgnoreCase("")) {
                 //En el caso de que no se cumpla el patrón. Saldrá un alerta informandonos del error
                 alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Proveedor");
@@ -445,6 +450,7 @@ public class InicioAdministradorProveedorController {
 
                 alert.showAndWait();
                 tbProveedor.refresh();
+
             } else {
                 try {
                     LOG.log(Level.INFO, "Nuevo Teléfono: {0}", data.getNewValue());
@@ -504,7 +510,8 @@ public class InicioAdministradorProveedorController {
         tcDescripcion.setOnEditCommit(
                 (TableColumn.CellEditEvent<Proveedor, String> data) -> {
                     //Establecemos que el dato que se introduzca en la celda debe cumplir un patrón
-                    if (!Pattern.matches("^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\\s]+$", data.getNewValue())) {
+                    if (!Pattern.matches("^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\\s]+$", data.getNewValue())
+                    || data.getNewValue().equalsIgnoreCase("")) {
                         //En el caso de que no se cumpla el patrón. Saldrá un alerta informandonos del error
                         alert = new Alert(AlertType.ERROR);
                         alert.setTitle("Proveedor");
@@ -743,70 +750,55 @@ public class InicioAdministradorProveedorController {
      * @param event ActionEvent
      */
     private void btnAltaProveedorClick(ActionEvent event) {
-        try {
-            LocalDate fechaHoy = LocalDate.now();
-            ZoneId defaultZoneId = ZoneId.systemDefault();
-            Date date = Date.from(fechaHoy.atStartOfDay(defaultZoneId).toInstant());
+        LocalDate fechaHoy = LocalDate.now();
+        ZoneId defaultZoneId = ZoneId.systemDefault();
+        Date date = Date.from(fechaHoy.atStartOfDay(defaultZoneId).toInstant());
 
-            //Instanciamos un nuevo proveedor dandole valores por defecto
-            Proveedor nuevoProveedor = new Proveedor();
-            //Añadimos por defecto que el administrador va a ser null
-            nuevoProveedor.setAdministrador(null);
-            //Añadimos por defecto que la descripción está vacia
-            nuevoProveedor.setDescripcion("");
-            //Añadimos por defecto que  el email está vacio
-            nuevoProveedor.setEmail("");
-            //Añadimos por defecto que la empresa está vacia
-            nuevoProveedor.setEmpresa("");
-            //Añadimos por defecto que el nombre está vacio
-            nuevoProveedor.setNombre("");
-            //Añadimos por defecto que el teléfono está vacio
-            nuevoProveedor.setTelefono("");
-            //Añadimos por defecto que el tipo del producto va a ser ROPA
-            nuevoProveedor.setTipo(ROPA);
-            //Añadimos por defecto que la fecha de alta será el dia de actual
-            nuevoProveedor.setFechaAlta(date);
+        /*
+            //Instanciamos el administrador, el cual va a dar de alta a los proveedores
+            Administrador admin = new Administrador();
+            //Indicamos cual es el id del administrador
+            admin.setId_usuario(usuario.getId_usuario());
+         */
+        //Instanciamos un nuevo proveedor dandole valores por defecto
+        Proveedor nuevoProveedor = new Proveedor();
+        //Añadimos por defecto que el administrador va a ser el que haya iniciado sesión dentro de la aplicación
+        nuevoProveedor.setAdministrador(null);
+        //Añadimos por defecto que la descripción está vacia
+        nuevoProveedor.setDescripcion("");
+        //Añadimos por defecto que  el email está vacio
+        nuevoProveedor.setEmail("");
+        //Añadimos por defecto que la empresa está vacia
+        nuevoProveedor.setEmpresa("");
+        //Añadimos por defecto que el nombre está vacio
+        nuevoProveedor.setNombre("");
+        //Añadimos por defecto que el teléfono está vacio
+        nuevoProveedor.setTelefono("");
+        //Añadimos por defecto que el tipo del producto va a ser ROPA
+        nuevoProveedor.setTipo(ROPA);
+        //Añadimos por defecto que la fecha de alta será el dia de actual
+        nuevoProveedor.setFechaAlta(date);
+        try {
+            /*if (tbProveedor.getSelectionModel().getSelectedItem().getEmpresa().equals(nuevoProveedor.getEmpresa())) {
+                throw new ProveedorYaExisteException();
+            } else if (nuevoProveedor == null) {
+                throw new InsertException();
+            } else {*/
+
             //Implementacion del ProveedorRESTClient
             /*if (nuevoProveedor.getEmail().equalsIgnoreCase("") && nuevoProveedor.getDescripcion().equalsIgnoreCase("")
                     && nuevoProveedor.getEmpresa().equalsIgnoreCase("") && nuevoProveedor.getTelefono().equalsIgnoreCase("")
-                    && nuevoProveedor.getNombre().equalsIgnoreCase("") && nuevoProveedor.getTipo()==null) {
+                    && nuevoProveedor.getNombre().equalsIgnoreCase("") && nuevoProveedor.getTipo() == null) {
 
-            LOG.log(Level.SEVERE, "Datos incompletos");
-            alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Proveedor");
-            alert.setHeaderText("Introduzca datos válidos");
-            alert.showAndWait();*/
-            //} else {
+                LOG.log(Level.SEVERE, "Datos incompletos");
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Proveedor");
+                alert.setHeaderText("Introduzca datos válidos");
+                alert.showAndWait();
+            } else {*/
             //Implementación del ProveedorRESTClient
             proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
-            try {
-                //Llamamos al método create para asi poder crear un nuevo proveedor
-                proveedorManager.create(nuevoProveedor);
-            } catch (InsertException ex) {
-                LOG.log(Level.SEVERE, "InsertException");
-                alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Administrador");
-                alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                alert.showAndWait();
-            } catch (ProveedorYaExisteException ex) {
-                LOG.log(Level.SEVERE, "ProveedorYaExisteException");
-                alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Administrador");
-                alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                alert.showAndWait();
-            } catch (ErrorBDException ex) {
-                LOG.log(Level.SEVERE, "ErrorBDException");
-                alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Administrador");
-                alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                alert.showAndWait();
-            } catch (ErrorServerException ex) {
-                LOG.log(Level.SEVERE, "ErrorServerException");
-                alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Administrador");
-                alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                alert.showAndWait();
-            }
+
             //Añadimos en nuevo proveedor dentro del listProveedores (ObservableList)
             listProveedores.add(nuevoProveedor);
             int row = listProveedores.size() - 1;
@@ -815,10 +807,33 @@ public class InicioAdministradorProveedorController {
             tbProveedor.requestFocus();
             tbProveedor.getSelectionModel().select(row);
             tbProveedor.getFocusModel().focus(row);
-            //}
 
-        } catch (ClientErrorException ex) {
-            Logger.getLogger(InicioAdministradorProveedorController.class.getName()).log(Level.SEVERE, null, ex);
+            //Llamamos al método create para asi poder crear un nuevo proveedor
+            proveedorManager.create(nuevoProveedor);
+        } catch (InsertException ex) {
+            LOG.log(Level.SEVERE, "InsertException");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Administrador");
+            alert.setHeaderText("Rellene los campos para poder dar de alta al proveedor");
+            alert.showAndWait();
+        } catch (ErrorBDException ex) {
+            LOG.log(Level.SEVERE, "ErrorBDException");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Administrador");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
+        } catch (ErrorServerException | ClientErrorException ex) {
+            LOG.log(Level.SEVERE, "ErrorServerException || ClientErrorException");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Administrador");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
+        } catch (ProveedorYaExisteException ex) {
+            LOG.log(Level.SEVERE, "ErrorServerException");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Administrador");
+            alert.setHeaderText("Proveedor ya existe");
+            alert.showAndWait();
         }
     }
 
@@ -944,7 +959,7 @@ public class InicioAdministradorProveedorController {
     @FXML
     private void configMenuSalir(ActionEvent event) {
         LOG.log(Level.INFO, "Beginning InicioAdministradorProveedorController::handleWindowClose");
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setHeaderText(null);
         alert.setTitle("Administrador");
         alert.setContentText("¿Estas seguro de confirmar la acción?");
@@ -985,8 +1000,8 @@ public class InicioAdministradorProveedorController {
 
             Parent root = (Parent) loader.load();
 
-            /*InicioAdministradorVendedorController controller = ((InicioAdministradorVendedorController) loader.getController());
-            controller.initStage(root);*/
+            InicioAdministradorVendedorController controller = ((InicioAdministradorVendedorController) loader.getController());
+            controller.initStage(root);
             stage.hide();
         } catch (IOException e) {
             LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
