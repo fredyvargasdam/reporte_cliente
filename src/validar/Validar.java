@@ -51,7 +51,7 @@ public class Validar {
      *
      * @param txtContrasena Contraseña recibido
      * @param txtConfirmarContrasena Contraseña recibido
-     * @return b 
+     * @return b
      */
     public static boolean isValidContrasena(PasswordField txtContrasena, PasswordField txtConfirmarContrasena) {
         boolean b = true;
@@ -125,9 +125,10 @@ public class Validar {
         }
         return b;
     }
-    
+
     /**
      * Validar que el texto es alfanumerico
+     *
      * @param txtNombre Texto recibido
      * @return b true correcto, false incorrecto
      */
@@ -143,4 +144,21 @@ public class Validar {
         return b;
     }
 
+    /**
+     * Validar el texto de la contraseña este correcto
+     *
+     * @param txtNombre Texto recibido
+     * @return b true correcto, false incorrecto
+     */
+    public static boolean isValidPatternContrasena(PasswordField txtContrasena) {
+        boolean b = false;
+        String pattern ="^[a-zA-Z0-9*@.,_-]+$";
+        if (txtContrasena.getText().matches(pattern)) {
+            b = true;
+            txtContrasena.setStyle("-fx-border-color:rgb(189 189 189);");
+        } else {
+            txtContrasena.setStyle("-fx-border-color:red; -fx-border-width:2px;");
+        }
+        return b;
+    }
 }
