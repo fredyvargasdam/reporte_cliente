@@ -56,14 +56,13 @@ public class LogInController {
     private Hyperlink hlRegistrarse;
     @FXML
     private ImageView ivLogo;
+
     @FXML
     private Pane pnPrincipal;
-    @FXML
-    private Label lblUsuario;
-    @FXML
-    private Label lblContrasena;
+ 
     @FXML
     private Hyperlink hlContraseniaOlvidada;
+
 
     private Stage stage = new Stage();
     private Usuario usuario;
@@ -162,8 +161,10 @@ public class LogInController {
             hlContraseniaOlvidada.setVisible(false);
         }
         if (!txtUsuario.getText().trim().equals("") && !txtContrasena.getText().trim().equals("")) {
+
             boolean isValidUsuario = Validar.isValid(txtUsuario);
             txtContrasena.setStyle("-fx-focus-color: #039ED3; -fx-faint-focus-color: #039ED322;");
+
             if (isValidUsuario) {
                 btnIniciar.setDisable(false);
             } else {
@@ -304,6 +305,7 @@ public class LogInController {
         }
     }
 
+
     private void hlContraseniaOlvidadClick(ActionEvent event) {
         LOG.log(Level.INFO, "Ventana Contaseña Olvidada");
 
@@ -318,5 +320,6 @@ public class LogInController {
             LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
         }
     }
+
 
 }

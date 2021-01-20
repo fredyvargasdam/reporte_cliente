@@ -30,35 +30,38 @@ public class Validar {
     }
 
     /**
-     * Valida correcta la estructura
+     * Valida la estructura correcta del email
      *
-     * @param tf Texto recibido
+     * @param txtEmail
      * @return b, lb, errorMessage o noError.
      */
-    public static boolean isValidEmail(TextField tf) {
+    public static boolean isValidEmail(TextField txtEmail) {
         boolean b = true;
-        if (!IsValidEmail(tf)) {
-            tf.setStyle("-fx-text-inner-color: red;");
+        if (!IsValidEmail(txtEmail)) {
+            b = false;
+            txtEmail.setStyle("-fx-border-color:red; -fx-border-width:2px;");
         } else {
-
+            txtEmail.setStyle("-fx-border-color:rgb(189 189 189);");
         }
-
         return b;
     }
 
     /**
      * Valida si las dos contraseña son iguales.
      *
-     * @param tf Contraseña recibido
-     * @return b, lb, errorMessage o noError
+     * @param txtContrasena Contraseña recibido
+     * @param txtConfirmarContrasena Contraseña recibido
+     * @return b 
      */
-    public static boolean isValidContrasena(PasswordField tf, PasswordField tff) {
+    public static boolean isValidContrasena(PasswordField txtContrasena, PasswordField txtConfirmarContrasena) {
         boolean b = true;
-        if (!(tf.getText().equals(tff.getText()))) {
+        if (!(txtContrasena.getText().equals(txtContrasena.getText()))) {
             b = false;
-            tf.setStyle("-fx-text-inner-color: red;");
+            txtContrasena.setStyle("-fx-border-color:red; -fx-border-width:2px;");
+            txtConfirmarContrasena.setStyle("-fx-border-color:red; -fx-border-width:2px;");
         } else {
-
+            txtContrasena.setStyle("-fx-border-color:rgb(189 189 189);");
+            txtConfirmarContrasena.setStyle("-fx-border-color:rgb(189 189 189);");
         }
         return b;
     }
@@ -67,7 +70,7 @@ public class Validar {
      * Limita el numero de caracteres introducidos
      *
      * @param tf Texto recibido
-     * @param treinta limite
+     * @param treinta Tamaño maximo
      */
     public static void addTextLimiter(TextField tf, int treinta) {
 
@@ -108,31 +111,36 @@ public class Validar {
     /**
      * Validar que el texto es alfanumerico
      *
-     * @param tf Texto recibido
+     * @param txtUsuario Texto recibido
      * @return b true correcto, false incorrecto
      */
-    public static boolean IsValid(TextField tf) {
+    public static boolean isValidUsuario(TextField txtUsuario) {
+        boolean b = false;
+        String pattern = "^[a-zA-Z0-9]+$";
+        if (txtUsuario.getText().matches(pattern)) {
+            b = true;
+            txtUsuario.setStyle("-fx-border-color:rgb(189 189 189);");
+        } else {
+            txtUsuario.setStyle("-fx-border-color:red; -fx-border-width:2px;");
+        }
+        return b;
+    }
+    
+    /**
+     * Validar que el texto es alfanumerico
+     * @param txtNombre Texto recibido
+     * @return b true correcto, false incorrecto
+     */
+    public static boolean isValidNombre(TextField txtNombre) {
         boolean b = false;
         String pattern = "^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ]+$";
-        if (tf.getText().matches(pattern)) {
+        if (txtNombre.getText().matches(pattern)) {
             b = true;
+            txtNombre.setStyle("-fx-border-color:rgb(189 189 189);");
+        } else {
+            txtNombre.setStyle("-fx-border-color:red; -fx-border-width:2px;");
         }
         return b;
     }
 
-    /**
-     * Validar la estructura
-     *
-     * @param tf Texto recibido
-     * @return tf, lb, errorMssage, noError
-     */
-    public static boolean isValid(TextField tf) {
-        boolean b = true;
-        if (!IsValid(tf)) {
-            b = false;
-            tf.setStyle("-fx-text-inner-color: red;");
-        } else {
-        }
-        return b;
-    }
 }
