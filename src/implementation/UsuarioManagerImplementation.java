@@ -9,7 +9,7 @@ import client.UsuarioRESTClient;
 import exceptions.AutenticacionFallidaException;
 import exceptions.ErrorEnviarEmailException;
 import exceptions.ErrorServerException;
-import exceptions.UsuarioNoEncontradoException;
+import exceptions.UsuarioNotFoundException;
 import java.net.ConnectException;
 import java.util.logging.Logger;
 import javax.ws.rs.ClientErrorException;
@@ -66,7 +66,7 @@ public class UsuarioManagerImplementation implements UsuarioManager {
     
 
     @Override
-    public Usuario usuarioLogin(String login) throws UsuarioNoEncontradoException, ErrorServerException {
+    public Usuario usuarioLogin(String login) throws UsuarioNotFoundException, ErrorServerException {
         Usuario usuario = null;
         try {
             usuario = webClient.usuarioLogin(Usuario.class, login);
@@ -77,7 +77,7 @@ public class UsuarioManagerImplementation implements UsuarioManager {
                 throw new ErrorServerException();
             } else {
                 LOGGER.severe("usuarioLogin: UsuarioNoEncontradoException   " + e.getMessage());
-               throw new UsuarioNoEncontradoException();
+               throw new UsuarioNotFoundException();
             }
         }
         return usuario;

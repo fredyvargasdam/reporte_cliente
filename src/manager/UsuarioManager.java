@@ -8,7 +8,8 @@ package manager;
 import exceptions.AutenticacionFallidaException;
 import exceptions.ErrorEnviarEmailException;
 import exceptions.ErrorServerException;
-import exceptions.UsuarioNoEncontradoException;
+import exceptions.UsuarioNotFoundException;
+import exceptions.UsuarioNotFoundException;
 import javax.ws.rs.ClientErrorException;
 import modelo.Usuario;
 
@@ -26,7 +27,7 @@ public interface UsuarioManager {
 
    public Usuario enviarMensajeEmail( String email, String pass) throws ErrorEnviarEmailException;
 
-    public Usuario usuarioLogin( String login) throws UsuarioNoEncontradoException,ErrorServerException;
+    public Usuario usuarioLogin( String login) throws UsuarioNotFoundException,ErrorServerException;
 
     public void create(Usuario usuario) throws ClientErrorException;
 

@@ -5,11 +5,15 @@
  */
 package client;
 
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 import manager.AdministradorManager;
+import modelo.Administrador;
+import modelo.Proveedor;
 
 /**
  * Jersey REST client generated for REST resource:AdministradorFacadeREST
@@ -24,7 +28,7 @@ import manager.AdministradorManager;
  *
  * @author Fredy
  */
-public class AdministradorRESTClient implements AdministradorManager {
+public class AdministradorRESTClient  {
 
     private final WebTarget webTarget;
     private final Client client;
@@ -46,7 +50,7 @@ public class AdministradorRESTClient implements AdministradorManager {
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
-    public <T> T getProveedores(Class<T> responseType) throws ClientErrorException {
+    public <T> T getProveedores(GenericType<T> responseType) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path("proveedores");
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);

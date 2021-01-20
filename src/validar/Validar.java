@@ -6,7 +6,11 @@
 package validar;
 
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
+import javafx.util.Callback;
+import modelo.Proveedor;
 
 /**
  *
@@ -134,7 +138,7 @@ public class Validar {
      */
     public static boolean isValidNombre(TextField txtNombre) {
         boolean b = false;
-        String pattern = "^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ]+$";
+        String pattern = "^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\\s]+$";
         if (txtNombre.getText().matches(pattern)) {
             b = true;
             txtNombre.setStyle("-fx-border-color:rgb(189 189 189);");

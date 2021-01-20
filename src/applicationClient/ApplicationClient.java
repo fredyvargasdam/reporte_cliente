@@ -5,6 +5,7 @@
  */
 package applicationClient;
 
+import controllers.InicioAdministradorProveedorController;
 import controllers.LogInController;
 import java.io.IOException;
 import java.util.logging.Level;
