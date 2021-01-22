@@ -227,7 +227,7 @@ public class LogInController {
             alert.setTitle("Login ERROR");
             alert.setHeaderText("Contraseña Incorrecta");
             alert.showAndWait();
-            txtContrasena.setStyle("-fx-faint-focus-color: transparent; -fx-focus-color:rgba(255,0,0,1);");
+            //txtContrasena.setStyle("-fx-faint-focus-color: transparent; -fx-focus-color:rgba(255,0,0,1);");
             txtContrasena.setText("");
             txtContrasena.requestFocus();
             hlContraseniaOlvidada.setVisible(true);

@@ -38,9 +38,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.ChoiceBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -320,6 +318,20 @@ public class InicioAdministradorProveedorController {
 
                 alert.showAndWait();
                 tbProveedor.refresh();
+
+                /* for (int i = 0; i < listProveedores.size(); i++) {
+                    if (data.getNewValue().equals(listProveedores.get(i).getEmpresa())) {
+                        alert = new Alert(AlertType.ERROR);
+                        alert.setTitle("Proveedor");
+                        alert.setHeaderText("Error al introducir la empresa");
+                        alert.setContentText("AKE");
+
+                        alert.showAndWait();
+                        tbProveedor.refresh();
+
+                    }
+                }
+                 */
             } else {
                 try {
                     LOG.log(Level.INFO, "Nueva Empresa: {0}", data.getNewValue());
@@ -779,37 +791,11 @@ public class InicioAdministradorProveedorController {
         //Añadimos por defecto que la fecha de alta será el dia de actual
         nuevoProveedor.setFechaAlta(date);
         try {
-            /*if (tbProveedor.getSelectionModel().getSelectedItem().getEmpresa().equals(nuevoProveedor.getEmpresa())) {
-                throw new ProveedorYaExisteException();
-            } else if (nuevoProveedor == null) {
-                throw new InsertException();
-            } else {*/
-
-            //Implementacion del ProveedorRESTClient
-            /*if (nuevoProveedor.getEmail().equalsIgnoreCase("") && nuevoProveedor.getDescripcion().equalsIgnoreCase("")
-                    && nuevoProveedor.getEmpresa().equalsIgnoreCase("") && nuevoProveedor.getTelefono().equalsIgnoreCase("")
-                    && nuevoProveedor.getNombre().equalsIgnoreCase("") && nuevoProveedor.getTipo() == null) {
-
-                LOG.log(Level.SEVERE, "Datos incompletos");
-                alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Proveedor");
-                alert.setHeaderText("Introduzca datos válidos");
-                alert.showAndWait();
-            } else {*/
             //Implementación del ProveedorRESTClient
             proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
-
-            //Añadimos en nuevo proveedor dentro del listProveedores (ObservableList)
-            listProveedores.add(nuevoProveedor);
-            int row = listProveedores.size() - 1;
-
-            // Seleccionamos la nueva fila
-            tbProveedor.requestFocus();
-            tbProveedor.getSelectionModel().select(row);
-            tbProveedor.getFocusModel().focus(row);
-
             //Llamamos al método create para asi poder crear un nuevo proveedor
             proveedorManager.create(nuevoProveedor);
+            datosTabla();
         } catch (InsertException ex) {
             LOG.log(Level.SEVERE, "InsertException");
             alert = new Alert(AlertType.ERROR);

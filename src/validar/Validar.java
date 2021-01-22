@@ -151,17 +151,29 @@ public class Validar {
     /**
      * Validar el texto de la contraseña este correcto
      *
-     * @param txtNombre Texto recibido
+     * @param txtContrasena
      * @return b true correcto, false incorrecto
      */
     public static boolean isValidPatternContrasena(PasswordField txtContrasena) {
         boolean b = false;
-        String pattern ="^[a-zA-Z0-9*@.,_-]+$";
+        String pattern = "^[a-zA-Z0-9*@.,_-]+$";
         if (txtContrasena.getText().matches(pattern)) {
             b = true;
             txtContrasena.setStyle("-fx-border-color:rgb(189 189 189);");
         } else {
             txtContrasena.setStyle("-fx-border-color:red; -fx-border-width:2px;");
+        }
+        return b;
+    }
+
+    public static boolean isValidTelefono(TextField tfTelefono) {
+        boolean b = false;
+        String pattern = "\\d{9,11}";
+        if (tfTelefono.getText().matches(pattern)) {
+            b = true;
+            tfTelefono.setStyle("-fx-border-color:rgb(189 189 189);");
+        } else {
+            tfTelefono.setStyle("-fx-border-color:red; -fx-border-width:2px;");
         }
         return b;
     }
