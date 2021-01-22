@@ -2,7 +2,7 @@ package controllers;
 
 import exceptions.AutenticacionFallidaException;
 import exceptions.ErrorServerException;
-import exceptions.UsuarioNoEncontradoException;
+import exceptions.UsuarioNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +28,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javax.ws.rs.ClientErrorException;
+import manager.UsuarioManager;
 import modelo.Usuario;
 import seguridad.Seguridad;
 import validar.Validar;
@@ -58,13 +60,13 @@ public class LogInController {
 
     @FXML
     private Pane pnPrincipal;
- 
+
     @FXML
     private Hyperlink hlContraseniaOlvidada;
 
-
     private Stage stage = new Stage();
     private Usuario usuario;
+    private UsuarioManager usuarioManager;
 
     public LogInController() {
 
@@ -183,12 +185,13 @@ public class LogInController {
      * @param event ActionEvent
      */
     private void btnIniciarClick(ActionEvent event) {
-        LOG.log(Level.INFO, "Ventana ");
+        LOG.log(Level.INFO, "btnIniciarClick");
         usuario = new Usuario();
         usuario.setLogin(txtUsuario.getText());
         usuario.setPassword(txtContrasena.getText());
         UsuarioManagerImplementation usuarioMi = (UsuarioManagerImplementation) new UsuarioFactory().getUsuarioManagerImplementation();
         Alert alert;
+
         try {
             System.out.println(usuario.getPassword());
             //El usuario(login) se encuentra en la base de datos
@@ -201,87 +204,58 @@ public class LogInController {
             Parent root = null;
             switch (usuario.getPrivilege()) {
                 case ADMINISTRADOR:
-                    loader = new FXMLLoader(getClass().getResource("/view/InicioAdministrador_vendedor.fxml"));
+                    loader = new FXMLLoader(getClass().getResource("/view/inicioAdministrador_proveedor.fxml"));
                     root = (Parent) loader.load();
-                    InicioAdministradorVendedorController administradorC = ((InicioAdministradorVendedorController) loader.getController());
+                    InicioAdministradorProveedorController administradorC = ((InicioAdministradorProveedorController) loader.getController());
                     administradorC.setUsuario(usuario);
                     administradorC.initStage(root);
                     break;
                 case VENDEDOR:
-                /*    loader = new FXMLLoader(getClass().getResource("/view/InicioVendedor.fxml"));
+                    loader = new FXMLLoader(getClass().getResource("/view/InicioVendedorProducto.fxml"));
                     root = (Parent) loader.load();
-                    InicioVendedorController vendedorC = ((InicioVendedorController) loader.getController());
+                    InicioVendedorProductoController vendedorC = ((InicioVendedorProductoController) loader.getController());
                     vendedorC.setUsuario(usuario);
                     vendedorC.initStage(root);
-                    break;*/
-                case CLIENTE:
-                    loader = new FXMLLoader(getClass().getResource("/view/ListaDeProductos.fxml"));
-                    root = (Parent) loader.load();
-                    ListaDeProductosController listaDeProductosC = ((ListaDeProductosController) loader.getController());
-                    listaDeProductosC.setUsuario(usuario);
-                    listaDeProductosC.initStage(root);
             }
 
             stage.hide();
         } catch (IOException e) {
             LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
 
-            /* } catch (AutenticacionFallidaException ex) {
-            alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Contraseña Incorrecta");
-            alert.showAndWait();
-            lblErrorContrasena.setText("Contraseña Incorrecta");
-            lblErrorContrasena.setVisible(true);
-            txtContrasena.setStyle("-fx-faint-focus-color: transparent; -fx-focus-color:rgba(255,0,0,1);");
-            txtContrasena.setText("");
-            txtContrasena.requestFocus();
-            //setStyle("-fx-focus-color: -fx-control-inner-background ; -fx-faint-focus-color: -fx-control-inner-background ;");
-
-        } catch (ErrorBDException ex) {
-            alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("LOGIN");
-            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-            alert.showAndWait();
-        } catch (ErrorServerException ex) {
-            alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("LOGIN");
-            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-            alert.showAndWait();
-        } catch (UsuarioNoEncontradoException ex) {
-            alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("No se ha encontrado el usuario introducido");
-            alert.showAndWait();
-            txtUsuario.setText("");
-            txtContrasena.setText("");
-             */
         } catch (AutenticacionFallidaException ex) {
             alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error");
+            alert.setTitle("Login ERROR");
             alert.setHeaderText("Contraseña Incorrecta");
             alert.showAndWait();
-            txtContrasena.setStyle("-fx-faint-focus-color: transparent; -fx-focus-color:rgba(255,0,0,1);");
+            //txtContrasena.setStyle("-fx-faint-focus-color: transparent; -fx-focus-color:rgba(255,0,0,1);");
             txtContrasena.setText("");
             txtContrasena.requestFocus();
             hlContraseniaOlvidada.setVisible(true);
-        } catch (UsuarioNoEncontradoException ex) {
+        } catch (ErrorServerException ex) {
             alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error");
+            alert.setTitle("Login ERROR");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
+        } catch (ClientErrorException ex) {
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Login ERROR");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
+        } catch (UsuarioNotFoundException ex) {
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Login ERROR");
             alert.setHeaderText("No se ha encontrado el usuario introducido");
             alert.showAndWait();
             txtUsuario.setText("");
             txtContrasena.setText("");
-
-        } catch (ErrorServerException ex) {
-            alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("LOGIN");
-            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-            alert.showAndWait();
         }
-
     }
 
+    /**
+     * Dirige a la ventana SignUp y la inicializa
+     *
+     * @param event ActionEvent
+     */
     /**
      * Dirige a la ventana SignUp y la inicializa
      *
@@ -303,7 +277,6 @@ public class LogInController {
         }
     }
 
-
     private void hlContraseniaOlvidadClick(ActionEvent event) {
         LOG.log(Level.INFO, "Ventana Contaseña Olvidada");
 
@@ -318,6 +291,5 @@ public class LogInController {
             LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
         }
     }
-
 
 }

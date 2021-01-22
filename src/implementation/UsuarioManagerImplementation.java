@@ -7,10 +7,13 @@ package implementation;
 
 import client.UsuarioRESTClient;
 import exceptions.AutenticacionFallidaException;
+import exceptions.ErrorBDException;
 import exceptions.ErrorEnviarEmailException;
 import exceptions.ErrorServerException;
-import exceptions.UsuarioNoEncontradoException;
+import exceptions.UsuarioNotFoundException;
+import exceptions.UsuarioYaExisteException;
 import java.net.ConnectException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.ClientErrorException;
 import manager.UsuarioManager;
@@ -62,32 +65,37 @@ public class UsuarioManagerImplementation implements UsuarioManager {
         return usuario;
     }
 
-    
-    
-
     @Override
-    public Usuario usuarioLogin(String login) throws UsuarioNoEncontradoException, ErrorServerException {
+    public Usuario usuarioLogin(String login) throws UsuarioNotFoundException, ErrorServerException {
         Usuario usuario = null;
         try {
             usuario = webClient.usuarioLogin(Usuario.class, login);
         } catch (Exception e) {
-          
+
             if (e.getCause() instanceof ConnectException) {
-                LOGGER.severe("usuarioLogin: ErrorServerException   " + e.getMessage());
+                LOGGER.log(Level.SEVERE, "usuarioLogin: ErrorServerException   {0}", e.getMessage());
                 throw new ErrorServerException();
             } else {
-                LOGGER.severe("usuarioLogin: UsuarioNoEncontradoException   " + e.getMessage());
-               throw new UsuarioNoEncontradoException();
+                LOGGER.log(Level.SEVERE, "usuarioLogin: UsuarioNoEncontradoException   {0}", e.getMessage());
+                throw new UsuarioNotFoundException();
             }
         }
         return usuario;
     }
 
     @Override
-    public void create(Usuario usuario) throws ClientErrorException {
+    public void create(Usuario usuario) throws ClientErrorException, UsuarioYaExisteException, ErrorServerException, ErrorBDException {
         try {
-            webClient.create(webClient);
+            webClient = new UsuarioRESTClient();
+            webClient.create(usuario);
         } catch (Exception e) {
+            if (e.getCause() instanceof ConnectException) {
+                LOGGER.log(Level.SEVERE, "createUsuario: ErrorServerException {0}", e.getMessage());
+                throw new ErrorServerException();
+            } else{
+                LOGGER.log(Level.SEVERE, "createUsuario: UsuarioYaExisteException {0}", e.getMessage());
+                throw new UsuarioYaExisteException();
+            }
 
         }
 
@@ -109,9 +117,9 @@ public class UsuarioManagerImplementation implements UsuarioManager {
 
     @Override
     public Usuario enviarMensajeEmail(String email, String pass) throws ErrorEnviarEmailException {
-             Usuario usuario = null;
+        Usuario usuario = null;
         try {
-             usuario=webClient.enviarMensajeEmail(Usuario.class,email, pass);
+            usuario = webClient.enviarMensajeEmail(Usuario.class, email, pass);
         } catch (Exception e) {
             LOGGER.severe("enviarMensajeEmail: ErrorEnviarEmailExcpetion");
             throw new ErrorEnviarEmailException();

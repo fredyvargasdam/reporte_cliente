@@ -1,30 +1,28 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package manager;
 
+import exceptions.ErrorBDException;
+import exceptions.ErrorServerException;
+import java.util.List;
 import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.client.WebTarget;
+import modelo.Proveedor;
 
 /**
  *
- * @author 2dam
+ * @author Lorena Cáceres Manuel
  */
 public interface AdministradorManager {
 
     public <T> T getVendedores(Class<T> responseType) throws ClientErrorException;
 
-    public void edit(Object requestEntity) throws ClientErrorException;
+    public void edit(Object requestEntity) throws ClientErrorException, ErrorBDException, ErrorServerException;
 
-    public <T> T getProveedores(Class<T> responseType) throws ClientErrorException;
+    public List<Proveedor> getProveedores() throws ClientErrorException, ErrorBDException, ErrorServerException;
 
-    public <T> T find(Class<T> responseType, String id) throws ClientErrorException;
+    public <T> T find(Class<T> responseType, String id) throws ClientErrorException, ErrorBDException, ErrorServerException;
 
-    public void create(Object requestEntity) throws ClientErrorException;
+    public void create(Object requestEntity) throws ClientErrorException, ErrorBDException, ErrorServerException;
 
-    public void remove(String id) throws ClientErrorException;
+    public void remove(String id) throws ClientErrorException, ErrorBDException, ErrorServerException;
 
     public void close();
 
