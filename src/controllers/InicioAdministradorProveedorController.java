@@ -1,12 +1,8 @@
 package controllers;
 
-import exceptions.DeleteException;
 import exceptions.ErrorBDException;
 import exceptions.ErrorServerException;
-import exceptions.InsertException;
-import exceptions.ProveedorNotFoundException;
 import exceptions.ProveedorYaExisteException;
-import exceptions.UpdateException;
 import implementation.AdministradorManagerImplementation;
 import implementation.ProveedorManagerImplementation;
 import java.io.IOException;
@@ -264,12 +260,6 @@ public class InicioAdministradorProveedorController {
                     alert.setTitle("Administrador");
                     alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
                     alert.showAndWait();
-                } catch (UpdateException ex) {
-                    LOG.log(Level.SEVERE, "UpdateException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                    alert.showAndWait();
                 } catch (ErrorBDException ex) {
                     LOG.log(Level.SEVERE, "ErrorBDException");
                     alert = new Alert(AlertType.ERROR);
@@ -281,12 +271,6 @@ public class InicioAdministradorProveedorController {
                     alert = new Alert(AlertType.ERROR);
                     alert.setTitle("Administrador");
                     alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                    alert.showAndWait();
-                } catch (ProveedorNotFoundException ex) {
-                    LOG.log(Level.SEVERE, "ProveedorNotFoundException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("No se ha podido encontrar el proveedor");
                     alert.showAndWait();
                 }
             }
@@ -318,199 +302,168 @@ public class InicioAdministradorProveedorController {
 
                 alert.showAndWait();
                 tbProveedor.refresh();
+            } else {
+                try {
+                    //Comprueba que la empresa no esté registrada dentro de la base de datos
+                    boolean repetida = encontrarEmpresa(data);
+                    if (!repetida) {
+                        LOG.log(Level.INFO, "Nueva Empresa: {0}", data.getNewValue());
+                        LOG.log(Level.INFO, "Antigua Empresa: {0}", data.getOldValue());
+                        //Implementacion del ProveedorRESTClient
+                        proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
+                        //Devuelve el dato de la fila
+                        Proveedor p = data.getRowValue();
+                        //Añadimos el nuevo valor a la fila
+                        p.setEmpresa(data.getNewValue());
+                        //Llamamos al método edit para asi poder modificar la empresa del proveedor
+                        proveedorManager.edit(p);
+                        //Mostramos los datos actualizados en la TableView
+                        datosTabla();
 
-                /* for (int i = 0; i < listProveedores.size(); i++) {
-                    if (data.getNewValue().equals(listProveedores.get(i).getEmpresa())) {
+                    }
+
+                } catch (ClientErrorException ex) {
+                    LOG.log(Level.SEVERE, "ClientErrorException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (ErrorBDException ex) {
+                    LOG.log(Level.SEVERE, "ErrorBDException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (ErrorServerException ex) {
+                    LOG.log(Level.SEVERE, "ErrorServerException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (ProveedorYaExisteException ex) {
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Proveedor");
+                    alert.setHeaderText("Error al introducir un proveedor");
+                    alert.setContentText("El proveedor de esta empresa ya esta dado de alta");
+                    alert.showAndWait();
+                    tbProveedor.refresh();
+                }
+            }
+        }
+        );
+
+        //Email del proveedor
+        tcEmail.setCellValueFactory(
+                new PropertyValueFactory<>("email"));
+        //Indicamos que la celda puede cambiar a un TextField
+        tcEmail.setCellFactory(TextFieldTableCell.forTableColumn());
+        //Aceptamos la edición de la celda de la columna email 
+        tcEmail.setOnEditCommit(
+                (TableColumn.CellEditEvent<Proveedor, String> data) -> {
+                    //Establecemos que el dato que se introduzca en la celda debe cumplir un patrón
+                    if (!Pattern.matches("\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*", data.getNewValue())
+                    || data.getNewValue().equalsIgnoreCase("")) {
+                        //En el caso de que no se cumpla el patrón. Saldrá un alerta informandonos del error
                         alert = new Alert(AlertType.ERROR);
                         alert.setTitle("Proveedor");
-                        alert.setHeaderText("Error al introducir la empresa");
-                        alert.setContentText("AKE");
+                        alert.setHeaderText("Error al introducir el email");
+                        alert.setContentText("Introduzca un caracter válido");
+
+                        alert.showAndWait();
+                        tbProveedor.refresh();
+                    } else {
+                        try {
+                            LOG.log(Level.INFO, "Nuevo Email: {0}", data.getNewValue());
+                            LOG.log(Level.INFO, "Antiguo Email: {0}", data.getOldValue());
+                            //Implementación del ProveedorRESTClient
+                            proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
+                            //Devuelve el dato de la fila
+                            Proveedor p = data.getRowValue();
+                            //Añadimos el nuevo valor a la fila
+                            p.setEmail(data.getNewValue());
+                            //Llamamos al método edit para asi poder modificar el email del proveedor
+                            proveedorManager.edit(p);
+                            //Mostramos los datos actualizados en la TableView
+                            datosTabla();
+                        } catch (ClientErrorException ex) {
+                            LOG.log(Level.SEVERE, "ClientErrorException");
+                            alert = new Alert(AlertType.ERROR);
+                            alert.setTitle("Administrador");
+                            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                            alert.showAndWait();
+                        } catch (ErrorBDException ex) {
+                            LOG.log(Level.SEVERE, "ErrorBDException");
+                            alert = new Alert(AlertType.ERROR);
+                            alert.setTitle("Administrador");
+                            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                            alert.showAndWait();
+                        } catch (ErrorServerException ex) {
+                            LOG.log(Level.SEVERE, "ErrorServerException");
+                            alert = new Alert(AlertType.ERROR);
+                            alert.setTitle("Administrador");
+                            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                            alert.showAndWait();
+                        }
+                    }
+                }
+        );
+
+        //Teléfono del proveedor
+        tcTelefono.setCellValueFactory(
+                new PropertyValueFactory<>("telefono"));
+        //Indicamos que la celda puede cambiar a un TextField
+        tcTelefono.setCellFactory(TextFieldTableCell.forTableColumn());
+        //Aceptamos la edición de la celda de la columna teléfono 
+        tcTelefono.setOnEditCommit(
+                (TableColumn.CellEditEvent<Proveedor, String> data) -> {
+                    //Establecemos que el dato que se introduzca en la celda debe cumplir un patrón
+                    if (!Pattern.matches("\\d{9,11}", data.getNewValue())
+                    || data.getNewValue().equalsIgnoreCase("")) {
+                        //En el caso de que no se cumpla el patrón. Saldrá un alerta informandonos del error
+                        alert = new Alert(AlertType.ERROR);
+                        alert.setTitle("Proveedor");
+                        alert.setHeaderText("Error al introducir el teléfono");
+                        alert.setContentText("Introduzca un caracter válido");
 
                         alert.showAndWait();
                         tbProveedor.refresh();
 
+                    } else {
+                        try {
+                            LOG.log(Level.INFO, "Nuevo Teléfono: {0}", data.getNewValue());
+                            LOG.log(Level.INFO, "Antiguo Teléfono: {0}", data.getOldValue());
+                            //Implementación del ProveedorRESTClient
+                            proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
+                            //Devuelve el dato de la fila
+                            Proveedor p = data.getRowValue();
+                            //Añadimos el nuevo valor a la fila
+                            p.setTelefono(data.getNewValue());
+                            //Llamamos al método edit para asi poder modificar el teléfono del proveedor
+                            proveedorManager.edit(p);
+                            //Mostramos los datos actualizados en la TableView
+                            datosTabla();
+                        } catch (ClientErrorException ex) {
+                            LOG.log(Level.SEVERE, "ClientErrorException");
+                            alert = new Alert(AlertType.ERROR);
+                            alert.setTitle("Administrador");
+                            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                            alert.showAndWait();
+                        } catch (ErrorBDException ex) {
+                            LOG.log(Level.SEVERE, "ErrorBDException");
+                            alert = new Alert(AlertType.ERROR);
+                            alert.setTitle("Administrador");
+                            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                            alert.showAndWait();
+                        } catch (ErrorServerException ex) {
+                            LOG.log(Level.SEVERE, "ErrorServerException");
+                            alert = new Alert(AlertType.ERROR);
+                            alert.setTitle("Administrador");
+                            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                            alert.showAndWait();
+                        }
                     }
+
                 }
-                 */
-            } else {
-                try {
-                    LOG.log(Level.INFO, "Nueva Empresa: {0}", data.getNewValue());
-                    LOG.log(Level.INFO, "Antigua Empresa: {0}", data.getOldValue());
-                    //Implementacion del ProveedorRESTClient
-                    proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
-                    //Devuelve el dato de la fila
-                    Proveedor p = data.getRowValue();
-                    //Añadimos el nuevo valor a la fila
-                    p.setEmpresa(data.getNewValue());
-                    //Llamamos al método edit para asi poder modificar la empresa del proveedor
-                    proveedorManager.edit(p);
-                    //Mostramos los datos actualizados en la TableView
-                    datosTabla();
-                } catch (ClientErrorException ex) {
-                    LOG.log(Level.SEVERE, "ClientErrorException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                    alert.showAndWait();
-                } catch (UpdateException ex) {
-                    LOG.log(Level.SEVERE, "UpdateException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                    alert.showAndWait();
-                } catch (ErrorBDException ex) {
-                    LOG.log(Level.SEVERE, "ErrorBDException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                    alert.showAndWait();
-                } catch (ErrorServerException ex) {
-                    LOG.log(Level.SEVERE, "ErrorServerException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                    alert.showAndWait();
-                } catch (ProveedorNotFoundException ex) {
-                    LOG.log(Level.SEVERE, "ProveedorNotFoundException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("No se ha podido encontrar el proveedor");
-                    alert.showAndWait();
-                }
-            }
-        });
-
-        //Email del proveedor
-        tcEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
-        //Indicamos que la celda puede cambiar a un TextField
-        tcEmail.setCellFactory(TextFieldTableCell.forTableColumn());
-        //Aceptamos la edición de la celda de la columna email 
-        tcEmail.setOnEditCommit((TableColumn.CellEditEvent<Proveedor, String> data) -> {
-            //Establecemos que el dato que se introduzca en la celda debe cumplir un patrón
-            if (!Pattern.matches("\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*", data.getNewValue())
-                    || data.getNewValue().equalsIgnoreCase("")) {
-                //En el caso de que no se cumpla el patrón. Saldrá un alerta informandonos del error
-                alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Proveedor");
-                alert.setHeaderText("Error al introducir el email");
-                alert.setContentText("Introduzca un caracter válido");
-
-                alert.showAndWait();
-                tbProveedor.refresh();
-            } else {
-                try {
-                    LOG.log(Level.INFO, "Nuevo Email: {0}", data.getNewValue());
-                    LOG.log(Level.INFO, "Antiguo Email: {0}", data.getOldValue());
-                    //Implementación del ProveedorRESTClient
-                    proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
-                    //Devuelve el dato de la fila
-                    Proveedor p = data.getRowValue();
-                    //Añadimos el nuevo valor a la fila
-                    p.setEmail(data.getNewValue());
-                    //Llamamos al método edit para asi poder modificar el email del proveedor
-                    proveedorManager.edit(p);
-                    //Mostramos los datos actualizados en la TableView
-                    datosTabla();
-                } catch (ClientErrorException ex) {
-                    LOG.log(Level.SEVERE, "ClientErrorException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                    alert.showAndWait();
-                } catch (UpdateException ex) {
-                    LOG.log(Level.SEVERE, "UpdateException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                    alert.showAndWait();
-                } catch (ErrorBDException ex) {
-                    LOG.log(Level.SEVERE, "ErrorBDException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                    alert.showAndWait();
-                } catch (ErrorServerException ex) {
-                    LOG.log(Level.SEVERE, "ErrorServerException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                    alert.showAndWait();
-                } catch (ProveedorNotFoundException ex) {
-                    LOG.log(Level.SEVERE, "ProveedorNotFoundException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("No se ha podido encontrar el proveedor");
-                    alert.showAndWait();
-                }
-            }
-        });
-
-        //Teléfono del proveedor
-        tcTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
-        //Indicamos que la celda puede cambiar a un TextField
-        tcTelefono.setCellFactory(TextFieldTableCell.forTableColumn());
-        //Aceptamos la edición de la celda de la columna teléfono 
-        tcTelefono.setOnEditCommit((TableColumn.CellEditEvent<Proveedor, String> data) -> {
-            //Establecemos que el dato que se introduzca en la celda debe cumplir un patrón
-            if (!Pattern.matches("\\d{9,11}", data.getNewValue())
-                    || data.getNewValue().equalsIgnoreCase("")) {
-                //En el caso de que no se cumpla el patrón. Saldrá un alerta informandonos del error
-                alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Proveedor");
-                alert.setHeaderText("Error al introducir el teléfono");
-                alert.setContentText("Introduzca un caracter válido");
-
-                alert.showAndWait();
-                tbProveedor.refresh();
-
-            } else {
-                try {
-                    LOG.log(Level.INFO, "Nuevo Teléfono: {0}", data.getNewValue());
-                    LOG.log(Level.INFO, "Antiguo Teléfono: {0}", data.getOldValue());
-                    //Implementación del ProveedorRESTClient
-                    proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
-                    //Devuelve el dato de la fila
-                    Proveedor p = data.getRowValue();
-                    //Añadimos el nuevo valor a la fila
-                    p.setTelefono(data.getNewValue());
-                    //Llamamos al método edit para asi poder modificar el teléfono del proveedor
-                    proveedorManager.edit(p);
-                    //Mostramos los datos actualizados en la TableView
-                    datosTabla();
-                } catch (ClientErrorException ex) {
-                    LOG.log(Level.SEVERE, "ClientErrorException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                    alert.showAndWait();
-                } catch (UpdateException ex) {
-                    LOG.log(Level.SEVERE, "UpdateException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                    alert.showAndWait();
-                } catch (ErrorBDException ex) {
-                    LOG.log(Level.SEVERE, "ErrorBDException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                    alert.showAndWait();
-                } catch (ErrorServerException ex) {
-                    LOG.log(Level.SEVERE, "ErrorServerException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                    alert.showAndWait();
-                } catch (ProveedorNotFoundException ex) {
-                    LOG.log(Level.SEVERE, "ProveedorNotFoundException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("No se ha podido encontrar el proveedor");
-                    alert.showAndWait();
-                }
-            }
-
-        }
         );
 
         //Descripción del proveedor
@@ -552,12 +505,6 @@ public class InicioAdministradorProveedorController {
                             alert.setTitle("Administrador");
                             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
                             alert.showAndWait();
-                        } catch (UpdateException ex) {
-                            LOG.log(Level.SEVERE, "UpdateException");
-                            alert = new Alert(AlertType.ERROR);
-                            alert.setTitle("Administrador");
-                            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                            alert.showAndWait();
                         } catch (ErrorBDException ex) {
                             LOG.log(Level.SEVERE, "ErrorBDException");
                             alert = new Alert(AlertType.ERROR);
@@ -569,12 +516,6 @@ public class InicioAdministradorProveedorController {
                             alert = new Alert(AlertType.ERROR);
                             alert.setTitle("Administrador");
                             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                            alert.showAndWait();
-                        } catch (ProveedorNotFoundException ex) {
-                            LOG.log(Level.SEVERE, "ProveedorNotFoundException");
-                            alert = new Alert(AlertType.ERROR);
-                            alert.setTitle("Administrador");
-                            alert.setHeaderText("No se ha podido encontrar el proveedor");
                             alert.showAndWait();
                         }
                     }
@@ -617,12 +558,6 @@ public class InicioAdministradorProveedorController {
                 alert.setTitle("Administrador");
                 alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
                 alert.showAndWait();
-            } catch (UpdateException ex) {
-                LOG.log(Level.SEVERE, "UpdateException");
-                alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Administrador");
-                alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                alert.showAndWait();
             } catch (ErrorBDException ex) {
                 LOG.log(Level.SEVERE, "ErrorBDException");
                 alert = new Alert(AlertType.ERROR);
@@ -634,12 +569,6 @@ public class InicioAdministradorProveedorController {
                 alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Administrador");
                 alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                alert.showAndWait();
-            } catch (ProveedorNotFoundException ex) {
-                LOG.log(Level.SEVERE, "ProveedorNotFoundException");
-                alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Administrador");
-                alert.setHeaderText("No se ha podido encontrar el proveedor");
                 alert.showAndWait();
             }
         }
@@ -673,12 +602,6 @@ public class InicioAdministradorProveedorController {
             alert.setTitle("Administrador");
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
-        } catch (UpdateException ex) {
-            LOG.log(Level.SEVERE, "UpdateException");
-            alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Administrador");
-            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-            alert.showAndWait();
         } catch (ErrorBDException ex) {
             LOG.log(Level.SEVERE, "ErrorBDException");
             alert = new Alert(AlertType.ERROR);
@@ -690,12 +613,6 @@ public class InicioAdministradorProveedorController {
             alert = new Alert(AlertType.ERROR);
             alert.setTitle("Administrador");
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-            alert.showAndWait();
-        } catch (ProveedorNotFoundException ex) {
-            LOG.log(Level.SEVERE, "ProveedorNotFoundException");
-            alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Administrador");
-            alert.setHeaderText("No se ha podido encontrar el proveedor");
             alert.showAndWait();
         }
 
@@ -728,12 +645,10 @@ public class InicioAdministradorProveedorController {
             listProveedores = FXCollections.observableArrayList(administradorManager.getProveedores());
             //Establecemos los datos del ObservableList dentro de la TableView
             tbProveedor.setItems(listProveedores);
-            //Recorremos el ArrayList Observable de proveedores
+            //Comprobamos el ArrayList Observable de proveedores
             for (Proveedor p : listProveedores) {
                 LOG.log(Level.INFO, "Lista de Proveedores: {0}", listProveedores);
             }
-            //Añadimos esos proveedores dentro de la TableView
-            //tbProveedor.setItems(listProveedores);
         } catch (ClientErrorException ex) {
             LOG.log(Level.SEVERE, "ClientErrorException");
             alert = new Alert(AlertType.ERROR);
@@ -757,25 +672,21 @@ public class InicioAdministradorProveedorController {
 
     //CONFIGURACIÓN DE BOTONES
     /**
-     *
+     * Nos permite dar de alta a un proveedor, nos genera datos predeterminados
+     * y posteriormente el administrador podrá cambiarlos y se almacenarán en la
+     * base de datos
      *
      * @param event ActionEvent
      */
     private void btnAltaProveedorClick(ActionEvent event) {
+        //Definimos en un LocalDate la fecha actual
         LocalDate fechaHoy = LocalDate.now();
+        //Establecemos la zona horaria
         ZoneId defaultZoneId = ZoneId.systemDefault();
+        //Pasamos de LocalDate a Date en una variable conocida como "date"
         Date date = Date.from(fechaHoy.atStartOfDay(defaultZoneId).toInstant());
-
-        /*
-            //Instanciamos el administrador, el cual va a dar de alta a los proveedores
-            Administrador admin = new Administrador();
-            //Indicamos cual es el id del administrador
-            admin.setId_usuario(usuario.getId_usuario());
-         */
         //Instanciamos un nuevo proveedor dandole valores por defecto
         Proveedor nuevoProveedor = new Proveedor();
-        //Añadimos por defecto que el administrador va a ser el que haya iniciado sesión dentro de la aplicación
-        nuevoProveedor.setAdministrador(null);
         //Añadimos por defecto que la descripción está vacia
         nuevoProveedor.setDescripcion("");
         //Añadimos por defecto que  el email está vacio
@@ -796,26 +707,26 @@ public class InicioAdministradorProveedorController {
             //Llamamos al método create para asi poder crear un nuevo proveedor
             proveedorManager.create(nuevoProveedor);
             datosTabla();
-        } catch (InsertException ex) {
-            LOG.log(Level.SEVERE, "InsertException");
-            alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Administrador");
-            alert.setHeaderText("Rellene los campos para poder dar de alta al proveedor");
-            alert.showAndWait();
         } catch (ErrorBDException ex) {
             LOG.log(Level.SEVERE, "ErrorBDException");
             alert = new Alert(AlertType.ERROR);
             alert.setTitle("Administrador");
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
-        } catch (ErrorServerException | ClientErrorException ex) {
-            LOG.log(Level.SEVERE, "ErrorServerException || ClientErrorException");
+        } catch (ClientErrorException ex) {
+            LOG.log(Level.SEVERE, "ClientErrorException");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Administrador");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
+        } catch (ErrorServerException ex) {
+            LOG.log(Level.SEVERE, "ErrorServerException");
             alert = new Alert(AlertType.ERROR);
             alert.setTitle("Administrador");
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
         } catch (ProveedorYaExisteException ex) {
-            LOG.log(Level.SEVERE, "ErrorServerException");
+            LOG.log(Level.SEVERE, "ProveedorYaExisteException");
             alert = new Alert(AlertType.ERROR);
             alert.setTitle("Administrador");
             alert.setHeaderText("Proveedor ya existe");
@@ -859,18 +770,6 @@ public class InicioAdministradorProveedorController {
                     alert.setTitle("Administrador");
                     alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
                     alert.showAndWait();
-                } catch (ProveedorNotFoundException ex) {
-                    LOG.log(Level.SEVERE, "ProveedorNotFoundException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("No se ha podido encontrar el proveedor");
-                    alert.showAndWait();
-                } catch (DeleteException ex) {
-                    LOG.log(Level.SEVERE, "DeleteException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                    alert.showAndWait();
                 } catch (ErrorBDException ex) {
                     LOG.log(Level.SEVERE, "ErrorBDException");
                     alert = new Alert(AlertType.ERROR);
@@ -897,6 +796,24 @@ public class InicioAdministradorProveedorController {
             //Desaparece el alerta
             event.consume();
         }
+    }
+
+    /**
+     * Comprueba que la empresa que se va a introducir no esté registrada ya en
+     * la base de datos
+     *
+     * @param data
+     * @return
+     */
+    private boolean encontrarEmpresa(TableColumn.CellEditEvent<Proveedor, String> data) throws ProveedorYaExisteException {
+        boolean repetido = false;
+        for (int i = 0; i < listProveedores.size(); i++) {
+            if (data.getNewValue().equalsIgnoreCase(listProveedores.get(i).getEmpresa())) {
+                repetido = true;
+                throw new ProveedorYaExisteException();
+            }
+        }
+        return repetido;
     }
 
     //CONFIGURACIÓN DEL TEXTFIELD DE BÚSQUEDA

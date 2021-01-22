@@ -3,12 +3,10 @@ package implementation;
 import client.ProveedorRESTClient;
 import exceptions.ErrorBDException;
 import exceptions.ErrorServerException;
-import exceptions.InsertException;
 import exceptions.ProductoNotFoundException;
 import exceptions.ProveedorNotFoundException;
 import exceptions.ProveedorYaExisteException;
-import exceptions.SelectException;
-import exceptions.UpdateException;
+import java.net.ConnectException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.ClientErrorException;
@@ -26,12 +24,18 @@ public class ProveedorManagerImplementation implements ProveedorManager {
     private ProveedorRESTClient webClient;
 
     @Override
-    public void remove(String id) throws ClientErrorException {
+    public void remove(String id) throws ClientErrorException, ErrorServerException, ErrorBDException {
         try {
             webClient = new ProveedorRESTClient();
             webClient.remove(id);
         } catch (ClientErrorException e) {
-            LOG.log(Level.SEVERE, "ClientErrorException");
+            if (e.getCause() instanceof ConnectException) {
+                LOG.log(Level.SEVERE, "ErrorServerException");
+                throw new ErrorServerException();
+            } else {
+                LOG.log(Level.SEVERE, "ErrorBDException");
+                throw new ErrorBDException();
+            }
         }
     }
 
@@ -41,18 +45,34 @@ public class ProveedorManagerImplementation implements ProveedorManager {
     }
 
     @Override
-    public void edit(Proveedor proveedor) throws ClientErrorException, UpdateException, ErrorBDException, ErrorServerException, ProveedorNotFoundException {
+    public void edit(Proveedor proveedor) throws ClientErrorException, ErrorBDException, ErrorServerException {
         webClient = new ProveedorRESTClient();
-        webClient.edit(proveedor);
+        try {
+            webClient.edit(proveedor);
+        } catch (ClientErrorException e) {
+            if (e.getCause() instanceof ConnectException) {
+                LOG.log(Level.SEVERE, "ErrorServerException");
+                throw new ErrorServerException();
+            } else {
+                LOG.log(Level.SEVERE, "ErrorBDException");
+                throw new ErrorBDException();
+            }
+        }
     }
 
     @Override
-    public Proveedor find(Proveedor proveedor, String id) throws ClientErrorException, SelectException, ProveedorNotFoundException, ErrorBDException, ErrorServerException {
+    public Proveedor find(Proveedor proveedor, String id) throws ClientErrorException, ProveedorNotFoundException, ErrorBDException, ErrorServerException {
         proveedor = null;
         try {
             proveedor = webClient.find(Proveedor.class, id);
         } catch (ClientErrorException e) {
-            LOG.log(Level.SEVERE, "ClientErrorException");
+            if (e.getCause() instanceof ConnectException) {
+                LOG.log(Level.SEVERE, "ErrorServerException");
+                throw new ErrorServerException();
+            } else {
+                LOG.log(Level.SEVERE, "ErrorBDException");
+                throw new ErrorBDException();
+            }
         }
         return proveedor;
     }
@@ -63,9 +83,19 @@ public class ProveedorManagerImplementation implements ProveedorManager {
     }
 
     @Override
-    public void create(Proveedor proveedor) throws ClientErrorException, InsertException, ProveedorYaExisteException, ErrorBDException, ErrorServerException {
-        webClient = new ProveedorRESTClient();
-        webClient.create(proveedor);
+    public void create(Proveedor proveedor) throws ClientErrorException, ProveedorYaExisteException, ErrorBDException, ErrorServerException {
+        try {
+            webClient = new ProveedorRESTClient();
+            webClient.create(proveedor);
+        } catch (ClientErrorException e) {
+            if (e.getCause() instanceof ConnectException) {
+                LOG.log(Level.SEVERE, "ErrorServerException");
+                throw new ErrorServerException();
+            } else {
+                LOG.log(Level.SEVERE, "ErrorBDException");
+                throw new ErrorBDException();
+            }
+        }
     }
 
 }

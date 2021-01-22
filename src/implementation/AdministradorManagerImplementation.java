@@ -1,18 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package implementation;
 
 import client.AdministradorRESTClient;
-import exceptions.DeleteException;
 import exceptions.ErrorBDException;
 import exceptions.ErrorServerException;
-import exceptions.InsertException;
-import exceptions.ProveedorNotFoundException;
-import exceptions.SelectException;
-import exceptions.UpdateException;
+import java.net.ConnectException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,33 +31,41 @@ public class AdministradorManagerImplementation implements AdministradorManager 
     }
 
     @Override
-    public void edit(Object requestEntity) throws ClientErrorException, UpdateException, ErrorBDException, ErrorServerException {
+    public void edit(Object requestEntity) throws ClientErrorException, ErrorBDException, ErrorServerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public List<Proveedor> getProveedores() throws ClientErrorException, ErrorBDException, ErrorServerException {
         List<Proveedor> proveedores = null;
-        proveedores = webClient.getProveedores(new GenericType<List<Proveedor>>() {
-        });
-        for (Proveedor p : proveedores) {
-            LOG.log(Level.INFO, "Proveedores: {0}", p);
+        try {
+            proveedores = webClient.getProveedores(new GenericType<List<Proveedor>>() {
+            });
+            for (Proveedor p : proveedores) {
+                LOG.log(Level.INFO, "Proveedores: {0}", p);
+            }
+        } catch (ClientErrorException e) {
+            if (e.getCause() instanceof ConnectException) {
+                throw new ErrorServerException();
+            } else {
+                throw new ErrorBDException();
+            }
         }
         return proveedores;
     }
 
     @Override
-    public <T> T find(Class<T> responseType, String id) throws ClientErrorException, SelectException, ErrorBDException, ErrorServerException {
+    public <T> T find(Class<T> responseType, String id) throws ClientErrorException, ErrorBDException, ErrorServerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void create(Object requestEntity) throws ClientErrorException, InsertException, ErrorBDException, ErrorServerException {
+    public void create(Object requestEntity) throws ClientErrorException, ErrorBDException, ErrorServerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void remove(String id) throws ClientErrorException, ProveedorNotFoundException, DeleteException, ErrorBDException, ErrorServerException {
+    public void remove(String id) throws ClientErrorException, ErrorBDException, ErrorServerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -23,15 +23,15 @@ import modelo.Proveedor;
  */
 public interface ProveedorManager {
 
-    public void edit(Proveedor proveedor) throws ClientErrorException, UpdateException, ErrorBDException, ErrorServerException, ProveedorNotFoundException;
+    public void edit(Proveedor proveedor) throws ClientErrorException, ErrorBDException, ErrorServerException ;
 
-    public Proveedor find(Proveedor proveedor, String id) throws ClientErrorException, SelectException, ProveedorNotFoundException, ErrorBDException, ErrorServerException;
+    public Proveedor find(Proveedor proveedor, String id) throws ClientErrorException, ProveedorNotFoundException, ErrorBDException, ErrorServerException;
 
     public Proveedor getProductos(Proveedor proveedor, String id) throws ErrorBDException, ErrorServerException, ProductoNotFoundException;
 
-    public void create(Proveedor proveedor) throws ClientErrorException, InsertException, ProveedorYaExisteException, ErrorBDException, ErrorServerException;
+    public void create(Proveedor proveedor) throws ClientErrorException, ProveedorYaExisteException, ErrorBDException, ErrorServerException;
 
-    public void remove(String id) throws ClientErrorException, ProveedorNotFoundException, DeleteException, ErrorBDException, ErrorServerException;
+    public void remove(String id) throws ClientErrorException, ErrorBDException, ErrorServerException;
 
     public void close();
 

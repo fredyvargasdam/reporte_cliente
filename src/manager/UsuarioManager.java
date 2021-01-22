@@ -10,7 +10,6 @@ import exceptions.ErrorBDException;
 import exceptions.ErrorEnviarEmailException;
 import exceptions.ErrorServerException;
 import exceptions.UsuarioNotFoundException;
-import exceptions.UsuarioNotFoundException;
 import exceptions.UsuarioYaExisteException;
 import javax.ws.rs.ClientErrorException;
 import modelo.Usuario;
