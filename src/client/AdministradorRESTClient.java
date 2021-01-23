@@ -40,7 +40,7 @@ public class AdministradorRESTClient  {
         webTarget = client.target(BASE_URI).path("administrador");
     }
 
-    public <T> T getVendedores(Class<T> responseType) throws ClientErrorException {
+    public <T> T getVendedores(GenericType<T> responseType) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path("vendedores");
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
