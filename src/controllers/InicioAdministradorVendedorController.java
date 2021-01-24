@@ -592,8 +592,15 @@ public class InicioAdministradorVendedorController {
                     Vendedor v = data.getRowValue();
                     //Añadimos el nuevo valor a la fila
                     v.setTelefono(data.getNewValue());
-                    if(Math.log10(data.getNewValue()) < 10){
-                    try {
+                    if(data.getNewValue() >= 1000000000 || data.getNewValue() <= 100000000){
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setHeaderText(null);
+        alert.setTitle("Administrador");
+        alert.setContentText("El Telefono que haz introducido no es valido");
+        tbVendedores.refresh();
+        Optional<ButtonType> respuesta = alert.showAndWait();
+                    }else{
+                            try {
                         //Llamamos al método edit para asi poder modificar el nombre del vendedor
                         vendedorManager.edit(v);
                         //Mostramos los datos actualizados en la TableView
@@ -607,12 +614,7 @@ public class InicioAdministradorVendedorController {
                     } catch (VendedorNotFoundException ex) {
                         Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    }else{
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setHeaderText(null);
-        alert.setTitle("Administrador");
-        alert.setContentText("El Telefono que haz introducido no es valido");
-        Optional<ButtonType> respuesta = alert.showAndWait();
+        
             }
         });
         //Dni del vendedor
@@ -651,6 +653,7 @@ public class InicioAdministradorVendedorController {
         alert.setHeaderText(null);
         alert.setTitle("Administrador");
         alert.setContentText("El DNI que haz introducido no es valido");
+        tbVendedores.refresh();
         Optional<ButtonType> respuesta = alert.showAndWait();
             }
             
@@ -670,6 +673,7 @@ public class InicioAdministradorVendedorController {
                     Vendedor v = data.getRowValue();
                     //Añadimos el nuevo valor a la fila
                     v.setSalario(data.getNewValue());
+                            if(Math.log10(data.getNewValue()) < 4){
                     try {
                         //Llamamos al método edit para asi poder modificar el nombre del vendedor
                         vendedorManager.edit(v);
@@ -684,6 +688,14 @@ public class InicioAdministradorVendedorController {
                     } catch (VendedorNotFoundException ex) {
                         Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                            }else{
+                                Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setHeaderText(null);
+        alert.setTitle("Administrador");
+        alert.setContentText("El Salario que haz introducido no es valido");
+        tbVendedores.refresh();
+        Optional<ButtonType> respuesta = alert.showAndWait();
+                            }
         });
         //Tienda del vendedor
         colTienda.setCellValueFactory(new PropertyValueFactory<>("tienda"));
@@ -909,16 +921,29 @@ public class InicioAdministradorVendedorController {
     @FXML
     private void configMenuProveedores(ActionEvent event) {
         LOG.log(Level.INFO, "Ventana Inicio de Administrador (Proveedor)");
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/inicioAdministrador_proveedor.fxml"));
+        alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText(null);
+        alert.setTitle("Administrador");
+        alert.setContentText("¿Estas seguro de confirmar la acción?");
+        Optional<ButtonType> respuesta = alert.showAndWait();
 
-            Parent root = (Parent) loader.load();
+        if (respuesta.get() == ButtonType.OK) {
+            LOG.log(Level.INFO, "Has pulsado el boton Aceptar");
+            LOG.log(Level.INFO, "Ventana Administrador Proveedor");
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/inicioAdministrador_proveedor.fxml"));
 
-            InicioAdministradorProveedorController controller = ((InicioAdministradorProveedorController) loader.getController());
-            controller.initStage(root);
-            stage.hide();
-        } catch (IOException e) {
-            LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
+                Parent root = (Parent) loader.load();
+
+                InicioAdministradorProveedorController controller = ((InicioAdministradorProveedorController) loader.getController());
+                controller.initStage(root);
+                stage.hide();
+            } catch (IOException e) {
+                LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
+            }
+        } else {
+            LOG.log(Level.INFO, "Has pulsado el boton Cancelar");
+            event.consume();
         }
     }
     
