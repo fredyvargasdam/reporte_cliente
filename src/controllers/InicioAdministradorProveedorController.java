@@ -64,8 +64,7 @@ import modelo.Usuario;
 public class InicioAdministradorProveedorController {
 
     private static final Logger LOG = Logger.getLogger(InicioAdministradorProveedorController.class.getName());
-
-    private Stage stage;
+    private Stage stage = new Stage();
     @FXML
     private Pane pnInicioAdminProv;
     @FXML
