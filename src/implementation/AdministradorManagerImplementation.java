@@ -11,6 +11,7 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;
 import manager.AdministradorManager;
 import modelo.Proveedor;
+import modelo.Vendedor;
 
 /**
  *
@@ -26,8 +27,22 @@ public class AdministradorManagerImplementation implements AdministradorManager 
     }
 
     @Override
-    public <T> T getVendedores(Class<T> responseType) throws ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Vendedor> getVendedores() throws ClientErrorException, ErrorBDException, ErrorServerException {
+        List<Vendedor> vendedores = null;
+        try {
+            vendedores = webClient.getVendedores(new GenericType<List<Vendedor>>() {
+            });
+            for (Vendedor v : vendedores) {
+                LOG.log(Level.INFO, "Vendedores: {0}", v);
+            }
+        } catch (ClientErrorException e) {
+            if (e.getCause() instanceof ConnectException) {
+                throw new ErrorServerException();
+            } else {
+                throw new ErrorBDException();
+            }
+        }
+        return vendedores;
     }
 
     @Override
