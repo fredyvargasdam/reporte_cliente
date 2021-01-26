@@ -5,32 +5,32 @@
  */
 package manager;
 
+import exceptions.ErrorServerException;
+import java.util.List;
 import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
+import modelo.Reserva;
 
 /**
  *
- * @author 2dam
+ * @author Fredy Vargas Flores
  */
 public interface ReservaManager {
 
-    public <T> T findReservasCanceladas(Class<T> responseType) throws ClientErrorException;
+    public List<Reserva> findReservasCanceladas() throws ClientErrorException;
 
-    public void edit(Object requestEntity) throws ClientErrorException;
+    public void edit(Reserva reserva) throws ClientErrorException;
 
-    public <T> T findReservasConfirmadas(Class<T> responseType) throws ClientErrorException;
+    public List<Reserva> findReservasConfirmadas() throws ClientErrorException;
 
-    public <T> T find(Class<T> responseType, String id) throws ClientErrorException;
+    public Reserva find(Reserva reserva, String id) throws ClientErrorException;
 
-    public void create(Object requestEntity) throws ClientErrorException;
+    public void create(Reserva reserva) throws ClientErrorException;
 
-    public <T> T findReservasRealizadas(Class<T> responseType) throws ClientErrorException;
-    
-    public <T> T findReservas(GenericType<T> responseType) throws ClientErrorException;
+    public List<Reserva> findReservasRealizadas() throws ErrorServerException;
 
-    public void remove(String id) throws ClientErrorException;
+    public List<Reserva> findReservas() throws ClientErrorException;
+
+    public void remove(String id) throws ErrorServerException;
 
     public void close();
-
 }

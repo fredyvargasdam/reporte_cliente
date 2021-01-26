@@ -223,10 +223,10 @@ public class InicioAdministradorVendedorController {
     private void txtChanged(ObservableValue observable, String oldValue, String newValue) {
 
     }
-    
+
     private void btnAltaVendedorClick(ActionEvent event) {
         try {
-            
+
             LocalDate fechaHoy = LocalDate.now();
             ZoneId defaultZoneId = ZoneId.systemDefault();
             Date date = Date.from(fechaHoy.atStartOfDay(defaultZoneId).toInstant());
@@ -262,28 +262,43 @@ public class InicioAdministradorVendedorController {
             vendedorManager = (VendedorManagerImplementation) new factory.VendedorFactory().getVendedorManagerImplementation();
             try {
                 //Añadimos en nuevo vendedor dentro del listvendedores (ObservableList)
-            
-            int row = listvendedores.size() - 1;
-            // Seleccionamos la nueva fila
-            tbVendedores.requestFocus();
-            tbVendedores.getSelectionModel().select(row);
-            tbVendedores.getFocusModel().focus(row);
+
+                int row = listvendedores.size() - 1;
+                // Seleccionamos la nueva fila
+                tbVendedores.requestFocus();
+                tbVendedores.getSelectionModel().select(row);
+                tbVendedores.getFocusModel().focus(row);
                 //Llamamos al método create para asi poder crear un nuevo vendedor
                 vendedorManager.create(nuevoVendedor);
                 datosTabla();
             } catch (InsertException ex) {
-                Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
+                LOG.log(Level.SEVERE, "ErrorInsertException");
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Administrador");
+                alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                alert.showAndWait();
             } catch (VendedorYaExisteException ex) {
-                Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Vendedor");
+                alert.setHeaderText("Error al introducir un vendedor");
+                alert.setContentText("El proveedor de esta empresa ya esta dado de alta");
+                alert.showAndWait();
+                tbVendedores.refresh();
             } catch (ErrorBDException ex) {
-                Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
+                LOG.log(Level.SEVERE, "ErrorBDException");
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Administrador");
+                alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                alert.showAndWait();
             } catch (ErrorServerException ex) {
-                Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
+                LOG.log(Level.SEVERE, "ErrorServerException");
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Administrador");
+                alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                alert.showAndWait();
             }
-            
 
-            
-/*
+            /*
             //Posicion actual
         TablePosition pos = tbVendedores.getFocusModel().getFocusedCell();
         //
@@ -295,9 +310,13 @@ public class InicioAdministradorVendedorController {
         int row = tbVendedores.getItems().size() - 1;
         tbVendedores.getSelectionModel().select(row, pos.getTableColumn());
         tbVendedores.scrollTo(nuevoVendedor);
-        */
+             */
         } catch (ClientErrorException ex) {
-            Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, "ClientErrorException");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Administrador");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
         }
     }
 
@@ -348,7 +367,7 @@ public class InicioAdministradorVendedorController {
             event.consume();
         }
     }
-    
+
     private void imagenBotones() {
         //Creamos un objeto y en él guardaremos la ruta donde se encuentra las imagenes para los botones
         URL linkAlta = getClass().getResource("/img/usuario.png");
@@ -364,7 +383,6 @@ public class InicioAdministradorVendedorController {
         btnAltaVendedor.setGraphic(new ImageView(imageAlta));
         btnBorrarVendedor.setGraphic(new ImageView(imageBorrar));
     }
-
 
     /**
      * Inicializa la tabla de vendedores
@@ -383,43 +401,63 @@ public class InicioAdministradorVendedorController {
         //Aceptamos la edición de la celda de la columna descripción 
         colUsuario.setOnEditCommit((TableColumn.CellEditEvent<Vendedor, String> data) -> {
             //Establecemos que el dato que se introduzca en la celda debe cumplir un patrón
-                    if (!Pattern.matches("^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\\s]+$", data.getNewValue())
+            if (!Pattern.matches("^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\\s]+$", data.getNewValue())
                     || data.getNewValue().equalsIgnoreCase("")) {
-                        //En el caso de que no se cumpla el patrón. Saldrá un alerta informandonos del error
-                        alert = new Alert(AlertType.ERROR);
-                        alert.setTitle("Vendedor");
-                        alert.setHeaderText("Error al introducir la descripción");
-                        alert.setContentText("Introduzca un caracter válido");
+                //En el caso de que no se cumpla el patrón. Saldrá un alerta informandonos del error
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Vendedor");
+                alert.setHeaderText("Error al introducir la descripción");
+                alert.setContentText("Introduzca un caracter válido");
 
-                        alert.showAndWait();
-                        tbVendedores.refresh();
-                    } else {
-                            LOG.log(Level.INFO, "Nuevo Usuario: {0}", data.getNewValue());
-                            LOG.log(Level.INFO, "Antiguo Usuario: {0}", data.getOldValue());
-                            //Implementación del VendedorRESTClient
-                            vendedorManager = (VendedorManagerImplementation) new factory.VendedorFactory().getVendedorManagerImplementation();
-                            //Devuelve el dato de la fila
-                            Vendedor v = data.getRowValue();
-                            //Añadimos el nuevo valor a la fila
-                            v.setLogin(data.getNewValue());
-                                try {
-                                    //Llamamos al método edit para asi poder modificar la descripción del vendedor
-                                    vendedorManager.edit(v);
-                                    //Mostramos los datos actualizados en la TableView
-                                    datosTabla();
-                                } catch (ClientErrorException ex) {
-                                    Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (UpdateException ex) {
-                                    Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (ErrorBDException ex) {
-                                    Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                                } catch (ErrorServerException ex) {
-                                    Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                                }catch (VendedorNotFoundException ex) {
-                                    Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                                }
-                            }
-                            
+                alert.showAndWait();
+                tbVendedores.refresh();
+            } else {
+                LOG.log(Level.INFO, "Nuevo Usuario: {0}", data.getNewValue());
+                LOG.log(Level.INFO, "Antiguo Usuario: {0}", data.getOldValue());
+                //Implementación del VendedorRESTClient
+                vendedorManager = (VendedorManagerImplementation) new factory.VendedorFactory().getVendedorManagerImplementation();
+                //Devuelve el dato de la fila
+                Vendedor v = data.getRowValue();
+                //Añadimos el nuevo valor a la fila
+                v.setLogin(data.getNewValue());
+                try {
+                    //Llamamos al método edit para asi poder modificar la descripción del vendedor
+                    vendedorManager.edit(v);
+                    //Mostramos los datos actualizados en la TableView
+                    datosTabla();
+                } catch (ClientErrorException ex) {
+                    LOG.log(Level.SEVERE, "ClientErrorException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (UpdateException ex) {
+                    LOG.log(Level.SEVERE, "ErrorUpdateException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (ErrorBDException ex) {
+                    LOG.log(Level.SEVERE, "ErrorBDException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (ErrorServerException ex) {
+                    LOG.log(Level.SEVERE, "ErrorServerException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (VendedorNotFoundException ex) {
+                    LOG.log(Level.SEVERE, "VendedorNotFoundException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("No se ha podido encontrar el vendedor");
+                    alert.showAndWait();
+                }
+            }
+
         });
         //Email del vendedor
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
@@ -502,30 +540,46 @@ public class InicioAdministradorVendedorController {
                 alert.showAndWait();
                 tbVendedores.refresh();
             } else {
-                    LOG.log(Level.INFO, "Nuevo Nombre: {0}", data.getNewValue());
-                    LOG.log(Level.INFO, "Antiguo Nombre: {0}", data.getOldValue());
-                    //Implementacion del VendedorRESTClient
-                    vendedorManager = (VendedorManagerImplementation) new factory.VendedorFactory().getVendedorManagerImplementation();
-                    //Devuelve el dato de la fila
-                    Vendedor v = data.getRowValue();
-                    //Añadimos el nuevo valor a la fila
-                    v.setFullname(data.getNewValue());
-                    try {
-                        //Llamamos al método edit para asi poder modificar el nombre del vendedor
-                        vendedorManager.edit(v);
-                        //Mostramos los datos actualizados en la TableView
+                LOG.log(Level.INFO, "Nuevo Nombre: {0}", data.getNewValue());
+                LOG.log(Level.INFO, "Antiguo Nombre: {0}", data.getOldValue());
+                //Implementacion del VendedorRESTClient
+                vendedorManager = (VendedorManagerImplementation) new factory.VendedorFactory().getVendedorManagerImplementation();
+                //Devuelve el dato de la fila
+                Vendedor v = data.getRowValue();
+                //Añadimos el nuevo valor a la fila
+                v.setFullname(data.getNewValue());
+                try {
+                    //Llamamos al método edit para asi poder modificar el nombre del vendedor
+                    vendedorManager.edit(v);
+                    //Mostramos los datos actualizados en la TableView
                     datosTabla();
-                    } catch (UpdateException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ErrorBDException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ErrorServerException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (VendedorNotFoundException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    
+                } catch (UpdateException ex) {
+                    LOG.log(Level.SEVERE, "UpdateException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (ErrorBDException ex) {
+                    LOG.log(Level.SEVERE, "ErrorBDException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (ErrorServerException ex) {
+                    LOG.log(Level.SEVERE, "ErrorServerException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (VendedorNotFoundException ex) {
+                    LOG.log(Level.SEVERE, "VendedorNotFoundException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("No se ha podido encontrar el vendedor");
+                    alert.showAndWait();
                 }
+
+            }
         });
         //Estado del vendedor
         colEstado.setCellValueFactory(new PropertyValueFactory<>("status"));
@@ -554,28 +608,44 @@ public class InicioAdministradorVendedorController {
                 alert.showAndWait();
                 tbVendedores.refresh();
             } else {
-                    LOG.log(Level.INFO, "Nueva Direccion: {0}", data.getNewValue());
-                    LOG.log(Level.INFO, "Antigua Direccion: {0}", data.getOldValue());
-                    //Implementacion del VendedorRESTClient
-                    vendedorManager = (VendedorManagerImplementation) new factory.VendedorFactory().getVendedorManagerImplementation();
-                    //Devuelve el dato de la fila
-                    Vendedor v = data.getRowValue();
-                    //Añadimos el nuevo valor a la fila
-                    v.setDireccion(data.getNewValue());
-                    try {
-                        //Llamamos al método edit para asi poder modificar el nombre del vendedor
-                        vendedorManager.edit(v);
-                        //Mostramos los datos actualizados en la TableView
+                LOG.log(Level.INFO, "Nueva Direccion: {0}", data.getNewValue());
+                LOG.log(Level.INFO, "Antigua Direccion: {0}", data.getOldValue());
+                //Implementacion del VendedorRESTClient
+                vendedorManager = (VendedorManagerImplementation) new factory.VendedorFactory().getVendedorManagerImplementation();
+                //Devuelve el dato de la fila
+                Vendedor v = data.getRowValue();
+                //Añadimos el nuevo valor a la fila
+                v.setDireccion(data.getNewValue());
+                try {
+                    //Llamamos al método edit para asi poder modificar el nombre del vendedor
+                    vendedorManager.edit(v);
+                    //Mostramos los datos actualizados en la TableView
                     datosTabla();
-                    } catch (UpdateException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ErrorBDException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ErrorServerException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (VendedorNotFoundException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                } catch (UpdateException ex) {
+                    LOG.log(Level.SEVERE, "UpdateException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (ErrorBDException ex) {
+                    LOG.log(Level.SEVERE, "ErrorBDException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (ErrorServerException ex) {
+                    LOG.log(Level.SEVERE, "ErrorServerException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (VendedorNotFoundException ex) {
+                    LOG.log(Level.SEVERE, "VendedorNotFoundException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("No se ha podido encontrar el vendedor");
+                    alert.showAndWait();
+                }
             }
         });
         //Telefono del vendedor
@@ -587,34 +657,50 @@ public class InicioAdministradorVendedorController {
             LOG.log(Level.INFO, "Nuevo Telefono: {0}", data.getNewValue());
             LOG.log(Level.INFO, "Antiguo Telefono: {0}", data.getOldValue());
             //Implementacion del VendedorRESTClient
-                    vendedorManager = (VendedorManagerImplementation) new factory.VendedorFactory().getVendedorManagerImplementation();
-                    //Devuelve el dato de la fila
-                    Vendedor v = data.getRowValue();
-                    //Añadimos el nuevo valor a la fila
-                    v.setTelefono(data.getNewValue());
-                    if(data.getNewValue() >= 1000000000 || data.getNewValue() <= 100000000){
-                    Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setHeaderText(null);
-        alert.setTitle("Administrador");
-        alert.setContentText("El Telefono que haz introducido no es valido");
-        tbVendedores.refresh();
-        Optional<ButtonType> respuesta = alert.showAndWait();
-                    }else{
-                            try {
-                        //Llamamos al método edit para asi poder modificar el nombre del vendedor
-                        vendedorManager.edit(v);
-                        //Mostramos los datos actualizados en la TableView
+            vendedorManager = (VendedorManagerImplementation) new factory.VendedorFactory().getVendedorManagerImplementation();
+            //Devuelve el dato de la fila
+            Vendedor v = data.getRowValue();
+            //Añadimos el nuevo valor a la fila
+            v.setTelefono(data.getNewValue());
+            if (data.getNewValue() >= 1000000000 || data.getNewValue() <= 100000000) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setHeaderText(null);
+                alert.setTitle("Administrador");
+                alert.setContentText("El Telefono que haz introducido no es valido");
+                tbVendedores.refresh();
+                Optional<ButtonType> respuesta = alert.showAndWait();
+            } else {
+                try {
+                    //Llamamos al método edit para asi poder modificar el nombre del vendedor
+                    vendedorManager.edit(v);
+                    //Mostramos los datos actualizados en la TableView
                     datosTabla();
-                    } catch (UpdateException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ErrorBDException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ErrorServerException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (VendedorNotFoundException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-        
+                } catch (UpdateException ex) {
+                    LOG.log(Level.SEVERE, "UpdateException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (ErrorBDException ex) {
+                    LOG.log(Level.SEVERE, "ErrorBDException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (ErrorServerException ex) {
+                    LOG.log(Level.SEVERE, "ErrorServerException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (VendedorNotFoundException ex) {
+                    LOG.log(Level.SEVERE, "VendedorNotFoundException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("No se ha podido encontrar el vendedor");
+                    alert.showAndWait();
+                }
+
             }
         });
         //Dni del vendedor
@@ -626,37 +712,52 @@ public class InicioAdministradorVendedorController {
             LOG.log(Level.INFO, "Nuevo Dni: {0}", data.getNewValue());
             LOG.log(Level.INFO, "Antiguo Dni: {0}", data.getOldValue());
             //Implementacion del VendedorRESTClient
-                    vendedorManager = (VendedorManagerImplementation) new factory.VendedorFactory().getVendedorManagerImplementation();
-                    //Devuelve el dato de la fila
-                    Vendedor v = data.getRowValue();
-                    //Añadimos el nuevo valor a la fila
-                    v.setDni(data.getNewValue());
-                    
+            vendedorManager = (VendedorManagerImplementation) new factory.VendedorFactory().getVendedorManagerImplementation();
+            //Devuelve el dato de la fila
+            Vendedor v = data.getRowValue();
+            //Añadimos el nuevo valor a la fila
+            v.setDni(data.getNewValue());
+
             boolean isValidDNI = Validar.isValidDNI(data.getNewValue());
-            if(isValidDNI){
-            try {
-                        //Llamamos al método edit para asi poder modificar el nombre del vendedor
-                        vendedorManager.edit(v);
-                        //Mostramos los datos actualizados en la TableView
+            if (isValidDNI) {
+                try {
+                    //Llamamos al método edit para asi poder modificar el nombre del vendedor
+                    vendedorManager.edit(v);
+                    //Mostramos los datos actualizados en la TableView
                     datosTabla();
-                    } catch (UpdateException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ErrorBDException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ErrorServerException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (VendedorNotFoundException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-            }else{
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setHeaderText(null);
-        alert.setTitle("Administrador");
-        alert.setContentText("El DNI que haz introducido no es valido");
-        tbVendedores.refresh();
-        Optional<ButtonType> respuesta = alert.showAndWait();
+                } catch (UpdateException ex) {
+                    LOG.log(Level.SEVERE, "UpdateException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (ErrorBDException ex) {
+                    LOG.log(Level.SEVERE, "ErrorBDException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (ErrorServerException ex) {
+                    LOG.log(Level.SEVERE, "ErrorServerException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (VendedorNotFoundException ex) {
+                    LOG.log(Level.SEVERE, "VendedorNotFoundException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("No se ha podido encontrar el vendedor");
+                    alert.showAndWait();
+                }
+            } else {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setHeaderText(null);
+                alert.setTitle("Administrador");
+                alert.setContentText("El DNI que haz introducido no es valido");
+                tbVendedores.refresh();
+                Optional<ButtonType> respuesta = alert.showAndWait();
             }
-            
 
         });
         //Salario del vendedor
@@ -668,34 +769,50 @@ public class InicioAdministradorVendedorController {
             LOG.log(Level.INFO, "Nuevo Salario: {0}", data.getNewValue());
             LOG.log(Level.INFO, "Antiguo Salario: {0}", data.getOldValue());
             //Implementacion del VendedorRESTClient
-                    vendedorManager = (VendedorManagerImplementation) new factory.VendedorFactory().getVendedorManagerImplementation();
-                    //Devuelve el dato de la fila
-                    Vendedor v = data.getRowValue();
-                    //Añadimos el nuevo valor a la fila
-                    v.setSalario(data.getNewValue());
-                            if(Math.log10(data.getNewValue()) < 4){
-                    try {
-                        //Llamamos al método edit para asi poder modificar el nombre del vendedor
-                        vendedorManager.edit(v);
-                        //Mostramos los datos actualizados en la TableView
+            vendedorManager = (VendedorManagerImplementation) new factory.VendedorFactory().getVendedorManagerImplementation();
+            //Devuelve el dato de la fila
+            Vendedor v = data.getRowValue();
+            //Añadimos el nuevo valor a la fila
+            v.setSalario(data.getNewValue());
+            if (Math.log10(data.getNewValue()) < 4) {
+                try {
+                    //Llamamos al método edit para asi poder modificar el nombre del vendedor
+                    vendedorManager.edit(v);
+                    //Mostramos los datos actualizados en la TableView
                     datosTabla();
-                    } catch (UpdateException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ErrorBDException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ErrorServerException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (VendedorNotFoundException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                            }else{
-                                Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setHeaderText(null);
-        alert.setTitle("Administrador");
-        alert.setContentText("El Salario que haz introducido no es valido");
-        tbVendedores.refresh();
-        Optional<ButtonType> respuesta = alert.showAndWait();
-                            }
+                } catch (UpdateException ex) {
+                    LOG.log(Level.SEVERE, "UpdateException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (ErrorBDException ex) {
+                    LOG.log(Level.SEVERE, "ErrorBDException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (ErrorServerException ex) {
+                    LOG.log(Level.SEVERE, "ErrorServerException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (VendedorNotFoundException ex) {
+                    LOG.log(Level.SEVERE, "VendedorNotFoundException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("No se ha podido encontrar el vendedor");
+                    alert.showAndWait();
+                }
+            } else {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setHeaderText(null);
+                alert.setTitle("Administrador");
+                alert.setContentText("El Salario que haz introducido no es valido");
+                tbVendedores.refresh();
+                Optional<ButtonType> respuesta = alert.showAndWait();
+            }
         });
         //Tienda del vendedor
         colTienda.setCellValueFactory(new PropertyValueFactory<>("tienda"));
@@ -715,44 +832,59 @@ public class InicioAdministradorVendedorController {
                 alert.showAndWait();
                 tbVendedores.refresh();
             } else {
-                    LOG.log(Level.INFO, "Nueva Tienda: {0}", data.getNewValue());
-                    LOG.log(Level.INFO, "Antigua Tienda: {0}", data.getOldValue());
-                    //Implementacion del VendedorRESTClient
-                    vendedorManager = (VendedorManagerImplementation) new factory.VendedorFactory().getVendedorManagerImplementation();
-                    //Devuelve el dato de la fila
-                    Vendedor v = data.getRowValue();
-                    //Añadimos el nuevo valor a la fila
-                    v.setTienda(data.getNewValue());
-                    try {
-                        //Llamamos al método edit para asi poder modificar la tienda del vendedor
-                        vendedorManager.edit(v);
-                        //Mostramos los datos actualizados en la TableView
+                LOG.log(Level.INFO, "Nueva Tienda: {0}", data.getNewValue());
+                LOG.log(Level.INFO, "Antigua Tienda: {0}", data.getOldValue());
+                //Implementacion del VendedorRESTClient
+                vendedorManager = (VendedorManagerImplementation) new factory.VendedorFactory().getVendedorManagerImplementation();
+                //Devuelve el dato de la fila
+                Vendedor v = data.getRowValue();
+                //Añadimos el nuevo valor a la fila
+                v.setTienda(data.getNewValue());
+                try {
+                    //Llamamos al método edit para asi poder modificar la tienda del vendedor
+                    vendedorManager.edit(v);
+                    //Mostramos los datos actualizados en la TableView
                     datosTabla();
-                    } catch (UpdateException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ErrorBDException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ErrorServerException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (VendedorNotFoundException ex) {
-                        Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                } catch (UpdateException ex) {
+                    LOG.log(Level.SEVERE, "UpdateException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (ErrorBDException ex) {
+                    LOG.log(Level.SEVERE, "ErrorBDException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (ErrorServerException ex) {
+                    LOG.log(Level.SEVERE, "ErrorServerException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                    alert.showAndWait();
+                } catch (VendedorNotFoundException ex) {
+                    LOG.log(Level.SEVERE, "VendedorNotFoundException");
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Administrador");
+                    alert.setHeaderText("No se ha podido encontrar el vendedor");
+                    alert.showAndWait();
+                }
             }
         });
-        
+
     }
-    
+
     /**
      * Nos permite seleccionar a un vendedor de la tabla y este controla que el
-     * botón BorrarVendedor y ActualizarVendedor esté habilitado o
-     * deshabilitado
+     * botón BorrarVendedor y ActualizarVendedor esté habilitado o deshabilitado
      */
     private void seleccionarVendedor() {
         tbVendedores.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     if (vendedor != null) {
                         btnBorrarVendedor.setDisable(true);
-                    }else{
+                    } else {
                         btnBorrarVendedor.setDisable(false);
                     }
                 });
@@ -779,7 +911,13 @@ public class InicioAdministradorVendedorController {
             alert.setTitle("Administrador");
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
-        }catch (ErrorServerException ex) {
+        } catch (ErrorServerException ex) {
+            LOG.log(Level.SEVERE, "ErrorBDException");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Administrador");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
+        } catch (ErrorBDException ex) {
             LOG.log(Level.SEVERE, "ErrorBDException");
             alert = new Alert(AlertType.ERROR);
             alert.setTitle("Administrador");
@@ -787,13 +925,13 @@ public class InicioAdministradorVendedorController {
             alert.showAndWait();
         }
     }
-    
+
     /**
      *
      * @param event
      */
     private void txtBuscarVendedorNombre(ObservableValue observable, String oldValue, String newValue) {
-    FilteredList<Vendedor> filteredData = new FilteredList<>(listvendedores, u -> true);
+        FilteredList<Vendedor> filteredData = new FilteredList<>(listvendedores, u -> true);
 
         filteredData.setPredicate(vendedor -> {
             btnBuscar.setDisable(false);
@@ -821,34 +959,50 @@ public class InicioAdministradorVendedorController {
         // Añade los datos filtrados a la tabla
         tbVendedores.setItems(sortedData);
     }
-    
+
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
     private void actualizarEstadoVendedor(TableColumn.CellEditEvent<Vendedor, EstadoUsuario> data) {
-            LOG.log(Level.INFO, "Nuevo Estado de Vendedor: {0}", data.getNewValue());
-            LOG.log(Level.INFO, "Antiguo Estado de Vendedor: {0}", data.getOldValue());
-            vendedorManager = (VendedorManagerImplementation) new factory.VendedorFactory().getVendedorManagerImplementation();
-            //Devuelve el dato de la fila
-            Vendedor v = data.getRowValue();
-            //Añadimos el nuevo valor a la fila
-            v.setStatus(data.getNewValue());
-            try {
-                vendedorManager.edit(v);
-                datosTabla();
-            } catch (UpdateException ex) {
-                Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ErrorBDException ex) {
-                Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ErrorServerException ex) {
-                Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (VendedorNotFoundException ex) {
-                Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        LOG.log(Level.INFO, "Nuevo Estado de Vendedor: {0}", data.getNewValue());
+        LOG.log(Level.INFO, "Antiguo Estado de Vendedor: {0}", data.getOldValue());
+        vendedorManager = (VendedorManagerImplementation) new factory.VendedorFactory().getVendedorManagerImplementation();
+        //Devuelve el dato de la fila
+        Vendedor v = data.getRowValue();
+        //Añadimos el nuevo valor a la fila
+        v.setStatus(data.getNewValue());
+        try {
+            vendedorManager.edit(v);
+            datosTabla();
+        } catch (UpdateException ex) {
+            LOG.log(Level.SEVERE, "UpdateException");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Administrador");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
+        } catch (ErrorBDException ex) {
+            LOG.log(Level.SEVERE, "ErrorBDException");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Administrador");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
+        } catch (ErrorServerException ex) {
+            LOG.log(Level.SEVERE, "ErrorServerException");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Administrador");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
+        } catch (VendedorNotFoundException ex) {
+            LOG.log(Level.SEVERE, "VendedorNotFoundException");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Administrador");
+            alert.setHeaderText("No se ha podido encontrar el vendedor");
+            alert.showAndWait();
+        }
 
     }
-    
+
     //CONFIGURACIÓN DEL MENÚ
     /**
      * MenuItem que muestra un alerta informandonos de la conexión actual del
@@ -903,7 +1057,7 @@ public class InicioAdministradorVendedorController {
             event.consume();
         }
     }
-    
+
     /**
      * MenuItem que nos redirige hacia la ventana de InicioAdministrador del
      * lado proveedor y cierra la ventana actual
@@ -925,16 +1079,8 @@ public class InicioAdministradorVendedorController {
             LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
         }
     }
-    
-    public void setAdministradorRESTClient(AdministradorManager administrador) {
-        this.administradorManager = administrador;
-    }
-
-    public AdministradorManager getAdministradorRESTClient() {
-        return this.administradorManager;
-    }
 
     void setUsuario(Usuario usuario) {
-        this.usuario=usuario;
+        this.usuario = usuario;
     }
 }

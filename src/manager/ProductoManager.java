@@ -5,6 +5,7 @@
  */
 package manager;
 
+import exceptions.ErrorServerException;
 import exceptions.ProductoExistenteException;
 import java.util.Collection;
 import javax.ws.rs.ClientErrorException;
@@ -19,19 +20,19 @@ public interface ProductoManager {
 
     public Collection<Producto> findAllRopa() throws ClientErrorException;
 
-    public void edit(Producto producto) throws ProductoExistenteException,ClientErrorException;
+    public void edit(Producto producto) throws ErrorServerException;
 
     public Collection<Producto> findAllProductosAsc() throws ClientErrorException;
 
-    public Producto find(String id) throws ClientErrorException;
+    public Producto find(Producto producto,String id) throws ClientErrorException;
 
-    public void create(Producto producto) throws ProductoExistenteException,ClientErrorException;
+    public void create(Producto producto) throws ErrorServerException;
 
     public Collection<Producto> findAllProductosDesc() throws ClientErrorException;
 
     public Collection<Producto> findAllZapatillas() throws ClientErrorException;
 
-    public void remove(String id) throws ClientErrorException;
+    public void remove(String id) throws ErrorServerException;
 
     public void close();
 
