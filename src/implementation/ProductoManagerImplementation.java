@@ -6,7 +6,9 @@
 package implementation;
 
 import client.ProductoRESTClient;
+import exceptions.ErrorServerException;
 import exceptions.ProductoExistenteException;
+import java.net.ConnectException;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
@@ -23,8 +25,8 @@ public class ProductoManagerImplementation implements ProductoManager {
 
     private ProductoRESTClient webClient;
     private static final Logger LOGGER = Logger.getLogger("ProductoManagerImplementation");
-    
-    public  ProductoManagerImplementation() {
+
+    public ProductoManagerImplementation() {
         webClient = new ProductoRESTClient();
     }
 
@@ -34,21 +36,28 @@ public class ProductoManagerImplementation implements ProductoManager {
     }
 
     @Override
-    public void edit(Producto producto) throws ProductoExistenteException, ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void edit(Producto producto) throws ErrorServerException {
+        try {
+            webClient.edit(producto);
+        } catch (Exception e) {
+            if (e instanceof ConnectException) {
+                LOGGER.severe("ProductoManagerImplementation: edit " + e.getMessage());
+                throw new ErrorServerException();
+            }
+        }
     }
 
     @Override
     public Collection<Producto> findAllProductosAsc() throws ClientErrorException {
-     List<Producto> productos=null;
-        try{
-            productos= webClient.findAllProductosAsc(new GenericType<List<Producto>>(){});
-            for(Producto p:productos)
-            System.out.println(p.toString());
-        }catch(Exception e){
-            LOGGER.severe("findAllProductosAsc:"+ e.getMessage());
-        } 
-    return productos;
+        List<Producto> productos = null;
+        try {
+            productos = webClient.findAllProductosAsc(new GenericType<List<Producto>>() {
+            });
+
+        } catch (Exception e) {
+            LOGGER.severe("findAllProductosAsc:" + e.getMessage());
+        }
+        return productos;
     }
 
     @Override
@@ -57,8 +66,15 @@ public class ProductoManagerImplementation implements ProductoManager {
     }
 
     @Override
-    public void create(Producto producto) throws ProductoExistenteException, ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void create(Producto producto) throws ErrorServerException {
+        try {
+            webClient.create(producto);
+        } catch (Exception e) {
+            if (e instanceof ConnectException) {
+                LOGGER.severe("ProductoManagerImplementation: create " + e.getMessage());
+                throw new ErrorServerException();
+            }
+        }
     }
 
     @Override
@@ -72,8 +88,15 @@ public class ProductoManagerImplementation implements ProductoManager {
     }
 
     @Override
-    public void remove(String id) throws ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void remove(String id) throws ClientErrorException, ErrorServerException {
+        try {
+            webClient.remove(id);
+        } catch (Exception e) {
+            if (e instanceof ConnectException) {
+                LOGGER.severe("ProductoManagerImplementation: remove " + e.getMessage());
+                throw new ErrorServerException();
+            }
+        }
     }
 
     @Override

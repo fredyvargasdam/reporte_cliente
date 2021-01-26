@@ -5,16 +5,16 @@
  */
 package factory;
 
-import client.ReservaRESTClient;
+import implementation.ReservaManagerImplementation;
 import manager.ReservaManager;
 
 /**
  *
- * @author 2dam
+ * @author Fredy Vargas Flores
  */
 public class ReservaFactory {
-    public ReservaManager getReservaRESTClient (){
-        return new ReservaRESTClient();
+    public ReservaManager getReservaManagerImplementation (){
+        return new ReservaManagerImplementation();
     }
     
 }

@@ -152,7 +152,7 @@ public class Validar {
      */
     public static boolean isValidPatternContrasena(PasswordField txtContrasena) {
         boolean b = false;
-        String pattern ="^[a-zA-Z0-9*@.,_-]+$";
+        String pattern = "^[a-zA-Z0-9*@.,_-]+$";
         if (txtContrasena.getText().matches(pattern)) {
             b = true;
             txtContrasena.setStyle("-fx-border-color:rgb(189 189 189);");
@@ -161,50 +161,50 @@ public class Validar {
         }
         return b;
     }
-    
-    public static boolean isValidDNI(String dni){
+
+    public static boolean isValidDNI(String dni) {
         String LetraMayuscula;
-        if(dni.length() != 9 || Character.isLetter(dni.charAt(8)) == false){
+        if (dni.length() != 9 || Character.isLetter(dni.charAt(8)) == false) {
             return false;
         }
-            LetraMayuscula = (dni.substring(8)).toUpperCase();
-            if(soloNumeros(dni) == true && letraDNI(dni).equals(LetraMayuscula)){
-                return true;
-            }else{
-                return false;
+        LetraMayuscula = (dni.substring(8)).toUpperCase();
+        if (soloNumeros(dni) == true && letraDNI(dni).equals(LetraMayuscula)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private static boolean soloNumeros(String dni) {
+        int i, j;
+        String numero = "";
+        String miDNI = "";
+        String[] unoNueve = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
+        for (i = 0; i < dni.length() - 1; i++) {
+            numero = dni.substring(i, i + 1);
+            for (j = 0; j < unoNueve.length; j++) {
+                if (numero.equals(unoNueve[j])) {
+                    miDNI += unoNueve[j];
+                }
             }
+        }
+        if (miDNI.length() != 8) {
+            return false;
+        } else {
+            return true;
+        }
     }
-    
-    private static boolean soloNumeros(String dni){
-        int i,j;
-        String numero="";
-        String miDNI="";
-        String[] unoNueve= {"0","1","2","3","4","5","6","7","8","9"};
-                for(i=0;i < dni.length() - 1;i++){
-                    numero=dni.substring(i,i+1);
-                    for(j=0;j < unoNueve.length;j++){
-                        if(numero.equals(unoNueve[j])){
-                        miDNI += unoNueve[j];
-                    }
-                    }
-                }
-                if(miDNI.length() != 8){
-                    return false;
-                } else{
-                    return true;
-                }
-    }
-    
-    private static String letraDNI(String dni){
-        int miDNI= Integer.parseInt(dni.substring(0,8));
-        int resto=0;
-        String miLetra="";
-        String[] asignacionLetra= {"T","R","W","A","G","M","Y","F","P","D","X","B","N","J","Z","S","Q","V","H","L","C","K","E"};
-        resto=miDNI%23;
-        miLetra=asignacionLetra[resto];
+
+    private static String letraDNI(String dni) {
+        int miDNI = Integer.parseInt(dni.substring(0, 8));
+        int resto = 0;
+        String miLetra = "";
+        String[] asignacionLetra = {"T", "R", "W", "A", "G", "M", "Y", "F", "P", "D", "X", "B", "N", "J", "Z", "S", "Q", "V", "H", "L", "C", "K", "E"};
+        resto = miDNI % 23;
+        miLetra = asignacionLetra[resto];
         return miLetra;
     }
-    
+
     public static boolean isValidTelefono(TextField tfTelefono) {
         boolean b = false;
         String pattern = "\\d{9,11}";
@@ -216,5 +216,69 @@ public class Validar {
         }
         return b;
     }
-    
+
+    /**
+     * Comprueba si el string ingresado es un número
+     *
+     * @param cadena
+     * @return true or false
+     */
+    public static boolean isNumber(String cadena) {
+        try {
+            Integer.valueOf(cadena);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Comprueba si el string ingresado es un float
+     *
+     * @param cadena
+     * @return
+     */
+    public static boolean isNumberFloat(String cadena) {
+        try {
+            Float.valueOf(cadena);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Devuelve el tamaño de la cadena sin espacios
+     *
+     * @param cadena
+     * @return longitud
+     */
+    public static int longitudCadenaSinEspacio(String cadena) {
+        return (cadena.replaceAll("\\s+", "").length());
+    }
+
+    /**
+     * Quitar espacios de una cadena
+     *
+     * @param cadena
+     * @return cadena
+     */
+    public static String cadenaSinEspacio(String cadena) {
+        return (cadena.replaceAll("\\s+", ""));
+    }
+
+    /**
+     * Validar que la cadena no tenga caracteres extraños
+     *
+     * @param cadena
+     * @return true or false
+     */
+    public static boolean isValidCadena(String cadena) {
+        String pattern = "^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ]+$";
+        if (!cadenaSinEspacio(cadena).matches(pattern)) {
+            return false;
+        }
+        return true;
+    }
+
 }
