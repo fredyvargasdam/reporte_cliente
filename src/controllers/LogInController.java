@@ -204,9 +204,9 @@ public class LogInController {
             Parent root = null;
             switch (usuario.getPrivilege()) {
                 case ADMINISTRADOR:
-                    loader = new FXMLLoader(getClass().getResource("/view/inicioAdministrador_proveedor.fxml"));
+                    loader = new FXMLLoader(getClass().getResource("/view/InicioAdministrador_vendedor.fxml"));
                     root = (Parent) loader.load();
-                    InicioAdministradorProveedorController administradorC = ((InicioAdministradorProveedorController) loader.getController());
+                    InicioAdministradorVendedorController administradorC = ((InicioAdministradorVendedorController) loader.getController());
                     administradorC.setUsuario(usuario);
                     administradorC.initStage(root);
                     break;

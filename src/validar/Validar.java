@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -134,7 +135,7 @@ public class Validar {
      */
     public static boolean isValidNombre(TextField txtNombre) {
         boolean b = false;
-        String pattern = "^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ]+$";
+        String pattern = "^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ\\s]+$";
         if (txtNombre.getText().matches(pattern)) {
             b = true;
             txtNombre.setStyle("-fx-border-color:rgb(189 189 189);");
@@ -215,70 +216,6 @@ public class Validar {
             tfTelefono.setStyle("-fx-border-color:red; -fx-border-width:2px;");
         }
         return b;
-    }
-
-    /**
-     * Comprueba si el string ingresado es un número
-     *
-     * @param cadena
-     * @return true or false
-     */
-    public static boolean isNumber(String cadena) {
-        try {
-            Integer.valueOf(cadena);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    /**
-     * Comprueba si el string ingresado es un float
-     *
-     * @param cadena
-     * @return
-     */
-    public static boolean isNumberFloat(String cadena) {
-        try {
-            Float.valueOf(cadena);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    /**
-     * Devuelve el tamaño de la cadena sin espacios
-     *
-     * @param cadena
-     * @return longitud
-     */
-    public static int longitudCadenaSinEspacio(String cadena) {
-        return (cadena.replaceAll("\\s+", "").length());
-    }
-
-    /**
-     * Quitar espacios de una cadena
-     *
-     * @param cadena
-     * @return cadena
-     */
-    public static String cadenaSinEspacio(String cadena) {
-        return (cadena.replaceAll("\\s+", ""));
-    }
-
-    /**
-     * Validar que la cadena no tenga caracteres extraños
-     *
-     * @param cadena
-     * @return true or false
-     */
-    public static boolean isValidCadena(String cadena) {
-        String pattern = "^[a-zA-Z0-9ñÑáéíóúÁÉÍÓÚ]+$";
-        if (!cadenaSinEspacio(cadena).matches(pattern)) {
-            return false;
-        }
-        return true;
     }
 
 }

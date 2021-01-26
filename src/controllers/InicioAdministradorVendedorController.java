@@ -924,8 +924,6 @@ public class InicioAdministradorVendedorController {
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
         }
-
-        //tbVendedores.setItems(FXCollections.observableArrayList(listvendedores));
     }
 
     /**
@@ -1068,30 +1066,17 @@ public class InicioAdministradorVendedorController {
      */
     @FXML
     private void configMenuProveedores(ActionEvent event) {
-        LOG.log(Level.INFO, "Ventana Inicio de Administrador (Proveedor)");
-        alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText(null);
-        alert.setTitle("Administrador");
-        alert.setContentText("¿Estas seguro de confirmar la acción?");
-        Optional<ButtonType> respuesta = alert.showAndWait();
+         LOG.log(Level.INFO, "Ventana Inicio de Administrador (Vendedor)");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/inicioAdministrador_proveedor.fxml"));
 
-        if (respuesta.get() == ButtonType.OK) {
-            LOG.log(Level.INFO, "Has pulsado el boton Aceptar");
-            LOG.log(Level.INFO, "Ventana Administrador Proveedor");
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/inicioAdministrador_proveedor.fxml"));
+            Parent root = (Parent) loader.load();
 
-                Parent root = (Parent) loader.load();
-
-                InicioAdministradorProveedorController controller = ((InicioAdministradorProveedorController) loader.getController());
-                controller.initStage(root);
-                stage.hide();
-            } catch (IOException e) {
-                LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
-            }
-        } else {
-            LOG.log(Level.INFO, "Has pulsado el boton Cancelar");
-            event.consume();
+            InicioAdministradorProveedorController controller = ((InicioAdministradorProveedorController) loader.getController());
+            controller.initStage(root);
+            stage.hide();
+        } catch (IOException e) {
+            LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
         }
     }
 

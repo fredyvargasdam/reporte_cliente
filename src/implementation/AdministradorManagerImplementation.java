@@ -1,7 +1,6 @@
 package implementation;
 
 import client.AdministradorRESTClient;
-import exceptions.ErrorBDException;
 import exceptions.ErrorServerException;
 import java.net.ConnectException;
 import java.util.List;
@@ -27,7 +26,7 @@ public class AdministradorManagerImplementation implements AdministradorManager 
     }
 
     @Override
-    public List<Vendedor> getVendedores() throws ClientErrorException, ErrorBDException, ErrorServerException {
+    public List<Vendedor> getVendedores() throws ClientErrorException, ErrorServerException {
         List<Vendedor> vendedores = null;
         try {
             vendedores = webClient.getVendedores(new GenericType<List<Vendedor>>() {
@@ -38,20 +37,18 @@ public class AdministradorManagerImplementation implements AdministradorManager 
         } catch (ClientErrorException e) {
             if (e.getCause() instanceof ConnectException) {
                 throw new ErrorServerException();
-            } else {
-                throw new ErrorBDException();
-            }
+            } 
         }
         return vendedores;
     }
 
     @Override
-    public void edit(Object requestEntity) throws ClientErrorException, ErrorBDException, ErrorServerException {
+    public void edit(Object requestEntity) throws ClientErrorException, ErrorServerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<Proveedor> getProveedores() throws ClientErrorException, ErrorBDException, ErrorServerException {
+    public List<Proveedor> getProveedores() throws ClientErrorException, ErrorServerException {
         List<Proveedor> proveedores = null;
         try {
             proveedores = webClient.getProveedores(new GenericType<List<Proveedor>>() {
@@ -62,25 +59,23 @@ public class AdministradorManagerImplementation implements AdministradorManager 
         } catch (ClientErrorException e) {
             if (e.getCause() instanceof ConnectException) {
                 throw new ErrorServerException();
-            } else {
-                throw new ErrorBDException();
             }
         }
         return proveedores;
     }
 
     @Override
-    public <T> T find(Class<T> responseType, String id) throws ClientErrorException, ErrorBDException, ErrorServerException {
+    public <T> T find(Class<T> responseType, String id) throws ClientErrorException, ErrorServerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void create(Object requestEntity) throws ClientErrorException, ErrorBDException, ErrorServerException {
+    public void create(Object requestEntity) throws ClientErrorException, ErrorServerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void remove(String id) throws ClientErrorException, ErrorBDException, ErrorServerException {
+    public void remove(String id) throws ClientErrorException, ErrorServerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
