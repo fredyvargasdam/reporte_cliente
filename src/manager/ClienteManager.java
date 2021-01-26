@@ -22,6 +22,8 @@ public interface ClienteManager {
     public List<Producto> findAllProductosAsc() throws ClientErrorException;
 
     public Cliente find(String id) throws ClientErrorException;
+    
+    public List<Cliente> findCliente() throws ClientErrorException;
 
     public Reserva findReserva(String id) throws ClientErrorException;
 

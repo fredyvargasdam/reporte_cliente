@@ -22,7 +22,7 @@ public interface ReservaManager {
 
     public List<Reserva> findReservasConfirmadas() throws ClientErrorException;
 
-    public Reserva find(String id) throws ClientErrorException;
+    public Reserva find(Reserva reserva, String id) throws ClientErrorException;
 
     public void create(Reserva reserva) throws ClientErrorException;
 

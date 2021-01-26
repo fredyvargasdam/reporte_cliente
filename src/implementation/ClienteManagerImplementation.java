@@ -8,8 +8,10 @@ package implementation;
 import client.ClienteRESTClient;
 import client.ReservaRESTClient;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.core.GenericType;
 import manager.ClienteManager;
 import modelo.Cliente;
 import modelo.Producto;
@@ -28,7 +30,7 @@ public class ClienteManagerImplementation implements ClienteManager {
         webClient = new ClienteRESTClient();
     }
     
-    @Override
+    
     public void edit(Cliente cliente) throws ClientErrorException {
         try {
             webClient.edit(cliente);
@@ -37,34 +39,44 @@ public class ClienteManagerImplementation implements ClienteManager {
         }     
     }
     
-    @Override
+    
     public List<Producto> findAllProductosAsc() throws ClientErrorException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    @Override
+    
     public Cliente find(String id) throws ClientErrorException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    @Override
+   
     public Reserva findReserva(String id) throws ClientErrorException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    @Override
+    
     public void create(Object requestEntity) throws ClientErrorException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    @Override
+    
     public void remove(String id) throws ClientErrorException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    @Override
+    
     public void close() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public List<Cliente> findCliente() throws ClientErrorException {
+        List<Cliente> cliente = null;
+        cliente = webClient.findCliente(new GenericType<List<Cliente>>() {
+        });
+        for (Cliente res : cliente) {
+            LOGGER.log(Level.INFO, "Clientes: {0}", res);
+        }
+        return cliente;
     }
     
 }
