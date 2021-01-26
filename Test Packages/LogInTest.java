@@ -1,4 +1,3 @@
-
 import applicationClient.ApplicationClient;
 
 import javafx.stage.Stage;

@@ -1,6 +1,5 @@
 package controllers;
 
-import exceptions.ErrorBDException;
 import exceptions.ErrorServerException;
 import exceptions.ProveedorYaExisteException;
 import implementation.AdministradorManagerImplementation;
@@ -259,12 +258,6 @@ public class InicioAdministradorProveedorController {
                     alert.setTitle("Administrador");
                     alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
                     alert.showAndWait();
-                } catch (ErrorBDException ex) {
-                    LOG.log(Level.SEVERE, "ErrorBDException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                    alert.showAndWait();
                 } catch (ErrorServerException ex) {
                     LOG.log(Level.SEVERE, "ErrorServerException");
                     alert = new Alert(AlertType.ERROR);
@@ -327,12 +320,6 @@ public class InicioAdministradorProveedorController {
                     alert.setTitle("Administrador");
                     alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
                     alert.showAndWait();
-                } catch (ErrorBDException ex) {
-                    LOG.log(Level.SEVERE, "ErrorBDException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                    alert.showAndWait();
                 } catch (ErrorServerException ex) {
                     LOG.log(Level.SEVERE, "ErrorServerException");
                     alert = new Alert(AlertType.ERROR);
@@ -390,12 +377,6 @@ public class InicioAdministradorProveedorController {
                             alert.setTitle("Administrador");
                             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
                             alert.showAndWait();
-                        } catch (ErrorBDException ex) {
-                            LOG.log(Level.SEVERE, "ErrorBDException");
-                            alert = new Alert(AlertType.ERROR);
-                            alert.setTitle("Administrador");
-                            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                            alert.showAndWait();
                         } catch (ErrorServerException ex) {
                             LOG.log(Level.SEVERE, "ErrorServerException");
                             alert = new Alert(AlertType.ERROR);
@@ -443,12 +424,6 @@ public class InicioAdministradorProveedorController {
                             datosTabla();
                         } catch (ClientErrorException ex) {
                             LOG.log(Level.SEVERE, "ClientErrorException");
-                            alert = new Alert(AlertType.ERROR);
-                            alert.setTitle("Administrador");
-                            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                            alert.showAndWait();
-                        } catch (ErrorBDException ex) {
-                            LOG.log(Level.SEVERE, "ErrorBDException");
                             alert = new Alert(AlertType.ERROR);
                             alert.setTitle("Administrador");
                             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
@@ -504,12 +479,6 @@ public class InicioAdministradorProveedorController {
                             alert.setTitle("Administrador");
                             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
                             alert.showAndWait();
-                        } catch (ErrorBDException ex) {
-                            LOG.log(Level.SEVERE, "ErrorBDException");
-                            alert = new Alert(AlertType.ERROR);
-                            alert.setTitle("Administrador");
-                            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                            alert.showAndWait();
                         } catch (ErrorServerException ex) {
                             LOG.log(Level.SEVERE, "ErrorServerException");
                             alert = new Alert(AlertType.ERROR);
@@ -539,26 +508,31 @@ public class InicioAdministradorProveedorController {
         tcFechaAlta.setOnEditCommit(data
                 -> {
             try {
-                LOG.log(Level.INFO, "Nueva FechaAlta: {0}", data.getNewValue());
-                LOG.log(Level.INFO, "Antigua FechaAlta: {0}", data.getOldValue());
-                //Implementación del ProveedorRESTClient
-                proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
-                //Devuelve el dato de la fila
-                Proveedor p = data.getRowValue();
-                //Añadimos el nuevo valor a la fila
-                p.setFechaAlta(data.getNewValue());
-                //Llamamos al método edit para asi poder modificar la fecha de alta del proveedor
-                proveedorManager.edit(p);
-                //Mostramos los datos actualizados en la TableView
-                datosTabla();
+                LocalDate dateActual = LocalDate.now();
+                Date datePicker = Date.from(dateActual.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                if (datePicker.before(data.getNewValue())) {
+                    LOG.log(Level.INFO, "Nueva FechaAlta: {0}", data.getNewValue());
+                    LOG.log(Level.INFO, "Antigua FechaAlta: {0}", data.getOldValue());
+                    //Implementación del ProveedorRESTClient
+                    proveedorManager = (ProveedorManagerImplementation) new factory.ProveedorFactory().getProveedorManagerImplementation();
+                    //Devuelve el dato de la fila
+                    Proveedor p = data.getRowValue();
+                    //Añadimos el nuevo valor a la fila
+                    p.setFechaAlta(data.getNewValue());
+                    //Llamamos al método edit para asi poder modificar la fecha de alta del proveedor
+                    proveedorManager.edit(p);
+                    //Mostramos los datos actualizados en la TableView
+                    datosTabla();
+                } else {
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Alta Proveedor");
+                    alert.setHeaderText("Introduce una fecha válida");
+                    alert.showAndWait();
+                    tbProveedor.refresh();
+                }
+
             } catch (ClientErrorException ex) {
                 LOG.log(Level.SEVERE, "ClientErrorException");
-                alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Administrador");
-                alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                alert.showAndWait();
-            } catch (ErrorBDException ex) {
-                LOG.log(Level.SEVERE, "ErrorBDException");
                 alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Administrador");
                 alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
@@ -597,12 +571,6 @@ public class InicioAdministradorProveedorController {
             datosTabla();
         } catch (ClientErrorException ex) {
             LOG.log(Level.SEVERE, "ClientErrorException");
-            alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Administrador");
-            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-            alert.showAndWait();
-        } catch (ErrorBDException ex) {
-            LOG.log(Level.SEVERE, "ErrorBDException");
             alert = new Alert(AlertType.ERROR);
             alert.setTitle("Administrador");
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
@@ -654,12 +622,6 @@ public class InicioAdministradorProveedorController {
             alert.setTitle("Administrador");
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
-        } catch (ErrorBDException ex) {
-            LOG.log(Level.SEVERE, "ErrorBDException");
-            alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Administrador");
-            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-            alert.showAndWait();
         } catch (ErrorServerException ex) {
             LOG.log(Level.SEVERE, "ErrorServerException");
             alert = new Alert(AlertType.ERROR);
@@ -706,12 +668,6 @@ public class InicioAdministradorProveedorController {
             //Llamamos al método create para asi poder crear un nuevo proveedor
             proveedorManager.create(nuevoProveedor);
             datosTabla();
-        } catch (ErrorBDException ex) {
-            LOG.log(Level.SEVERE, "ErrorBDException");
-            alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Administrador");
-            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-            alert.showAndWait();
         } catch (ClientErrorException ex) {
             LOG.log(Level.SEVERE, "ClientErrorException");
             alert = new Alert(AlertType.ERROR);
@@ -765,12 +721,6 @@ public class InicioAdministradorProveedorController {
                     LOG.log(Level.INFO, "Se ha borrado un proveedor");
                 } catch (ClientErrorException ex) {
                     LOG.log(Level.SEVERE, "ClientErrorException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Administrador");
-                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                    alert.showAndWait();
-                } catch (ErrorBDException ex) {
-                    LOG.log(Level.SEVERE, "ErrorBDException");
                     alert = new Alert(AlertType.ERROR);
                     alert.setTitle("Administrador");
                     alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
