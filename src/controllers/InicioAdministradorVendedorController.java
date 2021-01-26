@@ -917,12 +917,6 @@ public class InicioAdministradorVendedorController {
             alert.setTitle("Administrador");
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
-        } catch (ErrorBDException ex) {
-            LOG.log(Level.SEVERE, "ErrorBDException");
-            alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Administrador");
-            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-            alert.showAndWait();
         }
     }
 
