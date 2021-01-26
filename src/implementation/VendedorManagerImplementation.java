@@ -14,28 +14,33 @@ import exceptions.SelectException;
 import exceptions.UpdateException;
 import exceptions.VendedorNotFoundException;
 import exceptions.VendedorYaExisteException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.ClientErrorException;
-import manager.ProveedorManager;
+import javax.ws.rs.core.GenericType;
 import manager.VendedorManager;
 import modelo.Proveedor;
+import modelo.Reserva;
 import modelo.Vendedor;
 
 /**
  *
- * @author Moroni
+ * @author Moroni, Fredy Vargas Flores
  */
 public class VendedorManagerImplementation implements VendedorManager {
 
-    private static final Logger LOG = Logger.getLogger(VendedorManagerImplementation.class.getName());
+    private final VendedorRESTClient webClient;
+    private static final Logger LOG = Logger.getLogger("VendedorManagerImplementation");
 
-    private VendedorRESTClient webClient;
+    public VendedorManagerImplementation() {
+        webClient = new VendedorRESTClient();
+    }
 
     @Override
     public void remove(String id) throws ClientErrorException {
         try {
-            webClient = new VendedorRESTClient();
+            // webClient = new VendedorRESTClient();
             webClient.remove(id);
         } catch (ClientErrorException e) {
             LOG.log(Level.SEVERE, "ClientErrorException");
@@ -58,7 +63,7 @@ public class VendedorManagerImplementation implements VendedorManager {
      */
     @Override
     public void edit(Vendedor vendedor) throws ClientErrorException, UpdateException, ErrorBDException, ErrorServerException, VendedorNotFoundException {
-        webClient = new VendedorRESTClient();
+     //   webClient = new VendedorRESTClient();
         webClient.edit(vendedor);
     }
 
@@ -72,10 +77,6 @@ public class VendedorManagerImplementation implements VendedorManager {
         return vendedor;
     }
 
-    public Vendedor getVendedores(Vendedor vendedor, String id) throws ErrorBDException, ErrorServerException, VendedorNotFoundException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     /**
      *
      * @param vendedor
@@ -87,7 +88,7 @@ public class VendedorManagerImplementation implements VendedorManager {
      */
     @Override
     public void create(Vendedor vendedor) throws ClientErrorException, InsertException, VendedorYaExisteException, ErrorBDException, ErrorServerException {
-        webClient = new VendedorRESTClient();
+     //   webClient = new VendedorRESTClient();
         webClient.create(vendedor);
     }
 
@@ -96,13 +97,45 @@ public class VendedorManagerImplementation implements VendedorManager {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public <T> T findAllVendedores(Class<T> responseType) throws ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    @Override
+    public List<Vendedor> findAllVendedores() throws ErrorServerException {
+        List<Vendedor> vendedores = null;
+        try {
+            vendedores = webClient.findAllVendedores(new GenericType<List<Vendedor>>() {
+            });
+
+        } catch (ClientErrorException e) {
+            LOG.severe("VendedorManagerImplementacion: findAllVendedores " + e.getMessage());
+            throw new ErrorServerException();
+        }
+        return vendedores;
     }
 
     @Override
-    public <T> T findAllReservas(Class<T> responseType) throws ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Reserva> findAllReservas() throws ErrorServerException {
+        List<Reserva> reservas = null;
+        try {
+            reservas = webClient.findAllReservas(new GenericType<List<Reserva>>() {
+            });
+
+        } catch (ClientErrorException e) {
+            LOG.severe("VendedorManagerImplementacion: findAllReservas " + e.getMessage());
+            throw new ErrorServerException();
+        }
+        return reservas;
+    }
+
+    @Override
+    public List<Proveedor> getProveedoresProducto() throws ErrorServerException {
+        List<Proveedor> proveedores = null;
+        try {
+            proveedores = webClient.getProveedoresProducto(new GenericType<List<Proveedor>>() {
+            });
+        } catch (Exception e) {
+            LOG.severe("VendedorManagerImplementacion: getProveedoresProducto " + e.getMessage());
+            throw new ErrorServerException();
+        }
+        return proveedores;
     }
 
 }

@@ -5,8 +5,6 @@
  */
 package factory;
 
-import manager.VendedorManager;
-import client.VendedorRESTClient;
 import implementation.VendedorManagerImplementation;
 
 /**

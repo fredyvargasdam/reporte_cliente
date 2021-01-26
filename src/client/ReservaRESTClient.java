@@ -10,7 +10,6 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericType;
-import manager.ReservaManager;
 
 /**
  * Jersey REST client generated for REST resource:ReservaFacadeREST
@@ -25,11 +24,11 @@ import manager.ReservaManager;
  *
  * @author Fredy
  */
-public class ReservaRESTClient implements ReservaManager {
+public class ReservaRESTClient  {
 
-    private WebTarget webTarget;
-    private Client client;
-    private ResourceBundle rb = ResourceBundle.getBundle("config.parametros");
+    private final WebTarget webTarget;
+    private final Client client;
+    private final ResourceBundle rb = ResourceBundle.getBundle("config.parametros");
     private final String BASE_URI = rb.getString("RESTful.baseURI");
 
     public ReservaRESTClient() {

@@ -11,8 +11,10 @@ import exceptions.InsertException;
 import exceptions.UpdateException;
 import exceptions.VendedorNotFoundException;
 import exceptions.VendedorYaExisteException;
+import java.util.List;
 import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.client.WebTarget;
+import modelo.Proveedor;
+import modelo.Reserva;
 import modelo.Vendedor;
 
 /**
@@ -27,7 +29,11 @@ public interface VendedorManager {
 
     public void create(Vendedor vendedor) throws ClientErrorException, InsertException, VendedorYaExisteException, ErrorBDException, ErrorServerException;
 
-    public <T> T findAllReservas(Class<T> responseType) throws ClientErrorException;
+    public List<Reserva>  findAllReservas() throws ErrorServerException;
+
+    public List<Vendedor> findAllVendedores() throws ErrorServerException;
+
+     public List<Proveedor>  getProveedoresProducto() throws ErrorServerException ;
 
     public void remove(String id) throws ClientErrorException;
 
