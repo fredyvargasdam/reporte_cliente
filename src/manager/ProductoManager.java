@@ -24,7 +24,7 @@ public interface ProductoManager {
 
     public Collection<Producto> findAllProductosAsc() throws ClientErrorException;
 
-    public Producto find(String id) throws ClientErrorException;
+    public Producto find(Producto producto,String id) throws ClientErrorException;
 
     public void create(Producto producto) throws ErrorServerException;
 

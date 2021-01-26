@@ -11,6 +11,7 @@ import exceptions.ProductoExistenteException;
 import java.net.ConnectException;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;
@@ -30,12 +31,12 @@ public class ProductoManagerImplementation implements ProductoManager {
         webClient = new ProductoRESTClient();
     }
 
-    @Override
+    
     public Collection<Producto> findAllRopa() throws ClientErrorException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
+    
     public void edit(Producto producto) throws ErrorServerException {
         try {
             webClient.edit(producto);
@@ -47,7 +48,7 @@ public class ProductoManagerImplementation implements ProductoManager {
         }
     }
 
-    @Override
+    
     public Collection<Producto> findAllProductosAsc() throws ClientErrorException {
         List<Producto> productos = null;
         try {
@@ -60,12 +61,18 @@ public class ProductoManagerImplementation implements ProductoManager {
         return productos;
     }
 
-    @Override
-    public Producto find(String id) throws ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    public Producto find(Producto producto, String id) throws ClientErrorException {
+        producto = null;
+        try {
+            producto = webClient.find(Producto.class, id);
+        } catch (ClientErrorException e) {
+            LOGGER.log(Level.SEVERE, "ClientErrorException");
+        }
+        return producto;
     }
 
-    @Override
+    
     public void create(Producto producto) throws ErrorServerException {
         try {
             webClient.create(producto);
@@ -77,17 +84,17 @@ public class ProductoManagerImplementation implements ProductoManager {
         }
     }
 
-    @Override
+    
     public Collection<Producto> findAllProductosDesc() throws ClientErrorException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
+    
     public Collection<Producto> findAllZapatillas() throws ClientErrorException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
+    
     public void remove(String id) throws ClientErrorException, ErrorServerException {
         try {
             webClient.remove(id);
@@ -99,8 +106,10 @@ public class ProductoManagerImplementation implements ProductoManager {
         }
     }
 
-    @Override
+    
     public void close() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+
 }

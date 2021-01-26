@@ -8,8 +8,10 @@ package implementation;
 import client.ReservaRESTClient;
 import exceptions.ErrorServerException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.core.GenericType;
 import manager.ReservaManager;
 import modelo.Reserva;
 
@@ -32,8 +34,8 @@ public class ReservaManagerImplementation implements ReservaManager {
     }
 
     @Override
-    public void edit(Reserva reserva) throws ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void edit(Reserva reserva) throws ClientErrorException{
+        webClient.edit(reserva);
     }
 
     @Override
@@ -41,14 +43,18 @@ public class ReservaManagerImplementation implements ReservaManager {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public Reserva find(String id) throws ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Reserva find(Reserva reserva, String id) throws ClientErrorException {
+       reserva = null;
+        try {
+            reserva = webClient.find(Reserva.class, id);
+        } catch (ClientErrorException e) {
+            LOGGER.log(Level.SEVERE, "ClientErrorException");
+        }
+        return reserva;
     }
 
-    @Override
     public void create(Reserva reserva) throws ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        webClient.create(reserva);
     }
 
     @Override
@@ -56,9 +62,14 @@ public class ReservaManagerImplementation implements ReservaManager {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public List<Reserva> findReservas() throws ClientErrorException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Reserva> reserva = null;
+        reserva = webClient.findReservas(new GenericType<List<Reserva>>() {
+        });
+        for (Reserva res : reserva) {
+            LOGGER.log(Level.INFO, "Reservas: {0}", res);
+        }
+        return reserva;
     }
 
     @Override
@@ -76,4 +87,5 @@ public class ReservaManagerImplementation implements ReservaManager {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+ 
 }
