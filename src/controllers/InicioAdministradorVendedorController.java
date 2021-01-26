@@ -978,13 +978,29 @@ public class InicioAdministradorVendedorController {
             vendedorManager.edit(v);
             datosTabla();
         } catch (UpdateException ex) {
-            Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, "UpdateException");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Administrador");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
         } catch (ErrorBDException ex) {
-            Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, "ErrorBDException");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Administrador");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
         } catch (ErrorServerException ex) {
-            Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, "ErrorServerException");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Administrador");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
         } catch (VendedorNotFoundException ex) {
-            Logger.getLogger(InicioAdministradorVendedorController.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, "VendedorNotFoundException");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Administrador");
+            alert.setHeaderText("No se ha podido encontrar el vendedor");
+            alert.showAndWait();
         }
 
     }
