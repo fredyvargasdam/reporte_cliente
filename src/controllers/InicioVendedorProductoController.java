@@ -190,7 +190,7 @@ public class InicioVendedorProductoController {
         btnBorrar.setOnAction(this::btnBorrarClick);
         btnBorrar.setTooltip(new Tooltip("Pulse para borrar el producto selecionado "));
         tfBuscar.textProperty().addListener(this::tfBuscarChanged);
-       // vendedores.add((Vendedor) usuario);
+        // vendedores.add((Vendedor) usuario);
         //Indicamos las imagenes de los botones
         imagenBotones();
         stage.show();
@@ -1161,11 +1161,13 @@ public class InicioVendedorProductoController {
         try {
             ObservableList<Vendedor> vendedoresServidor = FXCollections.observableArrayList(vendedorMI.findAllVendedores());
             for (Vendedor v : vendedoresServidor) {
-                for (Producto p : v.getProductos()) {
-                    if (p.getId().equals(productoSelecionado.getId())) {
+                if (v.getProductos() != null) {
+                    for (Producto p : v.getProductos()) {
+                        if (p.getId().equals(productoSelecionado.getId())) {
 
-                        v.getProductos().remove(productoSelecionado);
-                        vendedorMI.edit(v);
+                            v.getProductos().remove(productoSelecionado);
+                            vendedorMI.edit(v);
+                        }
                     }
                 }
             }
