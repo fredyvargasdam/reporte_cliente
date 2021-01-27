@@ -63,6 +63,7 @@ public class SignUpController {
     private final int treinta = 30;
     private final int cincuenta = 50;
     private final int caracteresMax = 250;
+    private final int once=11;
     private Usuario usuario;
     private UsuarioManager usuarioManager;
     private Alert alert;
@@ -307,6 +308,7 @@ public class SignUpController {
         Validar.addTextLimiter(tfNombre, cincuenta);
         Validar.addTextLimiter(tfCorreoElectronico, cincuenta);
         Validar.addTextLimiter(tfDireccion, caracteresMax);
+        Validar.addTextLimiter(tfTelefono, once);
 
         if (!tfUsuario.getText().trim().equals("") && !pfContrasenia.getText().trim().equals("") && !tfNombre.getText().trim().equals("")
                 && !tfCorreoElectronico.getText().trim().equals("") && !tfDireccion.getText().trim().equals("")

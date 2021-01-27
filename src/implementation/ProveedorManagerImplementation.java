@@ -1,7 +1,6 @@
 package implementation;
 
 import client.ProveedorRESTClient;
-import exceptions.ErrorBDException;
 import exceptions.ErrorServerException;
 import exceptions.ProductoNotFoundException;
 import exceptions.ProveedorNotFoundException;
@@ -24,7 +23,7 @@ public class ProveedorManagerImplementation implements ProveedorManager {
     private ProveedorRESTClient webClient;
 
     @Override
-    public void remove(String id) throws ClientErrorException, ErrorServerException, ErrorBDException {
+    public void remove(String id) throws ClientErrorException, ErrorServerException {
         try {
             webClient = new ProveedorRESTClient();
             webClient.remove(id);
@@ -32,9 +31,6 @@ public class ProveedorManagerImplementation implements ProveedorManager {
             if (e.getCause() instanceof ConnectException) {
                 LOG.log(Level.SEVERE, "ErrorServerException");
                 throw new ErrorServerException();
-            } else {
-                LOG.log(Level.SEVERE, "ErrorBDException");
-                throw new ErrorBDException();
             }
         }
     }
@@ -45,7 +41,7 @@ public class ProveedorManagerImplementation implements ProveedorManager {
     }
 
     @Override
-    public void edit(Proveedor proveedor) throws ClientErrorException, ErrorBDException, ErrorServerException {
+    public void edit(Proveedor proveedor) throws ClientErrorException, ErrorServerException {
         webClient = new ProveedorRESTClient();
         try {
             webClient.edit(proveedor);
@@ -53,15 +49,12 @@ public class ProveedorManagerImplementation implements ProveedorManager {
             if (e.getCause() instanceof ConnectException) {
                 LOG.log(Level.SEVERE, "ErrorServerException");
                 throw new ErrorServerException();
-            } else {
-                LOG.log(Level.SEVERE, "ErrorBDException");
-                throw new ErrorBDException();
             }
         }
     }
 
     @Override
-    public Proveedor find(Proveedor proveedor, String id) throws ClientErrorException, ProveedorNotFoundException, ErrorBDException, ErrorServerException {
+    public Proveedor find(Proveedor proveedor, String id) throws ClientErrorException, ProveedorNotFoundException, ErrorServerException {
         proveedor = null;
         try {
             proveedor = webClient.find(Proveedor.class, id);
@@ -69,21 +62,18 @@ public class ProveedorManagerImplementation implements ProveedorManager {
             if (e.getCause() instanceof ConnectException) {
                 LOG.log(Level.SEVERE, "ErrorServerException");
                 throw new ErrorServerException();
-            } else {
-                LOG.log(Level.SEVERE, "ErrorBDException");
-                throw new ErrorBDException();
             }
         }
         return proveedor;
     }
 
     @Override
-    public Proveedor getProductos(Proveedor proveedor, String id) throws ErrorBDException, ErrorServerException, ProductoNotFoundException {
+    public Proveedor getProductos(Proveedor proveedor, String id) throws  ErrorServerException, ProductoNotFoundException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void create(Proveedor proveedor) throws ClientErrorException, ProveedorYaExisteException, ErrorBDException, ErrorServerException {
+    public void create(Proveedor proveedor) throws ClientErrorException, ProveedorYaExisteException, ErrorServerException {
         try {
             webClient = new ProveedorRESTClient();
             webClient.create(proveedor);
@@ -91,10 +81,7 @@ public class ProveedorManagerImplementation implements ProveedorManager {
             if (e.getCause() instanceof ConnectException) {
                 LOG.log(Level.SEVERE, "ErrorServerException");
                 throw new ErrorServerException();
-            } else {
-                LOG.log(Level.SEVERE, "ErrorBDException");
-                throw new ErrorBDException();
-            }
+            } 
         }
     }
 
