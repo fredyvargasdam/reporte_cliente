@@ -54,6 +54,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import manager.AdministradorManager;
 import manager.VendedorManager;
+import modelo.Administrador;
 import modelo.EstadoUsuario;
 import static modelo.EstadoUsuario.ENABLED;
 import static modelo.PrivilegioUsuario.VENDEDOR;
@@ -234,7 +235,7 @@ public class InicioAdministradorVendedorController {
             //Instanciamos un nuevo vendedor dandole valores por defecto
             Vendedor nuevoVendedor = new Vendedor();
             //Añadimos por defecto que el administrador va a ser null
-            nuevoVendedor.setAdministrador(null);
+            nuevoVendedor.setAdministrador((Administrador) this.usuario);
             //Añadimos por defecto que el dni está vacio
             nuevoVendedor.setDni("");
             //Añadimos por defecto que  el salario es 0

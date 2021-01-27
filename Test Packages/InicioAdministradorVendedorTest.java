@@ -40,10 +40,24 @@ public class InicioAdministradorVendedorTest extends ApplicationTest {
     }
     
     /**
+     * Test que comprueba que la vista de InicioAdministrador_Vendedor es visible cuando se hace click
+     * en el boton Iniciar y el usuario es un Administrador
+     */
+    @Test
+    public void testA_LoginToInicioAdministradorVendedor() {
+        clickOn("#txtUsuario");
+        write("vendedor");
+        clickOn("#txtContrasena");
+        write("vendedor");
+        clickOn("#btnIniciar");
+        verifyThat("#pnInicioAdminVend", isVisible());
+    }
+    
+    /**
      * Test que permite ver el estado inicial de la ventana
      */
     @Test
-    public void testA_InitialState() {
+    public void testB_InitialState() {
         verifyThat("#pnInicioAdminVend", isVisible());
         verifyThat("#txtBuscarVendedor", hasText(""));
         verifyThat("#btnBuscar", isDisabled());
@@ -53,21 +67,7 @@ public class InicioAdministradorVendedorTest extends ApplicationTest {
     }
     
     /**
-     * Test que comprueba que la vista de InicioAdministrador_Vendedor es visible cuando se hace click
-     * en el boton Iniciar y el usuario es un Administrador
-     */
-    @Test
-    public void testB_LoginToInicioAdministradorVendedor() {
-        clickOn("#txtUsuario");
-        write("vendedor");
-        clickOn("#txtContrasena");
-        write("vendedor");
-        clickOn("#btnIniciar");
-        verifyThat("#apInicioVendedor", isVisible());
-    }
-    
-    /**
-     * Test que verifica el btnBuscar
+     * Test que verifica el btnBuscar se habilita
      */
     @Test
     public void testC_buscarBoton() {
@@ -77,6 +77,9 @@ public class InicioAdministradorVendedorTest extends ApplicationTest {
 
     }
     
+    /**
+     * Test que verifica el btnBorrarVendedor se habilita
+     */
     @Test
     public void testD_borrarBoton() {
         Node row=lookup(".table-row-cell").nth(0).query();
@@ -86,6 +89,9 @@ public class InicioAdministradorVendedorTest extends ApplicationTest {
 
     }
     
+    /**
+     * Test que verifica el menuAdministrador se muestra
+     */
     @Test
     public void testE_administradorMenu() {
         clickOn("#menuPerfil");
@@ -95,6 +101,10 @@ public class InicioAdministradorVendedorTest extends ApplicationTest {
 
     }
     
+    /**
+     * Test que comprueba que la vista de LogIn es visible cuando se hace click
+     * en el menu salir
+     */
     @Test
     public void testF_salirMenu() {
         clickOn("#menuPerfil");
@@ -104,6 +114,10 @@ public class InicioAdministradorVendedorTest extends ApplicationTest {
 
     }
     
+    /**
+     * Test que comprueba que la vista de inicioAdministrador_vendedor es visible cuando se hace click
+     * en el menu proveedores
+     */
     @Test
     public void testG_proveedoresMenu() {
         clickOn("#menuProveedor");
@@ -113,6 +127,9 @@ public class InicioAdministradorVendedorTest extends ApplicationTest {
 
     }
     
+    /**
+     * Test que verifica el btnAltaVendedor se habilita he introduce datos
+     */
     @Test
     public void testH_altaBoton() {
         clickOn("#btnAltaVendedor");
@@ -139,6 +156,9 @@ public class InicioAdministradorVendedorTest extends ApplicationTest {
 
     }
     
+    /**
+     * Test que verifica el btnBorrarVendedor
+     */
     @Test
     public void testI_borrarBoton() {
         Node row=lookup(".table-row-cell").nth(0).query();
