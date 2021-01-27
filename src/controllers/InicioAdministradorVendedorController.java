@@ -934,6 +934,7 @@ public class InicioAdministradorVendedorController {
      * @param event
      */
     private void txtBuscarVendedorNombre(ObservableValue observable, String oldValue, String newValue) {
+        Validar.addTextLimiter(txtBuscarVendedor, 30);
         FilteredList<Vendedor> filteredData = new FilteredList<>(listvendedores, u -> true);
 
         filteredData.setPredicate(vendedor -> {

@@ -50,6 +50,8 @@ public class InicioAdministradorVendedorTest extends ApplicationTest {
         clickOn("#txtContrasena");
         write("vendedor");
         clickOn("#btnIniciar");
+        clickOn("#menuVendedor");
+        clickOn("#menuVendedores");
         verifyThat("#pnInicioAdminVend", isVisible());
     }
     
@@ -72,20 +74,66 @@ public class InicioAdministradorVendedorTest extends ApplicationTest {
     @Test
     public void testC_buscarBoton() {
         clickOn("#txtBuscarVendedor");
-        write("Gisela");
+        write("Alba");
         verifyThat("#btnBuscar", isEnabled());
 
     }
     
     /**
-     * Test que verifica el btnBorrarVendedor se habilita
+     * Test que verifica el btnAltaVendedor se habilita he introduce datos
      */
     @Test
-    public void testD_borrarBoton() {
+    public void testD_altaBoton() {
+        clickOn("#btnAltaVendedor");
+        Node row=lookup(".table-row-cell").nth(0).lookup(".table-cell").nth(0).query();
+        doubleClickOn(row);
+        write("Alba");
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+        row=lookup(".table-row-cell").nth(0).lookup(".table-cell").nth(1).query();
+        doubleClickOn(row);
+        write("alba@fernandez.es");
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+        row=lookup(".table-row-cell").nth(0).lookup(".table-cell").nth(2).query();
+        doubleClickOn(row);
+        write("Alba Fernandez");
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+        row=lookup(".table-row-cell").nth(0).lookup(".table-cell").nth(3).query();
+        doubleClickOn(row);
+        clickOn("ENABLED");
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+        row=lookup(".table-row-cell").nth(0).lookup(".table-cell").nth(6).query();
+        doubleClickOn(row);
+        write("Calle B");
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+        row=lookup(".table-row-cell").nth(0).lookup(".table-cell").nth(7).query();
+        doubleClickOn(row);
+        write("999888777");
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+        row=lookup(".table-row-cell").nth(0).lookup(".table-cell").nth(8).query();
+        doubleClickOn(row);
+        write("75612348D");
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+        row=lookup(".table-row-cell").nth(0).lookup(".table-cell").nth(9).query();
+        doubleClickOn(row);
+        write("1200");
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+        row=lookup(".table-row-cell").nth(0).lookup(".table-cell").nth(10).query();
+        doubleClickOn(row);
+        write("Tienda A");
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+
+    }
+    
+    /**
+     * Test que verifica el btnBorrarVendedor
+     */
+    @Test
+    public void testE_borrarBoton() {
         Node row=lookup(".table-row-cell").nth(0).query();
         assertNotNull("Row is null: table has not that row. ",row);
         clickOn(row);
-        verifyThat("#btnBorrarVendedor", isEnabled());
+        clickOn("#btnBorrarVendedor");
+        clickOn("Aceptar");
 
     }
     
@@ -93,24 +141,11 @@ public class InicioAdministradorVendedorTest extends ApplicationTest {
      * Test que verifica el menuAdministrador se muestra
      */
     @Test
-    public void testE_administradorMenu() {
+    public void testF_administradorMenu() {
         clickOn("#menuPerfil");
         clickOn("#menuAdministrador");
         clickOn("Aceptar");
         verifyThat("#pnInicioAdminVend", isVisible());
-
-    }
-    
-    /**
-     * Test que comprueba que la vista de LogIn es visible cuando se hace click
-     * en el menu salir
-     */
-    @Test
-    public void testF_salirMenu() {
-        clickOn("#menuPerfil");
-        clickOn("#menuSalir");
-        clickOn("Aceptar");
-        verifyThat("#pnPrincipal", isVisible());
 
     }
     
@@ -128,44 +163,16 @@ public class InicioAdministradorVendedorTest extends ApplicationTest {
     }
     
     /**
-     * Test que verifica el btnAltaVendedor se habilita he introduce datos
+     * Test que comprueba que la vista de LogIn es visible cuando se hace click
+     * en el menu salir
      */
     @Test
-    public void testH_altaBoton() {
-        clickOn("#btnAltaVendedor");
-        Node row=lookup(".table-row-cell").nth(0).lookup(".table-cell").nth(0).query();
-        doubleClickOn(row);
-        write("Alba");
-        press(KeyCode.ENTER).release(KeyCode.ENTER);
-        row=lookup(".table-row-cell").nth(0).lookup(".table-cell").nth(1).query();
-        doubleClickOn(row);
-        write("Alba Fernandez");
-        press(KeyCode.ENTER).release(KeyCode.ENTER);
-        row=lookup(".table-row-cell").nth(0).lookup(".table-cell").nth(3).query();
-        doubleClickOn(row);
-        clickOn("ENABLED");
-        press(KeyCode.ENTER).release(KeyCode.ENTER);
-        row=lookup(".table-row-cell").nth(0).lookup(".table-cell").nth(4).query();
-        doubleClickOn(row);
-        write("999888777");
-        press(KeyCode.ENTER).release(KeyCode.ENTER);
-        row=lookup(".table-row-cell").nth(0).lookup(".table-cell").nth(5).query();
-        doubleClickOn(row);
-        write("1000");
-        press(KeyCode.ENTER).release(KeyCode.ENTER);
+    public void testH_salirMenu() {
+        clickOn("#menuPerfil");
+        clickOn("#menuSalir");
+        clickOn("Aceptar");
+        verifyThat("#pnPrincipal", isVisible());
 
     }
     
-    /**
-     * Test que verifica el btnBorrarVendedor
-     */
-    @Test
-    public void testI_borrarBoton() {
-        Node row=lookup(".table-row-cell").nth(0).query();
-        assertNotNull("Row is null: table has not that row. ",row);
-        clickOn(row);
-        clickOn("#btnBorrarVendedor");
-        clickOn("Aceptar");
-
-    }
 }
