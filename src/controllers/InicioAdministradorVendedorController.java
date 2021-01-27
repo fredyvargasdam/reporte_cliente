@@ -54,6 +54,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import manager.AdministradorManager;
 import manager.VendedorManager;
+import modelo.Administrador;
 import modelo.EstadoUsuario;
 import static modelo.EstadoUsuario.ENABLED;
 import static modelo.PrivilegioUsuario.VENDEDOR;
@@ -234,7 +235,7 @@ public class InicioAdministradorVendedorController {
             //Instanciamos un nuevo vendedor dandole valores por defecto
             Vendedor nuevoVendedor = new Vendedor();
             //Añadimos por defecto que el administrador va a ser null
-            nuevoVendedor.setAdministrador(null);
+            nuevoVendedor.setAdministrador((Administrador) this.usuario);
             //Añadimos por defecto que el dni está vacio
             nuevoVendedor.setDni("");
             //Añadimos por defecto que  el salario es 0
@@ -917,7 +918,15 @@ public class InicioAdministradorVendedorController {
             alert.setTitle("Administrador");
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
+        } catch (ErrorBDException ex) {
+            LOG.log(Level.SEVERE, "ErrorBDException");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Administrador");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
         }
+
+        //tbVendedores.setItems(FXCollections.observableArrayList(listvendedores));
     }
 
     /**
@@ -925,6 +934,7 @@ public class InicioAdministradorVendedorController {
      * @param event
      */
     private void txtBuscarVendedorNombre(ObservableValue observable, String oldValue, String newValue) {
+        Validar.addTextLimiter(txtBuscarVendedor, 30);
         FilteredList<Vendedor> filteredData = new FilteredList<>(listvendedores, u -> true);
 
         filteredData.setPredicate(vendedor -> {
@@ -1060,17 +1070,30 @@ public class InicioAdministradorVendedorController {
      */
     @FXML
     private void configMenuProveedores(ActionEvent event) {
-         LOG.log(Level.INFO, "Ventana Inicio de Administrador (Vendedor)");
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/inicioAdministrador_proveedor.fxml"));
+        LOG.log(Level.INFO, "Ventana Inicio de Administrador (Proveedor)");
+        alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText(null);
+        alert.setTitle("Administrador");
+        alert.setContentText("¿Estas seguro de confirmar la acción?");
+        Optional<ButtonType> respuesta = alert.showAndWait();
 
-            Parent root = (Parent) loader.load();
+        if (respuesta.get() == ButtonType.OK) {
+            LOG.log(Level.INFO, "Has pulsado el boton Aceptar");
+            LOG.log(Level.INFO, "Ventana Administrador Proveedor");
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/inicioAdministrador_proveedor.fxml"));
 
-            InicioAdministradorProveedorController controller = ((InicioAdministradorProveedorController) loader.getController());
-            controller.initStage(root);
-            stage.hide();
-        } catch (IOException e) {
-            LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
+                Parent root = (Parent) loader.load();
+
+                InicioAdministradorProveedorController controller = ((InicioAdministradorProveedorController) loader.getController());
+                controller.initStage(root);
+                stage.hide();
+            } catch (IOException e) {
+                LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
+            }
+        } else {
+            LOG.log(Level.INFO, "Has pulsado el boton Cancelar");
+            event.consume();
         }
     }
 
