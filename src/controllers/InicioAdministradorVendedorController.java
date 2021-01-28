@@ -912,19 +912,15 @@ public class InicioAdministradorVendedorController {
             alert.setTitle("Administrador");
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
-        } catch (ErrorServerException ex) {
-            LOG.log(Level.SEVERE, "ErrorBDException");
-            alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Administrador");
-            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-            alert.showAndWait();
-        } catch (ErrorBDException ex) {
+        }catch (ErrorServerException ex) {
             LOG.log(Level.SEVERE, "ErrorBDException");
             alert = new Alert(AlertType.ERROR);
             alert.setTitle("Administrador");
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
         }
+        //tbVendedores.setItems(FXCollections.observableArrayList(listvendedores));
+        
 
         //tbVendedores.setItems(FXCollections.observableArrayList(listvendedores));
     }
