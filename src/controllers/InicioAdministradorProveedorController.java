@@ -680,13 +680,8 @@ public class InicioAdministradorProveedorController {
             alert.setTitle("Administrador");
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
-        } catch (ProveedorYaExisteException ex) {
-            LOG.log(Level.SEVERE, "ProveedorYaExisteException");
-            alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Administrador");
-            alert.setHeaderText("Proveedor ya existe");
-            alert.showAndWait();
-        }
+        } 
+        
     }
 
     /**

@@ -63,7 +63,7 @@ public class SignUpController {
     private final int treinta = 30;
     private final int cincuenta = 50;
     private final int caracteresMax = 250;
-    private final int once=11;
+    private final int nueve = 9;
     private Usuario usuario;
     private UsuarioManager usuarioManager;
     private Alert alert;
@@ -252,23 +252,17 @@ public class SignUpController {
             alert.setTitle("Administrador");
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
-        } catch (UsuarioYaExisteException ex) {
-            LOG.log(Level.SEVERE, "UsuarioYaExisteException");
-            alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Administrador");
-            alert.setHeaderText("No se ha podido registrar el usuario, ya está dado de alta");
-            alert.showAndWait();
         } catch (ErrorServerException ex) {
             LOG.log(Level.SEVERE, "ErrorServerException");
             alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Administrador");
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
-        } catch (ErrorBDException ex) {
-            LOG.log(Level.SEVERE, "ErrorBDException");
+        } catch (UsuarioYaExisteException ex) {
+            LOG.log(Level.SEVERE, "UsuarioYaExisteException");
             alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Administrador");
-            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.setHeaderText("Usuario no se ha podido dar de alta");
             alert.showAndWait();
         }
 
@@ -308,7 +302,7 @@ public class SignUpController {
         Validar.addTextLimiter(tfNombre, cincuenta);
         Validar.addTextLimiter(tfCorreoElectronico, cincuenta);
         Validar.addTextLimiter(tfDireccion, caracteresMax);
-        Validar.addTextLimiter(tfTelefono, once);
+        Validar.addTextLimiter(tfTelefono, nueve);
 
         if (!tfUsuario.getText().trim().equals("") && !pfContrasenia.getText().trim().equals("") && !tfNombre.getText().trim().equals("")
                 && !tfCorreoElectronico.getText().trim().equals("") && !tfDireccion.getText().trim().equals("")
