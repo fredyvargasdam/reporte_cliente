@@ -11,8 +11,10 @@ import implementation.ProductoManagerImplementation;
 import client.ProductoRESTClient;
 import implementation.ReservaManagerImplementation;
 import client.ReservaRESTClient;
+import exceptions.DeleteException;
 import exceptions.ErrorBDException;
 import exceptions.ErrorServerException;
+import exceptions.UpdateException;
 import java.io.IOException;
 import modelo.Cliente;
 import modelo.EstadoReserva;
@@ -73,7 +75,7 @@ import modelo.Usuario;
 /**
  * FXML Controller class
  *
- * @author 2dam
+ * @author Nadir
  */
 public class ReservaController implements Initializable {
 
@@ -273,13 +275,13 @@ public class ReservaController implements Initializable {
                 reservaManager.edit(res);
                 //Mostramos los datos actualizados en la TableView
                 datosTabla();
-            } catch (ClientErrorException ex) {
+            }  catch (ClientErrorException ex) {
                 LOG.log(Level.SEVERE, "ClientErrorException");
                 alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Reserva");
-                alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                alert.setHeaderText("No se puede EDITAR.");
                 alert.showAndWait();
-            } catch (NumberFormatException ex) {
+                }catch (NumberFormatException ex) {
                 LOG.log(Level.SEVERE, "NumberFormatException");
                 alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Reserva");
@@ -317,11 +319,11 @@ public class ReservaController implements Initializable {
                     //Mostramos los datos actualizados en la TableView
                     datosTabla();
                 } catch (ClientErrorException ex) {
-                    LOG.log(Level.SEVERE, "ClientErrorException");
-                    alert = new Alert(AlertType.ERROR);
-                    alert.setTitle("Reserva");
-                    alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-                    alert.showAndWait();
+                LOG.log(Level.SEVERE, "ClientErrorException");
+                alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Reserva");
+                alert.setHeaderText("No se puede EDITAR.");
+                alert.showAndWait();
                 }
             }
         });
@@ -345,11 +347,12 @@ public class ReservaController implements Initializable {
             }
         }
         );
-        tcEntrega.setOnEditCommit(data
+        tcEntrega.setOnEditCommit((TableColumn.CellEditEvent<Reserva, Date> data)
                 -> {
             try {
                 LOG.log(Level.INFO, "Nueva FechaEntrega: {0}", data.getNewValue());
                 LOG.log(Level.INFO, "Antigua FechaEntrega: {0}", data.getOldValue());
+                if (data.getOldValue().before(data.getNewValue())) {
                 //Implementación del ReservaRESTClient
                 reservaManager = (ReservaManagerImplementation) new factory.ReservaFactory().getReservaManagerImplementation();
                 //Devuelve el dato de la fila
@@ -360,13 +363,20 @@ public class ReservaController implements Initializable {
                 reservaManager.edit(fechanueva);
                 //Mostramos los datos actualizados en la TableView
                 datosTabla();
-            } catch (ClientErrorException ex) {
+                } else {
+                    alert = new Alert(AlertType.ERROR);
+                    alert.setTitle("Alta Proveedor");
+                    alert.setHeaderText("Introduce una fecha válida");
+                    alert.showAndWait();
+                    tbReservas.refresh();
+                }
+                } catch (ClientErrorException ex) {
                 LOG.log(Level.SEVERE, "ClientErrorException");
                 alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Reserva");
-                alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+                alert.setHeaderText("No se puede EDITAR.");
                 alert.showAndWait();
-            }
+                }
         });
     }
 
@@ -436,7 +446,7 @@ public class ReservaController implements Initializable {
             alert.showAndWait();
 
         } catch (ErrorServerException ex) {
-            LOG.log(Level.SEVERE, "ClientErrorException");
+            LOG.log(Level.SEVERE, "ErrorServerException");
             alert = new Alert(AlertType.ERROR);
             alert.setTitle("Datos Producto");
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
