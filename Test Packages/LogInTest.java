@@ -10,6 +10,7 @@ import org.testfx.matcher.base.NodeMatchers;
 import static org.testfx.matcher.base.NodeMatchers.isDisabled;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
 import static org.testfx.matcher.base.NodeMatchers.isFocused;
+import static org.testfx.matcher.base.NodeMatchers.isInvisible;
 import static org.testfx.matcher.base.NodeMatchers.isVisible;
 import static org.testfx.util.NodeQueryUtils.hasText;
 
@@ -42,7 +43,7 @@ public class LogInTest extends ApplicationTest {
         verifyThat("#txtContrasena", hasText(""));
         verifyThat("#btnIniciar", isDisabled());
         verifyThat("#hlRegistrarse", isEnabled());
-        verifyThat("#hlContraseniaOlvidada", isDisabled());
+        verifyThat("#hlContraseniaOlvidada",isInvisible());
 
     }
 
@@ -110,9 +111,9 @@ public class LogInTest extends ApplicationTest {
     @Test
     public void testF_LoginToInicioVendedorProducto() {
         clickOn("#txtUsuario");
-        write("administrador");
+        write("Administrador");
         clickOn("#txtContrasena");
-        write("administrador");
+        write("admin");
         clickOn("#btnIniciar");
         verifyThat("#pnInicioAdminVend", isVisible());
     }
