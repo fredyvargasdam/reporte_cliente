@@ -9,7 +9,6 @@ import client.ReservaRESTClient;
 import exceptions.ErrorServerException;
 import java.net.ConnectException;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.core.GenericType;

@@ -7,7 +7,6 @@ package implementation;
 
 import client.ProductoRESTClient;
 import exceptions.ErrorServerException;
-import exceptions.ProductoExistenteException;
 import java.net.ConnectException;
 import java.util.Collection;
 import java.util.List;

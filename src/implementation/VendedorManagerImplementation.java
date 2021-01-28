@@ -14,6 +14,7 @@ import exceptions.SelectException;
 import exceptions.UpdateException;
 import exceptions.VendedorNotFoundException;
 import exceptions.VendedorYaExisteException;
+import java.net.ConnectException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -64,7 +65,14 @@ public class VendedorManagerImplementation implements VendedorManager {
     @Override
     public void edit(Vendedor vendedor) throws ClientErrorException, UpdateException, ErrorBDException, ErrorServerException, VendedorNotFoundException {
      //   webClient = new VendedorRESTClient();
+     try{
         webClient.edit(vendedor);
+     }catch(Exception e){
+         if(e.getCause() instanceof ConnectException){
+             LOG.severe("VendedorManagerImplementation : "+e.getCause());
+             throw new ErrorServerException();
+         }
+     }
     }
 
     public Vendedor find(Vendedor vendedor, String id) throws ClientErrorException, SelectException, ProveedorNotFoundException, ErrorBDException, ErrorServerException {
@@ -118,7 +126,7 @@ public class VendedorManagerImplementation implements VendedorManager {
             reservas = webClient.findAllReservas(new GenericType<List<Reserva>>() {
             });
 
-        } catch (ClientErrorException e) {
+        } catch (Exception e) {
             LOG.severe("VendedorManagerImplementacion: findAllReservas " + e.getMessage());
             throw new ErrorServerException();
         }

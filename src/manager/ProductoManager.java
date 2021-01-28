@@ -6,10 +6,8 @@
 package manager;
 
 import exceptions.ErrorServerException;
-import exceptions.ProductoExistenteException;
 import java.util.Collection;
 import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.client.WebTarget;
 import modelo.Producto;
 
 /**

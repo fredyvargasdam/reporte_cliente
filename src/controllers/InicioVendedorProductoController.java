@@ -181,7 +181,7 @@ public class InicioVendedorProductoController {
         LOG.log(Level.INFO, "Ventana Gestión de Productos");
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        stage.setTitle("Flayshoes Productos");
+        stage.setTitle("Flyshoes Productos");
         stage.setResizable(false);
         stage.setOnCloseRequest(this::handleWindowClose);
         stage.setOnShowing(this::handleWindowShowing);
@@ -289,32 +289,21 @@ public class InicioVendedorProductoController {
         if (respuesta.get() == ButtonType.OK) {
             LOG.log(Level.INFO, "Has pulsado el boton Aceptar");
             LOG.log(Level.INFO, "Ventana Login");
-            /*  try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/???.fxml"));
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/Reserva.fxml"));
 
                 Parent root = (Parent) loader.load();
 
-                ????? controller = ((????) loader.getController());
+                ReservaController controller = (ReservaController) loader.getController();
                 controller.initStage(root);
                 stage.hide();
             } catch (IOException e) {
                 LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
-            }*/
+            }
         } else {
             LOG.log(Level.INFO, "Has pulsado el boton Cancelar");
             event.consume();
         }
-        /*
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/???.fxml"));
-            Parent root = (Parent) loader.load();
-            ???? controller = ((???) loader.getController());
-            controller.initStage(root);
-            stage.hide();
-        } catch (IOException e) {
-            LOG.log(Level.SEVERE, "Se ha producido un error de E/S");
-        }
-         */
     }
 
     /**
@@ -670,9 +659,7 @@ public class InicioVendedorProductoController {
      */
     private void actualizarModelo(TableColumn.CellEditEvent<Producto, String> event) {
         LOG.log(Level.INFO, "Beginning InicioAdministradorProductoController::actualizarModelo");
-
-        if (Validar.longitudCadenaSinEspacio(event.getNewValue()) > 3) {
-
+        if (Validar.longitudCadenaSinEspacio(event.getNewValue()) > 3 && Validar.longitudCadenaSinEspacio(event.getNewValue()) < 30) {
             if (!Validar.isNumber(event.getNewValue())) {
                 if (Validar.isValidCadena(event.getNewValue())) {
                     Producto comprobar = event.getRowValue();
@@ -702,7 +689,7 @@ public class InicioVendedorProductoController {
         } else {
             alert = new Alert(AlertType.ERROR);
             alert.setTitle("Validación");
-            alert.setHeaderText("El campo producto es demasiado corto");
+            alert.setHeaderText("El campo producto debe estar compuesto entre 5 y 30 caracteres");
             alert.showAndWait();
         }
         tvProductos.refresh();
@@ -774,6 +761,7 @@ public class InicioVendedorProductoController {
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
         }
+        tvProductos.refresh();
     }
 
     /**
@@ -822,6 +810,7 @@ public class InicioVendedorProductoController {
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
         }
+        tvProductos.refresh();
     }
 
     /**
@@ -834,12 +823,12 @@ public class InicioVendedorProductoController {
 
         if (Validar.isValidCadena(event.getNewValue())) {
             if (!Validar.isNumber(event.getNewValue())) {
-                if (Validar.longitudCadenaSinEspacio(event.getNewValue()) > 5) {
+                if (Validar.longitudCadenaSinEspacio(event.getNewValue()) > 5 && Validar.longitudCadenaSinEspacio(event.getNewValue()) < 100) {
                     actualizandoDescripcion(event.getRowValue(), event.getNewValue());
                 } else {
                     alert = new Alert(AlertType.ERROR);
                     alert.setTitle("Validación");
-                    alert.setHeaderText("El campo descripción es demasiado corto");
+                    alert.setHeaderText("El campo descripción debe estar compuesto entre 5 y 100 caracteres");
                     alert.showAndWait();
                 }
             } else {
@@ -876,6 +865,7 @@ public class InicioVendedorProductoController {
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
         }
+        tvProductos.refresh();
     }
 
     /**
@@ -887,6 +877,7 @@ public class InicioVendedorProductoController {
      */
     private void tfBuscarChanged(ObservableValue observable, String oldValue, String newValue) {
         LOG.log(Level.INFO, "Beginning InicioAdministradorProductoController::tfBuscarChanged");
+        Validar.addTextLimiter(tfBuscar, 30);
         //Desactivamos el boton borrar
         btnBorrar.setDisable(true);
         //Vamos a crear una lista filtrada con los datos introducidos por el usuario(Vendedor)
@@ -959,6 +950,7 @@ public class InicioVendedorProductoController {
             alert.showAndWait();
 
         }
+        tvProductos.refresh();
     }
 
     /**
@@ -967,6 +959,7 @@ public class InicioVendedorProductoController {
      */
     private void seleccionarProducto() {
         LOG.log(Level.INFO, "Beginning InicioAdministradorProductoController::seleccionarProducto");
+        Validar.addTextLimiter(tfBuscar, 30);
         //Establecemos un escuchador a la tabla productos
         tvProductos.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> {
@@ -1097,6 +1090,7 @@ public class InicioVendedorProductoController {
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
         }
+        tvProductos.refresh();
 
     }
 
@@ -1133,6 +1127,7 @@ public class InicioVendedorProductoController {
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
         }
+        tvProductos.refresh();
     }
 
     /**
@@ -1160,6 +1155,7 @@ public class InicioVendedorProductoController {
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
         }
+        tvProductos.refresh();
     }
 
     /**
@@ -1172,13 +1168,15 @@ public class InicioVendedorProductoController {
         //Lista de vendedores del servidor
         try {
             ObservableList<Vendedor> vendedoresServidor = FXCollections.observableArrayList(vendedorMI.findAllVendedores());
-            for (Vendedor v : vendedoresServidor) {
-                if (v.getProductos() != null) {
-                    for (Producto p : v.getProductos()) {
-                        if (p.getId().equals(productoSelecionado.getId())) {
+            if (vendedoresServidor != null) {
+                for (Vendedor v : vendedoresServidor) {
+                    if (v.getProductos() != null) {
+                        for (Producto p : v.getProductos()) {
+                            if (p.getId().equals(productoSelecionado.getId())) {
 
-                            v.getProductos().remove(productoSelecionado);
-                            vendedorMI.edit(v);
+                                v.getProductos().remove(productoSelecionado);
+                                vendedorMI.edit(v);
+                            }
                         }
                     }
                 }
@@ -1191,19 +1189,21 @@ public class InicioVendedorProductoController {
             alert.showAndWait();
 
         } catch (ClientErrorException ex) {
-           LOG.log(Level.SEVERE, "ErrorServerException");
+            LOG.log(Level.SEVERE, "ErrorServerException");
             alert = new Alert(AlertType.ERROR);
             alert.setTitle("Producto");
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-            alert.showAndWait();} catch (UpdateException ex) {
-          
+            alert.showAndWait();
+        } catch (UpdateException ex) {
+
         } catch (ErrorBDException ex) {
-         LOG.log(Level.SEVERE, "ErrorServerException");
+            LOG.log(Level.SEVERE, "ErrorServerException");
             alert = new Alert(AlertType.ERROR);
             alert.setTitle("Producto");
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
-            alert.showAndWait();} catch (VendedorNotFoundException ex) {
-         }
+            alert.showAndWait();
+        } catch (VendedorNotFoundException ex) {
+        }
     }
 
 }
