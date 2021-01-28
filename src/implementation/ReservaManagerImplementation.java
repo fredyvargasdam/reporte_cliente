@@ -7,6 +7,7 @@ package implementation;
 
 import client.ReservaRESTClient;
 import exceptions.ErrorServerException;
+import java.net.ConnectException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,12 +44,15 @@ public class ReservaManagerImplementation implements ReservaManager {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Reserva find(Reserva reserva, String id) throws ClientErrorException {
+    public Reserva find(Reserva reserva, String id) throws ErrorServerException {
        reserva = null;
         try {
             reserva = webClient.find(Reserva.class, id);
-        } catch (ClientErrorException e) {
-            LOGGER.log(Level.SEVERE, "ClientErrorException");
+        } catch (Exception e) {
+            if(e.getCause() instanceof ConnectException){
+            LOGGER.severe("ReservaManagerImplementation: find " + e.getMessage());
+            throw new ErrorServerException();
+            }
         }
         return reserva;
     }
@@ -66,9 +70,7 @@ public class ReservaManagerImplementation implements ReservaManager {
         List<Reserva> reserva = null;
         reserva = webClient.findReservas(new GenericType<List<Reserva>>() {
         });
-        for (Reserva res : reserva) {
-            LOGGER.log(Level.INFO, "Reservas: {0}", res);
-        }
+        
         return reserva;
     }
 
@@ -76,9 +78,11 @@ public class ReservaManagerImplementation implements ReservaManager {
     public void remove(String id) throws ErrorServerException {
         try {
             webClient.remove(id);
-        } catch (ClientErrorException e) {
+        } catch (Exception e) {
+            if(e.getCause() instanceof ConnectException){
             LOGGER.severe("ReservaManagerImplementation: remove " + e.getMessage());
             throw new ErrorServerException();
+            }
         }
     }
 

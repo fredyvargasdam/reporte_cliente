@@ -22,7 +22,7 @@ public interface ProductoManager {
 
     public void edit(Producto producto) throws ErrorServerException;
 
-    public Collection<Producto> findAllProductosAsc() throws ClientErrorException;
+    public Collection<Producto> findAllProductosAsc() throws ErrorServerException;
 
     public Producto find(Producto producto,String id) throws ClientErrorException;
 
