@@ -30,6 +30,7 @@ import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 import org.testfx.api.FxAssert;
 import static org.testfx.api.FxAssert.verifyThat;
+import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.base.NodeMatchers;
 import static org.testfx.matcher.control.TextInputControlMatchers.hasText;
@@ -44,31 +45,18 @@ import static org.testfx.matcher.base.NodeMatchers.isVisible;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ReservaTest extends ApplicationTest {
     
-    private TableView table;
-    private TableColumn<Reserva,Integer> Cantidad;
-    private TextField buscar;
-    private Button insertar;
-    private Button borrar;
-    private ComboBox productos;
-    private ComboBox clientes;
-    private ComboBox estado;
+
     
     /**
      * Inicia la aplicacion para testearla
      *
-     * @param stage, Objeto Stage
      * @throws Exception, si ocurre algun error
      */
-    @Override
-    public void start(Stage stage) throws Exception {
-        new ApplicationClient().start(stage);
-        table=lookup("tbReservas").queryTableView();
-        buscar=lookup("tfBuscar").query();
-        insertar=lookup("btnInsertar").query();
-        borrar=lookup("btnBorrar").query();
-        productos=lookup("#clienteBox").queryComboBox();
-        clientes=lookup("#productoBox").queryComboBox();
-        estado=lookup("#tcEstado").queryComboBox();
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        FxToolkit.registerPrimaryStage();
+        FxToolkit.setupApplication(ApplicationClient.class);
+
     }
     
     /**
@@ -82,11 +70,11 @@ public class ReservaTest extends ApplicationTest {
         //Hacemos click en el TextField de usuario
         clickOn("#txtUsuario");
         //Escribimos el usuario: vendedor
-        write("vendedor");
+        write("Nadirtxu");
         //Hacemos click en el TextField de contraseña
         clickOn("#txtContrasena");
         //Escribimos la contraseña: vendedor
-        write("vendedor");
+        write("ronironi");
         //Hacemos click en el botón de iniciar
         clickOn("#btnIniciar");
         //Comprobamos que la ventana de InicioVendedor sea visible
@@ -95,6 +83,11 @@ public class ReservaTest extends ApplicationTest {
         clickOn("#mReservas");
         //Hacemos click en el menuItem de miGestionarReservas
         clickOn("#miGestionarReservas");
+        //Vefificamos que sale una confirmacion para hacer la accion.
+        verifyThat("Aceptar", NodeMatchers.isVisible());
+        verifyThat("Cancelar", NodeMatchers.isVisible());
+        //aceptamos la accion
+        clickOn("Aceptar");
         //Comprobamos que la ventana de Reservas sea visible
         verifyThat("#pnReserva", isVisible());
     }
