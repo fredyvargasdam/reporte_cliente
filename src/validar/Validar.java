@@ -286,5 +286,19 @@ public class Validar {
         }
         return true;
     }
+    
+    /**
+     * Limita el numero de caracteres introducidos en una cadena
+     *
+     * @param tf Texto recibido
+     * @param treinta Tamaño maximo
+     */
+    public static void addTextLimiterString(String cadena, int treinta) {
+
+        if (cadena.length() > treinta) {
+            String s = cadena.substring(0, treinta);
+            cadena=s;
+        }
+    }
 
 }

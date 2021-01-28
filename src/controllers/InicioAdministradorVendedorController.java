@@ -235,7 +235,9 @@ public class InicioAdministradorVendedorController {
             //Instanciamos un nuevo vendedor dandole valores por defecto
             Vendedor nuevoVendedor = new Vendedor();
             //Añadimos por defecto que el administrador va a ser null
+
             nuevoVendedor.setAdministrador(null);
+
             //Añadimos por defecto que el dni está vacio
             nuevoVendedor.setDni("");
             //Añadimos por defecto que  el salario es 0
@@ -818,11 +820,13 @@ public class InicioAdministradorVendedorController {
         //Tienda del vendedor
         colTienda.setCellValueFactory(new PropertyValueFactory<>("tienda"));
         //Indicamos que la celda puede cambiar a un TextField
+
         colTienda.setCellFactory(
                 ChoiceBoxTableCell.forTableColumn("BIZKAIA", "GIPUZKOA")
         );
         //Aceptamos la edición de la celda de la columna tienda
         colTienda.setOnEditCommit((TableColumn.CellEditEvent<Vendedor, String> data) -> {
+
                 LOG.log(Level.INFO, "Nueva Tienda: {0}", data.getNewValue());
                 LOG.log(Level.INFO, "Antigua Tienda: {0}", data.getOldValue());
                 //Implementacion del VendedorRESTClient
@@ -861,6 +865,8 @@ public class InicioAdministradorVendedorController {
                     alert.setHeaderText("No se ha podido encontrar el vendedor");
                     alert.showAndWait();
                 }
+
+
         });
 
     }
@@ -881,7 +887,7 @@ public class InicioAdministradorVendedorController {
     }
 
     /**
-     * Muestra los datos de la base de datos en la TableView
+     * Muestra los datos de la base de datos en la TableView 
      */
     private void datosTabla() {
         try {
@@ -1085,4 +1091,6 @@ public class InicioAdministradorVendedorController {
     void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
+
 }
+
