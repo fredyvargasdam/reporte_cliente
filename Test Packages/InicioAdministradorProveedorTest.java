@@ -1,3 +1,4 @@
+
 import applicationClient.ApplicationClient;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
@@ -45,7 +46,7 @@ public class InicioAdministradorProveedorTest extends ApplicationTest {
         //Hacemos click en el TextField de usuario
         clickOn("#txtUsuario");
         //Escribimos el usuario: admin
-        write("admin");
+        write("Administrador");
         //Hacemos click en el TextField de contraseña
         clickOn("#txtContrasena");
         //Escribimos la contraseña: admin
@@ -59,7 +60,11 @@ public class InicioAdministradorProveedorTest extends ApplicationTest {
         //Hacemos click en el menuItem de menuProveedores
         clickOn("#menuProveedores");
         //Comprobamos que la ventana de InicioAdministradorProveedor sea visible
+        verifyThat("Aceptar", NodeMatchers.isVisible());
+        verifyThat("Cancelar", NodeMatchers.isVisible());
+        clickOn("Aceptar");
         verifyThat("#pnInicioAdminProv", isVisible());
+
     }
 
     /**
@@ -87,9 +92,9 @@ public class InicioAdministradorProveedorTest extends ApplicationTest {
         //Hacemos dobleClick en el nodo anterior
         doubleClickOn(rowFecha);
         //Clickamos en las coordenadas indicadas, hacen referencia al DatePicker
-        clickOn(1315, 275);
+        clickOn(1315, 285);
         //Clickamos en el día 16 para poder cambiarlo
-        clickOn("16");
+        clickOn("29");
     }
 
     /**
@@ -132,7 +137,7 @@ public class InicioAdministradorProveedorTest extends ApplicationTest {
         //Hacemos dobleClick en el nodo anterior
         doubleClickOn(rowEmpresa);
         //Escribimos el nombre de la empresa
-        write("Roxy");
+        write("Quechua");
         //Hacemos que pulse el Enter para poder guardar los cambios de la celda
         this.push(KeyCode.ENTER);
         //Email
@@ -145,7 +150,7 @@ public class InicioAdministradorProveedorTest extends ApplicationTest {
         //Hacemos dobleClick en el nodo anterior
         doubleClickOn(rowEmail);
         //Escribimos un email correcto
-        write("roxy@gmail.com");
+        write("quechua@gmail.com");
         //Hacemos que pulse el Enter para poder guardar los cambios de la celda
         this.push(KeyCode.ENTER);
         //Teléfono
@@ -386,7 +391,7 @@ public class InicioAdministradorProveedorTest extends ApplicationTest {
         //Hacemos dobleClick en el nodo anterior 
         doubleClickOn(rowEmpresa);
         //Escribimos una empresa que ya esté registrada  
-        write("Puma");
+        write("Quechua");
         //Hacemos que pulse el Enter para poder guardar los cambios de la celda
         this.push(KeyCode.ENTER);
         //Comprobamos que sale una alerta y sale la opción Aceptar

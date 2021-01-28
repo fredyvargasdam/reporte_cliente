@@ -49,6 +49,7 @@ import javafx.util.Callback;
 import javax.ws.rs.ClientErrorException;
 import manager.AdministradorManager;
 import manager.ProveedorManager;
+import modelo.Administrador;
 import modelo.FechaAltaCell;
 import modelo.Proveedor;
 import modelo.TipoProducto;
@@ -648,6 +649,7 @@ public class InicioAdministradorProveedorController {
         Date date = Date.from(fechaHoy.atStartOfDay(defaultZoneId).toInstant());
         //Instanciamos un nuevo proveedor dandole valores por defecto
         Proveedor nuevoProveedor = new Proveedor();
+        nuevoProveedor.setAdministrador((Administrador)usuario);
         //Añadimos por defecto que la descripción está vacia
         nuevoProveedor.setDescripcion("");
         //Añadimos por defecto que  el email está vacio
