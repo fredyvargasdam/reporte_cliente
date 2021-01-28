@@ -119,7 +119,7 @@ public class InicioAdministradorVendedorTest extends ApplicationTest {
         press(KeyCode.ENTER).release(KeyCode.ENTER);
         row=lookup(".table-row-cell").nth(0).lookup(".table-cell").nth(10).query();
         doubleClickOn(row);
-        write("Tienda A");
+        clickOn("GIPUZKOA");
         press(KeyCode.ENTER).release(KeyCode.ENTER);
 
     }

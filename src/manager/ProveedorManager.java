@@ -19,7 +19,7 @@ public interface ProveedorManager {
 
     public Proveedor getProductos(Proveedor proveedor, String id) throws ErrorServerException, ProductoNotFoundException;
 
-    public void create(Proveedor proveedor) throws ClientErrorException, ProveedorYaExisteException, ErrorServerException;
+    public void create(Proveedor proveedor) throws ErrorServerException;
 
     public void remove(String id) throws ClientErrorException, ErrorServerException;
 

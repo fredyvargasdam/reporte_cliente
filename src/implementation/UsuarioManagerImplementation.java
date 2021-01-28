@@ -84,17 +84,16 @@ public class UsuarioManagerImplementation implements UsuarioManager {
     }
 
     @Override
-    public void create(Usuario usuario) throws ClientErrorException, UsuarioYaExisteException, ErrorServerException, ErrorBDException {
+    public void create(Usuario usuario) throws ClientErrorException, ErrorServerException,UsuarioYaExisteException {
         try {
             webClient = new UsuarioRESTClient();
             webClient.create(usuario);
         } catch (Exception e) {
             if (e.getCause() instanceof ConnectException) {
                 LOGGER.log(Level.SEVERE, "createUsuario: ErrorServerException {0}", e.getMessage());
-                throw new ErrorServerException();
-            } else{
-                LOGGER.log(Level.SEVERE, "createUsuario: UsuarioYaExisteException {0}", e.getMessage());
                 throw new UsuarioYaExisteException();
+            }else{
+                throw new ErrorServerException();
             }
 
         }
