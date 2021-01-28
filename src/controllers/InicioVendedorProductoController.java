@@ -365,36 +365,38 @@ public class InicioVendedorProductoController {
                 VendedorManagerImplementation vendedorMI = (VendedorManagerImplementation) new factory.VendedorFactory().getVendedorManagerImplementation();
                 ObservableList<Reserva> reservas = FXCollections.observableArrayList(vendedorMI.findAllReservas());
                 //El producto está reservado?
-                if (!estaReservado(reservas, productoSelecionado.getId())) {
-                    borrandoVendedorProducto(vendedorMI, productoSelecionado);
-                    borrandoProducto();
-                } else if (productoSelecionado.getStock() != 0) {
-                    alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setHeaderText(null);
-                    alert.setTitle("Borrar Producto");
-                    alert.setContentText("¡El producto está reservado! ¿Quieres poner a 0 el stock del producto? (Recomendado)");
-                    Optional<ButtonType> respuestaForzar = alert.showAndWait();
-                    if (respuestaForzar.get() == ButtonType.OK) {
-                        LOG.log(Level.INFO, "Has pulsado el boton Aceptar");
-                        actualizandoStock(productoSelecionado, 0);
-                    }
-                    LOG.log(Level.INFO, "Has pulsado el boton Cancelar");
-                    event.consume();
-                } else {
-                    alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setHeaderText(null);
-                    alert.setTitle("Borrar Producto");
-                    alert.setContentText("¡Se procederá a borrar el producto ! (NO Recomendado)");
-                    Optional<ButtonType> respuestaForzado = alert.showAndWait();
-                    if (respuestaForzado.get() == ButtonType.OK) {
-                        LOG.log(Level.INFO, "Has pulsado el boton Aceptar");
+                if (reservas != null) {
+                    if (!estaReservado(reservas, productoSelecionado.getId())) {
                         borrandoVendedorProducto(vendedorMI, productoSelecionado);
-                        borrandoReservas(reservaMI, reservas, productoSelecionado);
                         borrandoProducto();
-                    } else {
+                    } else if (productoSelecionado.getStock() != 0) {
+                        alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        alert.setHeaderText(null);
+                        alert.setTitle("Borrar Producto");
+                        alert.setContentText("¡El producto está reservado! ¿Quieres poner a 0 el stock del producto? (Recomendado)");
+                        Optional<ButtonType> respuestaForzar = alert.showAndWait();
+                        if (respuestaForzar.get() == ButtonType.OK) {
+                            LOG.log(Level.INFO, "Has pulsado el boton Aceptar");
+                            actualizandoStock(productoSelecionado, 0);
+                        }
                         LOG.log(Level.INFO, "Has pulsado el boton Cancelar");
                         event.consume();
+                    } else {
+                        alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        alert.setHeaderText(null);
+                        alert.setTitle("Borrar Producto");
+                        alert.setContentText("¡Se procederá a borrar el producto ! (NO Recomendado)");
+                        Optional<ButtonType> respuestaForzado = alert.showAndWait();
+                        if (respuestaForzado.get() == ButtonType.OK) {
+                            LOG.log(Level.INFO, "Has pulsado el boton Aceptar");
+                            borrandoVendedorProducto(vendedorMI, productoSelecionado);
+                            borrandoReservas(reservaMI, reservas, productoSelecionado);
+                            borrandoProducto();
+                        } else {
+                            LOG.log(Level.INFO, "Has pulsado el boton Cancelar");
+                            event.consume();
 
+                        }
                     }
                 }
             } catch (ErrorServerException ex) {
