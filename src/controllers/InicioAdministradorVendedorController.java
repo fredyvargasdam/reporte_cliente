@@ -881,7 +881,7 @@ public class InicioAdministradorVendedorController {
     }
 
     /**
-     *
+     * Muestra los datos de la base de datos en la TableView
      */
     private void datosTabla() {
         try {
