@@ -13,7 +13,7 @@ import modelo.Proveedor;
 import modelo.Vendedor;
 
 /**
- *
+ * Implementacion del Administrador
  * @author Lorena Cáceres Manuel
  */
 public class AdministradorManagerImplementation implements AdministradorManager {

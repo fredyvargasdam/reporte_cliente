@@ -8,7 +8,7 @@ package factory;
 import implementation.UsuarioManagerImplementation;
 
 /**
- *
+ * Factoria del usuario
  * @author Lorena Cáceres Manuel
  */
 public class UsuarioFactory {

@@ -16,7 +16,7 @@ import javafx.scene.Parent;
 import javafx.stage.Stage;
 
 /**
- *
+ * Clase ejecutable de la aplicación
  * @author Moroni
  */
 public class ApplicationClient extends Application {

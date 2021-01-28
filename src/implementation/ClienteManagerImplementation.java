@@ -18,7 +18,7 @@ import modelo.Producto;
 import modelo.Reserva;
 
 /**
- *
+ * Implementación del cliente
  * @author Fredy
  */
 public class ClienteManagerImplementation implements ClienteManager {

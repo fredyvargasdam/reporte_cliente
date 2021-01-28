@@ -6,7 +6,7 @@
 package modelo;
 
 /**
- *
+ * Privilegios que puede tener un usuario
  * @author pocoy
  */
 public enum PrivilegioUsuario {

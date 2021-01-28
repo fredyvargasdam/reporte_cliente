@@ -8,7 +8,7 @@ package factory;
 import implementation.ProveedorManagerImplementation;
 
 /**
- *
+ * Factoria del proveedor
  * @author Lorena Cáceres Manuel
  */
 public class ProveedorFactory {
