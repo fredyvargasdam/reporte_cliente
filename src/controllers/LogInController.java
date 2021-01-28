@@ -193,13 +193,10 @@ public class LogInController {
         Alert alert;
 
         try {
-            System.out.println(usuario.getPassword());
             //El usuario(login) se encuentra en la base de datos
-            usuario = usuarioMi.usuarioLogin(usuario.getLogin());
-            System.out.println(usuario.getEmail());
+            usuario = usuarioMi.usuarioLogin(usuario.getLogin());;
             //El usuario ya se encuentra en la base de datos ahora comprobamos su contraseña
             usuarioMi.usuarioByLogin(usuario.getLogin(), Seguridad.encriptarContrasenia(txtContrasena.getText()));
-            System.out.println(usuario.getLastAccess());
             FXMLLoader loader = null;
             Parent root = null;
             switch (usuario.getPrivilege()) {
