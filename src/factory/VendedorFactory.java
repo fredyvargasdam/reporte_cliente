@@ -8,7 +8,7 @@ package factory;
 import implementation.VendedorManagerImplementation;
 
 /**
- *
+ * Factoria del vendedor
  * @author Moroni
  */
 public class VendedorFactory {

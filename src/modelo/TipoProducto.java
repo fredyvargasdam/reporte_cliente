@@ -6,7 +6,7 @@
 package modelo;
 
 /**
- *
+ * Tipo de producto
  * @author Lorena
  */
 public enum TipoProducto {

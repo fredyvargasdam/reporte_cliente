@@ -18,7 +18,7 @@ import javax.imageio.ImageIO;
 
 
 /**
- *
+ * Imagen del producto
  * @author Fredy
  */
 public class ProductoCell extends TableCell<Producto, byte[]> {

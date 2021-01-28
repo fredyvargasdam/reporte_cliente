@@ -8,7 +8,7 @@ package factory;
 import implementation.AdministradorManagerImplementation;
 
 /**
- *
+ * Factoria de la administrador
  * @author 2dam
  */
 public class AdministradorFactory {

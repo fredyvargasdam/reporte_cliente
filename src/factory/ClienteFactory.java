@@ -9,7 +9,7 @@ import manager.ClienteManager;
 import implementation.ClienteManagerImplementation;
 
 /**
- *
+ * Factoria del cliente
  * @author Fredy Vargas Flores
  */
 public class ClienteFactory {

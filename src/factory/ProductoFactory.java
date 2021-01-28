@@ -9,7 +9,7 @@ import manager.ProductoManager;
 import implementation.ProductoManagerImplementation;
 
 /**
- *
+ * Factoria del producto
  * @author 2dam
  */
 public class ProductoFactory {

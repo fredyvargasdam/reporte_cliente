@@ -6,7 +6,7 @@
 package modelo;
 
 /**
- *
+ * Estado en el que se encuentra la reserva
  * @author Fredy
  */
 public enum EstadoReserva {

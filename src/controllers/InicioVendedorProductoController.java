@@ -1174,12 +1174,14 @@ public class InicioVendedorProductoController {
                 for (Vendedor v : vendedoresServidor) {
                     if (v.getProductos() != null) {
                         for (Producto p : v.getProductos()) {
-                            if (p.getId().equals(productoSelecionado.getId())) {
-
-                                v.getProductos().remove(productoSelecionado);
-                                vendedorMI.edit(v);
+                            if (p != null) {
+                                if (p.getId().equals(productoSelecionado.getId())) {
+                                    v.getProductos().remove(productoSelecionado);
+                                    vendedorMI.edit(v);
+                                }
                             }
                         }
+
                     }
                 }
             }

@@ -9,7 +9,7 @@ import implementation.ReservaManagerImplementation;
 import manager.ReservaManager;
 
 /**
- *
+ * Factoria de la reserva
  * @author Fredy Vargas Flores
  */
 public class ReservaFactory {

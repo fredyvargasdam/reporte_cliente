@@ -6,7 +6,7 @@
 package modelo;
 
 /**
- *
+ * Estado en el que se encuentra el usuario
  * @author pocoy
  */
 public enum EstadoUsuario {

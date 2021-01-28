@@ -16,7 +16,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableCell;
 
 /**
- *
+ * Fecha de Alta del proveedor 
  * @author Lorena Cáceres Manuel
  */
 public class FechaAltaCell extends TableCell<Proveedor, Date> {

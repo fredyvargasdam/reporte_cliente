@@ -15,7 +15,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableCell;
 
 /**
- *
+ * Fecha de entrega de la reserva
  * @author Fredy
  */
 public class FechaEntregaCell extends TableCell<Reserva, Date> {
