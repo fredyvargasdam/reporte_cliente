@@ -40,7 +40,7 @@ import static org.testfx.matcher.base.NodeMatchers.isVisible;
 
 /**
  *
- * @author 2dam
+ * @author Nadir
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ReservaTest extends ApplicationTest {
