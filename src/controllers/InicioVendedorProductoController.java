@@ -433,12 +433,20 @@ public class InicioVendedorProductoController {
         productoMI = (ProductoManagerImplementation) new factory.ProductoFactory().getProductoManagerImplementation();
         ObservableList<Producto> productosServidor = null;
         try {
-            productosServidor = FXCollections.observableArrayList(productoMI.findAllProductosAsc());
-            tvProductos.setItems(productosServidor);
-            productos = productosServidor;
-            getAllProveedores();
-            tvProductos.refresh();
+            if (productoMI.findAllProductosAsc() != null) {
+                productosServidor = FXCollections.observableArrayList(productoMI.findAllProductosAsc());
+                tvProductos.setItems(productosServidor);
+                productos = productosServidor;
+                getAllProveedores();
+                tvProductos.refresh();
+            }
         } catch (ClientErrorException e) {
+            LOG.log(Level.SEVERE, "ErrorServerException");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Producto");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
+        } catch (ErrorServerException ex) {
             LOG.log(Level.SEVERE, "ErrorServerException");
             alert = new Alert(AlertType.ERROR);
             alert.setTitle("Producto");
@@ -1119,7 +1127,11 @@ public class InicioVendedorProductoController {
             getAllProductos();
 
         } catch (ErrorServerException ex) {
-            Logger.getLogger(InicioVendedorProductoController.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, "ErrorServerException");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Producto");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();
         }
     }
 
@@ -1179,14 +1191,19 @@ public class InicioVendedorProductoController {
             alert.showAndWait();
 
         } catch (ClientErrorException ex) {
-            Logger.getLogger(InicioVendedorProductoController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (UpdateException ex) {
-            Logger.getLogger(InicioVendedorProductoController.class.getName()).log(Level.SEVERE, null, ex);
+           LOG.log(Level.SEVERE, "ErrorServerException");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Producto");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();} catch (UpdateException ex) {
+          
         } catch (ErrorBDException ex) {
-            Logger.getLogger(InicioVendedorProductoController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (VendedorNotFoundException ex) {
-            Logger.getLogger(InicioVendedorProductoController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+         LOG.log(Level.SEVERE, "ErrorServerException");
+            alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Producto");
+            alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
+            alert.showAndWait();} catch (VendedorNotFoundException ex) {
+         }
     }
 
 }
