@@ -73,7 +73,7 @@ public class ProveedorManagerImplementation implements ProveedorManager {
     }
 
     @Override
-    public void create(Proveedor proveedor) throws ClientErrorException, ProveedorYaExisteException, ErrorServerException {
+    public void create(Proveedor proveedor) throws ErrorServerException {
         try {
             webClient = new ProveedorRESTClient();
             webClient.create(proveedor);

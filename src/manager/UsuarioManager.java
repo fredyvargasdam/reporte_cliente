@@ -30,7 +30,7 @@ public interface UsuarioManager {
 
     public Usuario usuarioLogin(String login) throws UsuarioNotFoundException, ErrorServerException;
 
-    public void create(Usuario usuario) throws ClientErrorException, UsuarioYaExisteException, ErrorServerException, ErrorBDException;
+    public void create(Usuario usuario) throws ClientErrorException, ErrorServerException, UsuarioYaExisteException;
 
     public void remove(String id) throws ClientErrorException;
 
