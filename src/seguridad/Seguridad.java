@@ -2,6 +2,7 @@ package seguridad;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -66,7 +67,8 @@ public class Seguridad {
 
         try {
             //Clave pública
-            byte fileKey[] = fileReader("src/file/Public.key");
+           // byte fileKey[] = fileReader("src/file/Public.key");
+           byte fileKey[] =getPublicFileKey();
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(fileKey);
             publicKey = keyFactory.generatePublic(x509EncodedKeySpec);
@@ -140,5 +142,55 @@ public class Seguridad {
         }
         return os.toByteArray();
     }
+    
+    /**
+     * Obtener clave privada
+     *
+     * @return
+     * @throws IOException
+     */
 
+    private static byte[] getPublicFileKey() throws IOException {
+
+        InputStream keyfis = Seguridad.class.getClassLoader()
+                .getResourceAsStream("file/Public.key");
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len;
+        // read bytes from the input stream and store them in buffer
+        while ((len = keyfis.read(buffer)) != -1) {
+            // write bytes from the buffer into output stream
+            os.write(buffer, 0, len);
+        }
+        keyfis.close();
+        return os.toByteArray();
+    }
+    /**
+     * 
+     */
+/**
+     * Obtener clave pública
+     *
+     * @return array de bytes
+     * @
+     */
+
+    private static byte[] getFileClavePublica() throws IOException {
+      
+
+        InputStream inputStream = Seguridad.class.getClassLoader()
+                .getResourceAsStream("Public.key");
+        int leidos;
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        byte[] data = new byte[1024];
+        while ((leidos = inputStream.read(data, 0, data.length)) != -1) {
+            byteArrayOutputStream.write(data, 0, leidos);
+        }
+        byteArrayOutputStream.flush();
+        byte[] filekey = byteArrayOutputStream.toByteArray();
+        return filekey;
+    }
+
+   
 }
