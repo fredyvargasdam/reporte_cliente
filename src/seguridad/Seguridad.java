@@ -67,8 +67,8 @@ public class Seguridad {
 
         try {
             //Clave pública
-           // byte fileKey[] = fileReader("src/file/Public.key");
-           byte fileKey[] =getPublicFileKey();
+
+            byte fileKey[] = getPublicFileKey();
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             X509EncodedKeySpec x509EncodedKeySpec = new X509EncodedKeySpec(fileKey);
             publicKey = keyFactory.generatePublic(x509EncodedKeySpec);
@@ -123,7 +123,6 @@ public class Seguridad {
      * @param path
      * @return array de bytes
      */
-
     private static byte[] getFile(String path) {
 
         InputStream keyfis = Seguridad.class.getClassLoader()
@@ -142,14 +141,13 @@ public class Seguridad {
         }
         return os.toByteArray();
     }
-    
+
     /**
      * Obtener clave privada
      *
      * @return
      * @throws IOException
      */
-
     private static byte[] getPublicFileKey() throws IOException {
 
         InputStream keyfis = Seguridad.class.getClassLoader()
@@ -166,31 +164,5 @@ public class Seguridad {
         keyfis.close();
         return os.toByteArray();
     }
-    /**
-     * 
-     */
-/**
-     * Obtener clave pública
-     *
-     * @return array de bytes
-     * @
-     */
 
-    private static byte[] getFileClavePublica() throws IOException {
-      
-
-        InputStream inputStream = Seguridad.class.getClassLoader()
-                .getResourceAsStream("Public.key");
-        int leidos;
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        byte[] data = new byte[1024];
-        while ((leidos = inputStream.read(data, 0, data.length)) != -1) {
-            byteArrayOutputStream.write(data, 0, leidos);
-        }
-        byteArrayOutputStream.flush();
-        byte[] filekey = byteArrayOutputStream.toByteArray();
-        return filekey;
-    }
-
-   
 }
