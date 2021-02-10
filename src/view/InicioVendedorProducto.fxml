@@ -37,6 +37,11 @@
                                         <MenuItem fx:id="miGestionarReservas" mnemonicParsing="false" onAction="#miGestionarReservasClick" text="Gestionar Reservas" />
                                     </items>
                                 </Menu>
+                        <Menu fx:id="mReservas1" mnemonicParsing="false" text="Reporte">
+                           <items>
+                              <MenuItem fx:id="miImprimirReporte" mnemonicParsing="false" onAction="#miImprimirReporteClick" text="Imprimir Reporte" />
+                           </items>
+                        </Menu>
                             </menus>
                         </MenuBar>
                         <HBox alignment="TOP_CENTER" prefHeight="1.0" prefWidth="780.0" VBox.vgrow="ALWAYS">

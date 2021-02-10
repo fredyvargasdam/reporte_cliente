@@ -18,7 +18,9 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
@@ -67,6 +69,13 @@ import modelo.Reserva;
 import modelo.TipoProducto;
 import modelo.Usuario;
 import modelo.Vendedor;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 import validar.Validar;
 
 /**
@@ -143,6 +152,10 @@ public class InicioVendedorProductoController {
     private Proveedor flyshoes;
     //Una colección  de vendedores
     private Set<Vendedor> vendedores;
+    @FXML
+    private Menu mReservas1;
+    @FXML
+    private MenuItem miImprimirReporte;
 
     /**
      * Recibe el escenario
@@ -1207,6 +1220,22 @@ public class InicioVendedorProductoController {
             alert.setHeaderText("Imposible conectar. Inténtelo más tarde");
             alert.showAndWait();
         } catch (VendedorNotFoundException ex) {
+        }
+    }
+
+    @FXML
+    private void miImprimirReporteClick(ActionEvent event) {
+        try {
+            JasperReport report = JasperCompileManager.compileReport("src/reporte/Reporte.jrxml");
+           JRBeanCollectionDataSource dataItems= new JRBeanCollectionDataSource(tvProductos.getItems());
+            Map<String,Object> parameters= new HashMap<>();
+            JasperPrint jasperPrint =JasperFillManager.fillReport(report, null,dataItems);
+            JasperViewer jasperViewer= new JasperViewer(jasperPrint);
+            jasperViewer.setVisible(true);
+            
+            
+        } catch (JRException ex) {
+            LOG.severe("Error al generar informe");
         }
     }
 
